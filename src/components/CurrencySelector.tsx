@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { useCurrencyStore } from '../store/currencyStore'
-import { SUPPORTED_CURRENCIES } from '../lib/pricing/constants'
+import { useCurrencySettingsStore } from '../store/currencySettingsStore'
 import type { CurrencyCode } from '../types/pricing'
 
 interface CurrencySelectorProps {
@@ -11,6 +11,7 @@ export default function CurrencySelector({ compact = false }: CurrencySelectorPr
 	const { t } = useTranslation()
 	const currency = useCurrencyStore((s) => s.currency)
 	const setCurrency = useCurrencyStore((s) => s.setCurrency)
+	const enabledCurrencies = useCurrencySettingsStore((s) => s.enabledCurrencies)
 
 	return (
 		<select
@@ -32,7 +33,7 @@ export default function CurrencySelector({ compact = false }: CurrencySelectorPr
 				outline: 'none',
 			}}
 		>
-			{SUPPORTED_CURRENCIES.map((code) => (
+			{enabledCurrencies.map((code) => (
 				<option key={code} value={code}>
 					{code}
 				</option>
