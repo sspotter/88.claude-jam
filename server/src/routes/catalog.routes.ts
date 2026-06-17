@@ -5,6 +5,7 @@ import {
   serializeCategory,
   serializeOffer,
 } from "../lib/serialize.js";
+import { DEFAULT_CURRENCY_SETTINGS } from "../services/currencySettings.js";
 
 // Public storefront reads. These replace the direct Firestore queries the
 // frontend used to run from the browser (Home, CategoryView, ProductView,
@@ -120,6 +121,19 @@ router.get("/pricing/rates", async (_req: Request, res: Response) => {
     return res.json(value);
   } catch (error: any) {
     return res.status(500).json({ error: error.message || "Failed to fetch currency rates." });
+  }
+});
+
+/**
+ * GET /api/settings/currency — public read for storefront currency availability.
+ */
+router.get("/settings/currency", async (_req: Request, res: Response) => {
+  try {
+    const setting = await prisma.setting.findUnique({ where: { id: "currency_settings" } });
+    const value = (setting?.value as typeof DEFAULT_CURRENCY_SETTINGS | null) ?? DEFAULT_CURRENCY_SETTINGS;
+    return res.json(value);
+  } catch (error: any) {
+    return res.status(500).json({ error: error.message || "Failed to fetch currency settings." });
   }
 });
 

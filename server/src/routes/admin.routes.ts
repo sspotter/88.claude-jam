@@ -11,6 +11,7 @@ import {
   serializeOffer,
   serializeOrder,
 } from "../lib/serialize.js";
+import { normalizeCurrencySettings } from "../services/currencySettings.js";
 
 const router = Router();
 
@@ -334,6 +335,24 @@ router.put("/settings/theme", async (req: Request, res: Response) => {
     return res.json({ selectedTheme });
   } catch (error: any) {
     return res.status(500).json({ error: error.message || "Failed to update theme." });
+  }
+});
+
+router.put("/settings/currency", async (req: Request, res: Response) => {
+  try {
+    const value = normalizeCurrencySettings(req.body);
+    await prisma.setting.upsert({
+      where: { id: "currency_settings" },
+      update: { value: value as any },
+      create: { id: "currency_settings", value: value as any },
+    });
+    return res.json(value);
+  } catch (error: any) {
+    // Validation errors -> 400; anything else -> 500.
+    const isValidation = /enabled|default|currency must/i.test(error?.message ?? "");
+    return res.status(isValidation ? 400 : 500).json({
+      error: error.message || "Failed to save currency settings.",
+    });
   }
 });
 
