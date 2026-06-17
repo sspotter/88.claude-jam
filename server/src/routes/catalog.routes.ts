@@ -130,7 +130,7 @@ router.get("/pricing/rates", async (_req: Request, res: Response) => {
 router.get("/settings/currency", async (_req: Request, res: Response) => {
   try {
     const setting = await prisma.setting.findUnique({ where: { id: "currency_settings" } });
-    const value = (setting?.value as typeof DEFAULT_CURRENCY_SETTINGS | null) ?? DEFAULT_CURRENCY_SETTINGS;
+    const value = (setting?.value as unknown as typeof DEFAULT_CURRENCY_SETTINGS | null) ?? DEFAULT_CURRENCY_SETTINGS;
     return res.json(value);
   } catch (error: any) {
     return res.status(500).json({ error: error.message || "Failed to fetch currency settings." });
