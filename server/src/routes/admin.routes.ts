@@ -11,7 +11,10 @@ import {
   serializeOffer,
   serializeOrder,
 } from "../lib/serialize.js";
-import { normalizeCurrencySettings } from "../services/currencySettings.js";
+import {
+  CurrencySettingsValidationError,
+  normalizeCurrencySettings,
+} from "../services/currencySettings.js";
 
 const router = Router();
 
@@ -348,8 +351,8 @@ router.put("/settings/currency", async (req: Request, res: Response) => {
     });
     return res.json(value);
   } catch (error: any) {
-    // Validation errors -> 400; anything else -> 500.
-    const isValidation = /enabled|default|currency must/i.test(error?.message ?? "");
+    // Validation errors -> 400; anything else (e.g. DB failure) -> 500.
+    const isValidation = error instanceof CurrencySettingsValidationError;
     return res.status(isValidation ? 400 : 500).json({
       error: error.message || "Failed to save currency settings.",
     });

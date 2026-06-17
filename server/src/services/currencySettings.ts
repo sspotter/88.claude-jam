@@ -14,27 +14,35 @@ export const DEFAULT_CURRENCY_SETTINGS: CurrencySettings = {
   default: BASE_CURRENCY,
 };
 
+/** Thrown when an incoming payload is invalid; callers map this to HTTP 400. */
+export class CurrencySettingsValidationError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "CurrencySettingsValidationError";
+  }
+}
+
 /**
  * Validate + normalize an incoming currency-settings payload.
- * Throws Error (caller maps to HTTP 400) when the payload is unusable.
+ * Throws CurrencySettingsValidationError (caller maps to HTTP 400) when unusable.
  */
 export function normalizeCurrencySettings(input: unknown): CurrencySettings {
   const raw = (input ?? {}) as Partial<CurrencySettings>;
 
   if (!Array.isArray(raw.enabled)) {
-    throw new Error("`enabled` must be an array of currency codes.");
+    throw new CurrencySettingsValidationError("`enabled` must be an array of currency codes.");
   }
 
   // Filter to master list, dedupe, preserve master order.
   const enabled = MASTER_CURRENCIES.filter((c) => raw.enabled!.includes(c));
 
   if (enabled.length === 0) {
-    throw new Error("At least one currency must be enabled.");
+    throw new CurrencySettingsValidationError("At least one currency must be enabled.");
   }
 
   const def = raw.default as CurrencyCode | undefined;
   if (!def || !enabled.includes(def)) {
-    throw new Error("`default` must be one of the enabled currencies.");
+    throw new CurrencySettingsValidationError("`default` must be one of the enabled currencies.");
   }
 
   return { enabled, default: def };

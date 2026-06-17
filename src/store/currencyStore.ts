@@ -8,6 +8,8 @@ import {
 } from '../lib/pricing/currencyAvailability'
 import { getCurrencySettingsSnapshot } from './currencySettingsStore'
 
+const STORAGE_KEY = 'jamhawi-currency-storage'
+
 interface CurrencyState {
 	currency: CurrencyCode
 	rates: CurrencyRate[]
@@ -49,7 +51,7 @@ export const useCurrencyStore = create<CurrencyState>()(
 				resolveInitialCurrency(detectFromBrowser(), getCurrencySettingsSnapshot()),
 		}),
 		{
-			name: 'jamhawi-currency-storage',
+			name: STORAGE_KEY,
 			partialize: (state) => ({ currency: state.currency }),
 		},
 	),
@@ -57,7 +59,7 @@ export const useCurrencyStore = create<CurrencyState>()(
 
 export function initCurrencyPreference(): void {
 	const store = useCurrencyStore.getState()
-	const stored = localStorage.getItem('jamhawi-currency-storage')
+	const stored = localStorage.getItem(STORAGE_KEY)
 	if (!stored) {
 		store.setCurrency(store.detectDefaultCurrency())
 	}
