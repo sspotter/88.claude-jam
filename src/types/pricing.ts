@@ -1,5 +1,10 @@
 export type CurrencyCode = 'AED' | 'USD' | 'EGP' | 'SAR' | 'EUR'
 
+export interface CurrencySettings {
+	enabled: CurrencyCode[]
+	default: CurrencyCode
+}
+
 export type PriceSource = 'manual' | 'converted'
 
 export type ProductPricingType = 'per_kg' | 'fixed'
