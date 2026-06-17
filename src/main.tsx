@@ -8,8 +8,10 @@ import {
   reconcileCurrencyWithSettings,
 } from "./store/currencyStore";
 import { useCurrencySettingsStore } from "./store/currencySettingsStore";
+import { loadBaseCurrency } from "./store/baseCurrencyStore";
 
 initCurrencyPreference();
+void loadBaseCurrency();
 
 // Load admin-configured currency availability, then reconcile the active
 // currency against it (fail-open: defaults keep the storefront usable).

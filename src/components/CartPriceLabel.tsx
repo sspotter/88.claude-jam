@@ -23,13 +23,14 @@ export default function CartPriceLabel({
 	amount,
 	showSource = false,
 }: CartPriceLabelProps) {
-	const { t } = useTranslation()
+	const { t, i18n } = useTranslation()
+	const lang = i18n.language === 'ar' ? 'ar' : 'en'
 	const currency = getItemCurrency(item)
 	const value = amount ?? item.price
 
 	return (
 		<span>
-			{formatPrice(value, currency)}
+			{formatPrice(value, currency, lang)}
 			{showSource && item.priceSource && (
 				<span
 					style={{

@@ -15,7 +15,8 @@ export default function PriceDisplay({
 	size = 'md',
 	className = '',
 }: PriceDisplayProps) {
-	const { t } = useTranslation()
+	const { t, i18n } = useTranslation()
+	const lang = i18n.language === 'ar' ? 'ar' : 'en'
 
 	const fontSize = size === 'lg' ? '1.5rem' : size === 'sm' ? '0.875rem' : '1rem'
 
@@ -28,7 +29,7 @@ export default function PriceDisplay({
 	return (
 		<div className={className}>
 			<span style={{ fontSize, fontWeight: 600, color: 'var(--th-gold)' }}>
-				{formatPrice(resolved.price, resolved.currency)}
+				{formatPrice(resolved.price, resolved.currency, lang)}
 			</span>
 			{showIndicator && (
 				<p
@@ -42,7 +43,7 @@ export default function PriceDisplay({
 					{resolved.source === 'converted' && !resolved.fallbackToBase && (
 						<>
 							{' '}
-							({formatPrice(resolved.basePrice, resolved.baseCurrency)})
+							({formatPrice(resolved.basePrice, resolved.baseCurrency, lang)})
 						</>
 					)}
 				</p>

@@ -9,13 +9,14 @@ import { getStoredRates, getSyncMeta } from '../lib/pricing/currencyService'
 import { getAllProductPrices } from '../lib/pricing/productPriceService'
 import { useCurrencyStore } from '../store/currencyStore'
 import { useCartStore } from '../store/cartStore'
-import { BASE_CURRENCY } from '../lib/pricing/constants'
+import { useBaseCurrencyStore, getBaseCurrencySnapshot } from '../store/baseCurrencyStore'
 
 export function useCurrencyRates() {
 	const rates = useCurrencyStore((s) => s.rates)
 	const ratesLoaded = useCurrencyStore((s) => s.ratesLoaded)
 	const lastSyncAt = useCurrencyStore((s) => s.lastSyncAt)
 	const setRates = useCurrencyStore((s) => s.setRates)
+	const baseCurrency = useBaseCurrencyStore((s) => s.baseCurrency)
 
 	useEffect(() => {
 		if (ratesLoaded) return
@@ -39,7 +40,7 @@ export function useCurrencyRates() {
 		return () => { cancelled = true }
 	}, [ratesLoaded, setRates])
 
-	const rateMap = useMemo(() => buildRateMap(rates, BASE_CURRENCY), [rates])
+	const rateMap = useMemo(() => buildRateMap(rates, baseCurrency), [rates, baseCurrency])
 
 	return { rates, rateMap, lastSyncAt, ratesLoaded }
 }
@@ -83,6 +84,7 @@ export function useResolvedPrice(
 ): ResolvedPrice {
 	const selectedCurrency = useCurrencyStore((s) => s.currency)
 	const targetCurrency = currency ?? selectedCurrency
+	const baseCurrency = useBaseCurrencyStore((s) => s.baseCurrency)
 	const { rateMap } = useCurrencyRates()
 	const { pricesByProduct } = useProductPricesCache()
 
@@ -91,12 +93,12 @@ export function useResolvedPrice(
 		const manualPrices = buildManualPriceMap(productPrices)
 		return resolveProductPrice({
 			basePrice,
-			baseCurrency: BASE_CURRENCY,
+			baseCurrency,
 			targetCurrency,
 			manualPrices,
 			rates: rateMap,
 		})
-	}, [productId, basePrice, targetCurrency, pricesByProduct, rateMap])
+	}, [productId, basePrice, baseCurrency, targetCurrency, pricesByProduct, rateMap])
 }
 
 export function useRepriceCartOnCurrencyChange() {
@@ -130,7 +132,7 @@ export function resolvePriceForProduct(
 	const manualPrices = buildManualPriceMap(productPrices)
 	return resolveProductPrice({
 		basePrice,
-		baseCurrency: BASE_CURRENCY,
+		baseCurrency: getBaseCurrencySnapshot(),
 		targetCurrency: currency,
 		manualPrices,
 		rates: rateMap,
