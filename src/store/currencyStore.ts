@@ -1,11 +1,12 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type { CurrencyCode, CurrencyRate } from '../types/pricing'
+import { BASE_CURRENCY, CURRENCY_LOCALE_MAP } from '../lib/pricing/constants'
 import {
-	BASE_CURRENCY,
-	CURRENCY_LOCALE_MAP,
-	SUPPORTED_CURRENCIES,
-} from '../lib/pricing/constants'
+	reconcilePersistedCurrency,
+	resolveInitialCurrency,
+} from '../lib/pricing/currencyAvailability'
+import { getCurrencySettingsSnapshot } from './currencySettingsStore'
 
 interface CurrencyState {
 	currency: CurrencyCode
@@ -30,29 +31,26 @@ function detectFromBrowser(): CurrencyCode {
 
 export const useCurrencyStore = create<CurrencyState>()(
 	persist(
-		(set, get) => ({
+		(set) => ({
 			currency: BASE_CURRENCY,
 			rates: [],
 			ratesLoaded: false,
 			lastSyncAt: null,
 			setCurrency: (currency) => {
-				if (SUPPORTED_CURRENCIES.includes(currency)) {
+				const { enabled } = getCurrencySettingsSnapshot()
+				if (enabled.includes(currency)) {
 					set({ currency })
 				}
 			},
 			setRates: (rates, lastSyncAt = null) => {
 				set({ rates, ratesLoaded: true, lastSyncAt })
 			},
-			detectDefaultCurrency: () => detectFromBrowser(),
+			detectDefaultCurrency: () =>
+				resolveInitialCurrency(detectFromBrowser(), getCurrencySettingsSnapshot()),
 		}),
 		{
 			name: 'jamhawi-currency-storage',
 			partialize: (state) => ({ currency: state.currency }),
-			onRehydrateStorage: () => (state) => {
-				if (state && !SUPPORTED_CURRENCIES.includes(state.currency)) {
-					state.currency = detectFromBrowser()
-				}
-			},
 		},
 	),
 )
@@ -62,5 +60,18 @@ export function initCurrencyPreference(): void {
 	const stored = localStorage.getItem('jamhawi-currency-storage')
 	if (!stored) {
 		store.setCurrency(store.detectDefaultCurrency())
+	}
+}
+
+/**
+ * Called after currency settings load: if the persisted/active currency is no
+ * longer enabled, move the visitor to the configured default.
+ */
+export function reconcileCurrencyWithSettings(): void {
+	const { setCurrency, currency } = useCurrencyStore.getState()
+	const next = reconcilePersistedCurrency(currency, getCurrencySettingsSnapshot())
+	if (next !== currency) {
+		// setCurrency validates against enabled; `next` is guaranteed enabled.
+		setCurrency(next)
 	}
 }
