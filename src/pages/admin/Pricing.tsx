@@ -7,11 +7,12 @@ import {
 	CheckCircle2,
 } from 'lucide-react'
 import { toast } from 'sonner'
-import type { CurrencyCode } from '../../types/pricing'
+import type { CurrencyCode, CurrencySettings } from '../../types/pricing'
 import {
 	BASE_CURRENCY,
 	OPTIONAL_CURRENCIES,
 	RATE_STALE_MS,
+	SUPPORTED_CURRENCIES,
 } from '../../lib/pricing/constants'
 import { formatPrice, formatRate } from '../../lib/pricing/formatPrice'
 import {
@@ -27,8 +28,10 @@ import {
 	getProductPrices,
 	saveProductPricing,
 } from '../../lib/pricing/productPriceService'
-import { listProducts, updateProduct } from '../../lib/api/admin'
+import { getCurrencySettings } from '../../lib/api/catalog'
+import { listProducts, updateProduct, updateCurrencySettings } from '../../lib/api/admin'
 import type { Product as ApiProduct } from '../../lib/api/catalog'
+import { useCurrencySettingsStore } from '../../store/currencySettingsStore'
 import { handleApiError, OperationType } from '../../lib/api/errors'
 import { useCurrencyStore } from '../../store/currencyStore'
 
@@ -39,6 +42,13 @@ type ManualPriceForm = Partial<Record<CurrencyCode, string>>
 export default function Pricing() {
 	const { t } = useTranslation()
 	const setRates = useCurrencyStore((s) => s.setRates)
+	const applyCurrencySettings = useCurrencySettingsStore((s) => s.setSettings)
+
+	const [enabledSet, setEnabledSet] = useState<Set<CurrencyCode>>(
+		new Set(SUPPORTED_CURRENCIES),
+	)
+	const [defaultCurrency, setDefaultCurrency] = useState<CurrencyCode>(BASE_CURRENCY)
+	const [savingCurrency, setSavingCurrency] = useState(false)
 
 	const [products, setProducts] = useState<Product[]>([])
 	const [selectedProductId, setSelectedProductId] = useState<string>('')
@@ -91,6 +101,22 @@ export default function Pricing() {
 	useEffect(() => {
 		loadRates()
 	}, [])
+
+	useEffect(() => {
+		getCurrencySettings()
+			.then((s) => {
+				setEnabledSet(new Set(s.enabled))
+				setDefaultCurrency(s.default)
+			})
+			.catch((e) => handleApiError(e, OperationType.GET, 'currency_settings'))
+	}, [])
+
+	useEffect(() => {
+		if (!enabledSet.has(defaultCurrency)) {
+			const firstEnabled = SUPPORTED_CURRENCIES.find((c) => enabledSet.has(c))
+			if (firstEnabled) setDefaultCurrency(firstEnabled)
+		}
+	}, [enabledSet, defaultCurrency])
 
 	useEffect(() => {
 		if (!selectedProductId) return
@@ -166,6 +192,43 @@ export default function Pricing() {
 		}
 	}
 
+	function toggleCurrencyEnabled(code: CurrencyCode) {
+		setEnabledSet((prev) => {
+			const next = new Set(prev)
+			if (next.has(code)) {
+				if (next.size === 1) return prev // never empty
+				next.delete(code)
+			} else {
+				next.add(code)
+			}
+			return next
+		})
+	}
+
+	async function handleSaveCurrencySettings() {
+		// Keep master order; ensure default is enabled.
+		const enabled = SUPPORTED_CURRENCIES.filter((c) => enabledSet.has(c))
+		if (enabled.length === 0) {
+			toast.error(t('at_least_one_currency'))
+			return
+		}
+		const def = enabled.includes(defaultCurrency) ? defaultCurrency : enabled[0]
+		const payload: CurrencySettings = { enabled, default: def }
+
+		setSavingCurrency(true)
+		try {
+			const saved = await updateCurrencySettings(payload)
+			applyCurrencySettings(saved)
+			setDefaultCurrency(saved.default)
+			toast.success(t('currency_settings_saved'))
+		} catch (e) {
+			const msg = e instanceof Error ? e.message : t('currency_settings_save_failed')
+			toast.error(msg)
+		} finally {
+			setSavingCurrency(false)
+		}
+	}
+
 	async function handleSavePricing() {
 		const aed = parseFloat(aedPrice)
 		if (!selectedProductId || Number.isNaN(aed) || aedPrice.trim() === '') {
@@ -212,6 +275,59 @@ export default function Pricing() {
 				</h1>
 				<p className="text-gray-500 mt-1">{t('pricing_management_desc')}</p>
 			</div>
+
+			{/* Currency Availability Section */}
+			<section className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+				<h2 className="text-lg font-semibold text-gray-900">
+					{t('currency_availability')}
+				</h2>
+				<p className="text-gray-500 text-sm mt-1 mb-4">
+					{t('currency_availability_desc')}
+				</p>
+
+				<div className="space-y-2 mb-4">
+					{SUPPORTED_CURRENCIES.map((code) => (
+						<label key={code} className="flex items-center gap-3 text-sm">
+							<input
+								type="checkbox"
+								checked={enabledSet.has(code)}
+								onChange={() => toggleCurrencyEnabled(code)}
+								className="w-4 h-4"
+							/>
+							<span className="font-medium">{code}</span>
+							{code === BASE_CURRENCY && (
+								<span className="text-xs text-gray-400">{t('aed_base_note')}</span>
+							)}
+						</label>
+					))}
+				</div>
+
+				<div className="mb-4 max-w-xs">
+					<label className="block text-sm font-medium text-gray-700 mb-1">
+						{t('default_currency')}
+					</label>
+					<select
+						value={defaultCurrency}
+						onChange={(e) => setDefaultCurrency(e.target.value as CurrencyCode)}
+						className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
+					>
+						{SUPPORTED_CURRENCIES.filter((c) => enabledSet.has(c)).map((code) => (
+							<option key={code} value={code}>
+								{code}
+							</option>
+						))}
+					</select>
+				</div>
+
+				<button
+					onClick={handleSaveCurrencySettings}
+					disabled={savingCurrency}
+					className="inline-flex items-center gap-2 px-5 py-2.5 bg-gray-900 hover:bg-gray-800 text-white rounded-lg text-sm font-medium disabled:opacity-50"
+				>
+					<Save className="w-4 h-4" />
+					{savingCurrency ? t('saving') : t('save')}
+				</button>
+			</section>
 
 			{/* Currency Rates Section */}
 			<section className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
