@@ -1,0 +1,106 @@
+{
+  "entities": {
+    "Product": {
+      "title": "Product",
+      "description": "A product for sale",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "nameAr": { "type": "string" },
+        "price": { "type": "number" },
+        "categoryId": { "type": "string" },
+        "image": { "type": "string" },
+        "description": { "type": "string" },
+        "isAvailable": { "type": "boolean" },
+        "stockCount": { "type": "number" },
+        "createdAt": { "type": "number" }
+      },
+      "required": ["name", "price", "categoryId", "isAvailable", "stockCount", "createdAt"]
+    },
+    "Category": {
+      "title": "Category",
+      "description": "Category for products",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "nameAr": { "type": "string" },
+        "createdAt": { "type": "number" }
+      },
+      "required": ["name", "createdAt"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "Customer order",
+      "type": "object",
+      "properties": {
+        "customerName": { "type": "string" },
+        "phone": { "type": "string" },
+        "address": { "type": "string" },
+        "notes": { "type": "string" },
+        "items": { "type": "array" },
+        "totalPrice": { "type": "number" },
+        "status": { "type": "string", "enum": ["pending", "shipped"] },
+        "createdAt": { "type": "number" }
+      },
+      "required": ["customerName", "phone", "address", "items", "totalPrice", "status", "createdAt"]
+    },
+    "Admin": {
+      "title": "Admin",
+      "description": "Admin user mapping",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string" },
+        "createdAt": { "type": "number" }
+      },
+      "required": ["email"]
+    },
+    "Setting": {
+      "title": "Setting",
+      "description": "Global Settings",
+      "type": "object",
+      "properties": {
+        "selectedTheme": { "type": "string" }
+      },
+      "required": ["selectedTheme"]
+    },
+    "Offer": {
+      "title": "Offer",
+      "description": "Promotional offers",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "discountPercentage": { "type": "number" },
+        "isActive": { "type": "boolean" },
+        "createdAt": { "type": "number" }
+      },
+      "required": ["title", "discountPercentage", "isActive", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/offers/{offerId}": {
+      "schema": { "$ref": "#/entities/Offer" },
+      "description": "Promotional offers"
+    },
+    "/settings/{settingId}": {
+      "schema": { "$ref": "#/entities/Setting" },
+      "description": "Global settings for the store"
+    },
+    "/products/{productId}": {
+      "schema": { "$ref": "#/entities/Product" },
+      "description": "All products available in the store"
+    },
+    "/categories/{categoryId}": {
+      "schema": { "$ref": "#/entities/Category" },
+      "description": "All product categories"
+    },
+    "/orders/{orderId}": {
+      "schema": { "$ref": "#/entities/Order" },
+      "description": "Stored customer orders"
+    },
+    "/admins/{adminId}": {
+      "schema": { "$ref": "#/entities/Admin" },
+      "description": "List of admin users authorized to manage store"
+    }
+  }
+}

@@ -1,0 +1,28 @@
+node scripts/detect-missing-i18n.mjs
+
+c:\Users\mazen\Downloads\firebase-tools-instant-win.exe
+ firebase deploy --only firestore:rules
+
+firebase deploy --only firestore:rules --project gen-lang-client-0858272451 --config "e:\mangingproject\jamhawyy\react-example\firebase.json"
+
+=== Deploying to 'gen-lang-client-0858272451'...
+
+i  deploying firestore
+i  firestore: ensuring required API firestore.googleapis.com is enabled...
+i  firestore: ensuring required API firestore.googleapis.com is enabled...
+i  cloud.firestore: checking firestore.rules for compilation errors...
++  cloud.firestore: rules file firestore.rules compiled successfully
+i  firestore: uploading rules firestore.rules...
++  firestore: released rules firestore.rules to cloud.firestore
+
++  Deploy complete!
+
+Project Console: https://console.firebase.google.com/project/gen-lang-client-0858272451/overview
+
+
+
+
+
+
+
+ firebase deploy --only firestore:rules

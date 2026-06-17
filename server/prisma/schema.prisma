@@ -1,0 +1,95 @@
+// Jamhawi — PostgreSQL schema (migrated off Firestore)
+// createdAt/paidAt/failedAt are DateTime in DB; the API serializes them to
+// epoch-ms numbers so the frontend's existing sorting/formatting is unchanged.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+}
+
+model Category {
+  id        String    @id @default(uuid())
+  name      String
+  nameAr    String?
+  image     String?
+  isHidden  Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  products  Product[]
+}
+
+model Product {
+  id          String   @id @default(uuid())
+  name        String
+  nameAr      String?
+  price       Float
+  categoryId  String
+  category    Category @relation(fields: [categoryId], references: [id])
+  isAvailable Boolean  @default(true)
+  stockCount  Int      @default(0)
+  image       String?
+  pricingType String?
+  description String?
+  createdAt   DateTime @default(now())
+
+  @@index([categoryId])
+}
+
+model Offer {
+  id                 String   @id @default(uuid())
+  title              String // used as the coupon code
+  description        String?
+  discountPercentage Float
+  isActive           Boolean  @default(true)
+  createdAt          DateTime @default(now())
+
+  @@index([title])
+}
+
+model Order {
+  id                       String      @id @default(uuid())
+  customerName             String
+  phone                    String
+  address                  String
+  notes                    String?
+  totalPrice               Float
+  paymentMethod            String // whatsapp | paymob_card | paymob_wallet
+  status                   String      @default("pending") // pending | shipped | paid | failed
+  paymentStatus            String? // paid | failed
+  paymobTransactionId      String?
+  paidAt                   DateTime?
+  failedAt                 DateTime?
+  couponCode               String?
+  couponDiscountPercentage Float?
+  createdAt                DateTime    @default(now())
+  items                    OrderItem[]
+
+  @@index([createdAt])
+}
+
+model OrderItem {
+  id        String @id @default(uuid())
+  orderId   String
+  order     Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String
+  name      String // snapshot at order time
+  price     Float // snapshot at order time
+  quantity  Int
+
+  @@index([orderId])
+}
+
+model Setting {
+  id    String @id // e.g. "theme"
+  value Json // e.g. { "selectedTheme": "..." }
+}

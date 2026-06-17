@@ -1,0 +1,68 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Inter:wght@400;500;600&family=Cairo:wght@400;600;700&display=swap');
+@import "tailwindcss";
+
+:root {
+  --color-primary: #1C1C1C;
+  --color-accent: #8C7A6B;
+}
+
+[data-theme="ocean"] {
+  --color-primary: #0F2C59;
+  --color-accent: #DAC0A3;
+}
+
+[data-theme="forest"] {
+  --color-primary: #1A3636;
+  --color-accent: #D6BD98;
+}
+
+[data-theme="sunset"] {
+  --color-primary: #451952;
+  --color-accent: #F39F5A;
+}
+
+@theme {
+  --font-serif: "Playfair Display", "Cairo", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-sans: "Inter", "Cairo", ui-sans-serif, system-ui, sans-serif;
+  
+  --color-luxury-bg: #FAF9F6;
+  --color-luxury-text: var(--color-primary);
+  --color-luxury-accent: var(--color-accent);
+}
+
+@layer base {
+  body {
+    @apply font-sans antialiased;
+    background: #131313;
+    color: #e5e2e1;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif font-medium tracking-tight;
+  }
+  
+  /* Mobile-specific improvements */
+  button, a[role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Prevent iOS zoom on input focus */
+  input, select, textarea {
+    font-size: 16px;
+  }
+  
+  /* Mobile-first media queries */
+  @media (max-width: 640px) {
+    .product-card {
+      padding: 0.5rem;
+    }
+    
+    .category-card {
+      padding: 1rem;
+    }
+  }
+}
+
+.mask-oval {
+  clip-path: ellipse(48% 50% at 50% 50%);
+}

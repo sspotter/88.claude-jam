@@ -1,0 +1,857 @@
+{
+  "summary": "160 missing keys detected",
+  "en": {
+    "admin_2": "Admin",
+    "notifications_2": "Notifications",
+    "loading_notifications_2": "Loading notifications...",
+    "all_caught_up_2": "All caught up!",
+    "no_new_notifications_2": "No new notifications",
+    "all_categories_3": "All Categories",
+    "all_products_2": "All Products",
+    "past_week_2": "Past Week",
+    "past_month_2": "Past Month",
+    "past_year_2": "Past Year",
+    "all_time_2": "All Time",
+    "no_category_sales_data_2": "No category sales data",
+    "no_products_sold_3": "No products sold.",
+    "all_products_performing_well_3": "All products performing well.",
+    "no_inventory_data_2": "No inventory data",
+    "no_categories_found_2": "No categories found.",
+    "loading_customers_2": "Loading customers...",
+    "all_statuses_2": "All Statuses",
+    "has_pending_2": "Has Pending",
+    "has_shipped_2": "Has Shipped",
+    "total_orders_2": "Total Orders",
+    "total_spent_2": "Total Spent",
+    "last_order_2": "Last Order",
+    "today_2": "Today",
+    "this_week_2": "This Week",
+    "this_month_2": "This Month",
+    "avg_order_value_3": "Avg. Order Value",
+    "customer_2": "Customer",
+    "date_2": "Date",
+    "total_3": "Total",
+    "status_3": "Status",
+    "action_2": "Action",
+    "loading_inventory_2": "Loading inventory...",
+    "product_2": "Product",
+    "price_3": "Price",
+    "stock_count_2": "Stock Count",
+    "email_3": "Email",
+    "password_3": "Password",
+    "or_continue_with_2": "Or continue with",
+    "loading_2": "Loading...",
+    "all_dates_2": "All Dates",
+    "export_xls_2": "Export XLS",
+    "import_xls_2": "Import XLS",
+    "stock_2": "Stock",
+    "no_data_found_2": "No data found.",
+    "simulate_data_2": "Simulate Data",
+    "import_a_report_or_generate_random_data__2": "Import a report or generate random data to view how analytics would change.",
+    "total_revenue_2": "Total Revenue",
+    "avg_order_value_4": "Avg Order Value",
+    "cart_abandonment_2": "Cart Abandonment",
+    "average_order_value_aov_trend_2": "Average Order Value (AOV) Trend",
+    "reveals_pricing_effectiveness_and_upsell_2": "Reveals pricing effectiveness and upsell success",
+    "no_data_3": "No data",
+    "revenue_by_channel_2": "Revenue by Channel",
+    "new_vs_returning_customers_revenue_2": "New vs Returning Customers Revenue",
+    "shows_whether_growth_is_from_acquisition_2": "Shows whether growth is from acquisition or retention",
+    "sales_over_time_3": "Sales Over Time",
+    "revenue_vs_orders_trend_2": "Revenue vs Orders Trend",
+    "conversion_funnel_2": "Conversion Funnel",
+    "cart_abandonment_rate_2": "Cart Abandonment Rate",
+    "one_of_the_biggest_hidden_revenue_leaks_2": "One of the biggest hidden revenue leaks",
+    "customer_behavior_2": "Customer Behavior",
+    "customer_lifetime_value_clv_distribution_2": "Customer Lifetime Value (CLV) Distribution",
+    "identifies_your_most_valuable_customer_s_2": "Identifies your most valuable customer segments",
+    "repeat_purchase_rate_2": "Repeat Purchase Rate",
+    "core_signal_of_brand_loyalty_2": "Core signal of brand loyalty",
+    "cohort_retention_chart_2": "Cohort Retention Chart",
+    "shows_how_long_customers_stick_around_si_2": "Shows how long customers stick around (simulated)",
+    "product_performance_deep_dive_2": "Product Performance Deep Dive",
+    "product_conversion_rate_2": "Product Conversion Rate",
+    "inventory_turnover_rate_2": "Inventory Turnover Rate",
+    "helps_avoid_overstocking_or_dead_invento_2": "Helps avoid overstocking or dead inventory",
+    "profit_margin_by_product_2": "Profit Margin by Product",
+    "top_products_revenue_2": "Top Products (Revenue)",
+    "no_products_sold_4": "No products sold",
+    "all_products_performing_well_4": "All products performing well",
+    "order_fulfillment_time_2": "Order Fulfillment Time",
+    "impacts_customer_satisfaction_directly_d_2": "Impacts customer satisfaction directly (days)",
+    "return_rate_by_product_2": "Return Rate by Product",
+    "flags_quality_or_expectation_issues_2": "Flags quality or expectation issues",
+    "geographic_insights_2": "Geographic Insights",
+    "sales_by_location_2": "Sales by Location",
+    "useful_for_targeting_ads_shipping_strate_2": "Useful for targeting ads, shipping strategies, and expansion",
+    "no_location_data_2": "No location data",
+    "time_based_patterns_2": "Time-Based Patterns",
+    "hourly_sales_heatmap_2": "Hourly Sales Heatmap",
+    "helps_optimize_ad_timing_and_promotions_2": "Helps optimize ad timing and promotions",
+    "seasonality_trends_2": "Seasonality Trends",
+    "critical_for_forecasting_and_inventory_p_2": "Critical for forecasting and inventory planning",
+    "marketing_performance_2": "Marketing Performance",
+    "customer_acquisition_cost_cac_2": "Customer Acquisition Cost (CAC)",
+    "keeps_ad_spend_sustainable_2": "Keeps ad spend sustainable",
+    "roas_by_campaign_2": "ROAS by Campaign",
+    "tells_you_which_campaigns_are_actually_p_2": "Tells you which campaigns are actually profitable",
+    "low_stock_forecast_2": "Low Stock Forecast",
+    "prevents_stockouts_before_they_happen_2": "Prevents stockouts before they happen",
+    "no_products_with_low_stock_2": "No products with low stock",
+    "sales_forecast_vs_actual_2": "Sales Forecast vs Actual",
+    "helps_planning_and_goal_tracking_2": "Helps planning and goal tracking",
+    "sales_by_day_of_week_2": "Sales by Day of Week",
+    "inventory_health_2": "Inventory Health",
+    "sales_by_category_2": "Sales by Category",
+    "no_category_data_2": "No category data",
+    "preparing_cinematic_experience_2": "Preparing Cinematic Experience",
+    "dates_2": "Dates",
+    "sweet_2": "Sweet",
+    "your_cart_is_waiting_to_be_filled_with_s": "Your cart is waiting to be filled with something extraordinary.",
+    "cart_2": "Cart",
+    "no_image": "No Image",
+    "subtotal_3": "Subtotal",
+    "total_due_2": "Total Due",
+    "our_collection": "Our Collection",
+    "categories_2": "Categories",
+    "no_categories_yet": "No categories yet",
+    "check_back_soon_for_our_curated_collecti": "Check back soon for our curated collections.",
+    "all_items_2": "All Items",
+    "in_stock_only_2": "In Stock Only",
+    "default_sorting_2": "Default Sorting",
+    "price_low_to_high_2": "Price: Low to High",
+    "price_high_to_low_2": "Price: High to Low",
+    "no_products_found": "No products found",
+    "try_adjusting_your_filters_or_check_back": "Try adjusting your filters or check back later.",
+    "in_stock": "In Stock",
+    "out_of_stock_2": "Out of Stock",
+    "in_stock_only_3": "In Stock only",
+    "jamhawi": "JAMHAWI",
+    "shop_now": "Shop Now",
+    "the_art_of_details": "The Art of Details",
+    "immersive": "Immersive",
+    "purity": "Purity",
+    "signature_harvest": "Signature Harvest",
+    "pure_origin": "Pure Origin",
+    "cultivated_in_the_world_renowned_mineral": "Cultivated in the world-renowned mineral-rich soil of ancient Saudi oases.",
+    "hand_selected": "Hand-Selected",
+    "each_date_undergoes_rigorous_inspection_": "Each date undergoes rigorous inspection to guarantee optimal texture, moisture, and sweetness.",
+    "jamhawi_gold": "JAMHAWI GOLD",
+    "limited_edition_harvest": "LIMITED EDITION HARVEST",
+    "est_1984": "EST. 1984",
+    "shop_by_category": "Shop by Category",
+    "our_heritage": "Our Heritage",
+    "a_legacy_of_pure_taste": "A Legacy of Pure Taste",
+    "browse_the_store": "Browse the Store",
+    "subscribe_to_the_club": "Subscribe to the Club",
+    "receive_exclusive_access_to_seasonal_har": "Receive exclusive access to seasonal harvests and limited edition collections.",
+    "join": "Join",
+    "privacy_policy": "Privacy Policy",
+    "terms_of_service": "Terms of Service",
+    "shop": "Shop",
+    "discover_more": "Discover More",
+    "scroll": "Scroll",
+    "a_symphony_of": "A Symphony of",
+    "est_1984_2": "Est. 1984",
+    "limited_edition_harvest_2": "Limited Edition Harvest",
+    "try_adjusting_your_search_or_filters": "Try adjusting your search or filters.",
+    "home": "Home",
+    "products_3": "Products",
+    "jamhawi_premium_collection": "Jamhawi Premium Collection",
+    "share_2": "Share",
+    "sourced_directly_from_our_premium_sustai": "Sourced directly from our premium sustainable farms. Naturally sweetened by solar energy, without any artificial additives.",
+    "you_may_also_like": "You May Also Like"
+  },
+  "ar": {
+    "admin_2": "",
+    "notifications_2": "",
+    "loading_notifications_2": "",
+    "all_caught_up_2": "",
+    "no_new_notifications_2": "",
+    "all_categories_3": "",
+    "all_products_2": "",
+    "past_week_2": "",
+    "past_month_2": "",
+    "past_year_2": "",
+    "all_time_2": "",
+    "no_category_sales_data_2": "",
+    "no_products_sold_3": "",
+    "all_products_performing_well_3": "",
+    "no_inventory_data_2": "",
+    "no_categories_found_2": "",
+    "loading_customers_2": "",
+    "all_statuses_2": "",
+    "has_pending_2": "",
+    "has_shipped_2": "",
+    "total_orders_2": "",
+    "total_spent_2": "",
+    "last_order_2": "",
+    "today_2": "",
+    "this_week_2": "",
+    "this_month_2": "",
+    "avg_order_value_3": "",
+    "customer_2": "",
+    "date_2": "",
+    "total_3": "",
+    "status_3": "",
+    "action_2": "",
+    "loading_inventory_2": "",
+    "product_2": "",
+    "price_3": "",
+    "stock_count_2": "",
+    "email_3": "",
+    "password_3": "",
+    "or_continue_with_2": "",
+    "loading_2": "",
+    "all_dates_2": "",
+    "export_xls_2": "",
+    "import_xls_2": "",
+    "stock_2": "",
+    "no_data_found_2": "",
+    "simulate_data_2": "",
+    "import_a_report_or_generate_random_data__2": "",
+    "total_revenue_2": "",
+    "avg_order_value_4": "",
+    "cart_abandonment_2": "",
+    "average_order_value_aov_trend_2": "",
+    "reveals_pricing_effectiveness_and_upsell_2": "",
+    "no_data_3": "",
+    "revenue_by_channel_2": "",
+    "new_vs_returning_customers_revenue_2": "",
+    "shows_whether_growth_is_from_acquisition_2": "",
+    "sales_over_time_3": "",
+    "revenue_vs_orders_trend_2": "",
+    "conversion_funnel_2": "",
+    "cart_abandonment_rate_2": "",
+    "one_of_the_biggest_hidden_revenue_leaks_2": "",
+    "customer_behavior_2": "",
+    "customer_lifetime_value_clv_distribution_2": "",
+    "identifies_your_most_valuable_customer_s_2": "",
+    "repeat_purchase_rate_2": "",
+    "core_signal_of_brand_loyalty_2": "",
+    "cohort_retention_chart_2": "",
+    "shows_how_long_customers_stick_around_si_2": "",
+    "product_performance_deep_dive_2": "",
+    "product_conversion_rate_2": "",
+    "inventory_turnover_rate_2": "",
+    "helps_avoid_overstocking_or_dead_invento_2": "",
+    "profit_margin_by_product_2": "",
+    "top_products_revenue_2": "",
+    "no_products_sold_4": "",
+    "all_products_performing_well_4": "",
+    "order_fulfillment_time_2": "",
+    "impacts_customer_satisfaction_directly_d_2": "",
+    "return_rate_by_product_2": "",
+    "flags_quality_or_expectation_issues_2": "",
+    "geographic_insights_2": "",
+    "sales_by_location_2": "",
+    "useful_for_targeting_ads_shipping_strate_2": "",
+    "no_location_data_2": "",
+    "time_based_patterns_2": "",
+    "hourly_sales_heatmap_2": "",
+    "helps_optimize_ad_timing_and_promotions_2": "",
+    "seasonality_trends_2": "",
+    "critical_for_forecasting_and_inventory_p_2": "",
+    "marketing_performance_2": "",
+    "customer_acquisition_cost_cac_2": "",
+    "keeps_ad_spend_sustainable_2": "",
+    "roas_by_campaign_2": "",
+    "tells_you_which_campaigns_are_actually_p_2": "",
+    "low_stock_forecast_2": "",
+    "prevents_stockouts_before_they_happen_2": "",
+    "no_products_with_low_stock_2": "",
+    "sales_forecast_vs_actual_2": "",
+    "helps_planning_and_goal_tracking_2": "",
+    "sales_by_day_of_week_2": "",
+    "inventory_health_2": "",
+    "sales_by_category_2": "",
+    "no_category_data_2": "",
+    "preparing_cinematic_experience_2": "",
+    "dates_2": "",
+    "sweet_2": "",
+    "your_cart_is_waiting_to_be_filled_with_s": "",
+    "cart_2": "",
+    "no_image": "",
+    "subtotal_3": "",
+    "total_due_2": "",
+    "our_collection": "",
+    "categories_2": "",
+    "no_categories_yet": "",
+    "check_back_soon_for_our_curated_collecti": "",
+    "all_items_2": "",
+    "in_stock_only_2": "",
+    "default_sorting_2": "",
+    "price_low_to_high_2": "",
+    "price_high_to_low_2": "",
+    "no_products_found": "",
+    "try_adjusting_your_filters_or_check_back": "",
+    "in_stock": "",
+    "out_of_stock_2": "",
+    "in_stock_only_3": "",
+    "jamhawi": "",
+    "shop_now": "",
+    "the_art_of_details": "",
+    "immersive": "",
+    "purity": "",
+    "signature_harvest": "",
+    "pure_origin": "",
+    "cultivated_in_the_world_renowned_mineral": "",
+    "hand_selected": "",
+    "each_date_undergoes_rigorous_inspection_": "",
+    "jamhawi_gold": "",
+    "limited_edition_harvest": "",
+    "est_1984": "",
+    "shop_by_category": "",
+    "our_heritage": "",
+    "a_legacy_of_pure_taste": "",
+    "browse_the_store": "",
+    "subscribe_to_the_club": "",
+    "receive_exclusive_access_to_seasonal_har": "",
+    "join": "",
+    "privacy_policy": "",
+    "terms_of_service": "",
+    "shop": "",
+    "discover_more": "",
+    "scroll": "",
+    "a_symphony_of": "",
+    "est_1984_2": "",
+    "limited_edition_harvest_2": "",
+    "try_adjusting_your_search_or_filters": "",
+    "home": "",
+    "products_3": "",
+    "jamhawi_premium_collection": "",
+    "share_2": "",
+    "sourced_directly_from_our_premium_sustai": "",
+    "you_may_also_like": ""
+  },
+  "locations": {
+    "admin_2": [
+      "components\\Layout.tsx:331"
+    ],
+    "notifications_2": [
+      "components\\NotificationsDropdown.tsx:224"
+    ],
+    "loading_notifications_2": [
+      "components\\NotificationsDropdown.tsx:243"
+    ],
+    "all_caught_up_2": [
+      "components\\NotificationsDropdown.tsx:248"
+    ],
+    "no_new_notifications_2": [
+      "components\\NotificationsDropdown.tsx:249"
+    ],
+    "all_categories_3": [
+      "pages\\admin\\Analytics.tsx:280",
+      "pages\\admin\\Simulators.tsx:810"
+    ],
+    "all_products_2": [
+      "pages\\admin\\Analytics.tsx:293",
+      "pages\\admin\\Simulators.tsx:823"
+    ],
+    "past_week_2": [
+      "pages\\admin\\Analytics.tsx:306",
+      "pages\\admin\\Orders.tsx:277",
+      "pages\\admin\\Simulators.tsx:836"
+    ],
+    "past_month_2": [
+      "pages\\admin\\Analytics.tsx:307",
+      "pages\\admin\\Orders.tsx:278",
+      "pages\\admin\\Simulators.tsx:837"
+    ],
+    "past_year_2": [
+      "pages\\admin\\Analytics.tsx:308",
+      "pages\\admin\\Simulators.tsx:838"
+    ],
+    "all_time_2": [
+      "pages\\admin\\Analytics.tsx:309",
+      "pages\\admin\\Dashboard.tsx:388",
+      "pages\\admin\\Simulators.tsx:839"
+    ],
+    "no_category_sales_data_2": [
+      "pages\\admin\\Analytics.tsx:541"
+    ],
+    "no_products_sold_3": [
+      "pages\\admin\\Analytics.tsx:574"
+    ],
+    "all_products_performing_well_3": [
+      "pages\\admin\\Analytics.tsx:606"
+    ],
+    "no_inventory_data_2": [
+      "pages\\admin\\Analytics.tsx:692",
+      "pages\\admin\\Simulators.tsx:1592"
+    ],
+    "no_categories_found_2": [
+      "pages\\admin\\Categories.tsx:351"
+    ],
+    "loading_customers_2": [
+      "pages\\admin\\Customers.tsx:91"
+    ],
+    "all_statuses_2": [
+      "pages\\admin\\Customers.tsx:105"
+    ],
+    "has_pending_2": [
+      "pages\\admin\\Customers.tsx:106"
+    ],
+    "has_shipped_2": [
+      "pages\\admin\\Customers.tsx:107"
+    ],
+    "total_orders_2": [
+      "pages\\admin\\Customers.tsx:132",
+      "pages\\admin\\Simulators.tsx:846"
+    ],
+    "total_spent_2": [
+      "pages\\admin\\Customers.tsx:133"
+    ],
+    "last_order_2": [
+      "pages\\admin\\Customers.tsx:134"
+    ],
+    "today_2": [
+      "pages\\admin\\Dashboard.tsx:385",
+      "pages\\admin\\Orders.tsx:276"
+    ],
+    "this_week_2": [
+      "pages\\admin\\Dashboard.tsx:386"
+    ],
+    "this_month_2": [
+      "pages\\admin\\Dashboard.tsx:387"
+    ],
+    "avg_order_value_3": [
+      "pages\\admin\\Dashboard.tsx:446"
+    ],
+    "customer_2": [
+      "pages\\admin\\Dashboard.tsx:585"
+    ],
+    "date_2": [
+      "pages\\admin\\Dashboard.tsx:586"
+    ],
+    "total_3": [
+      "pages\\admin\\Dashboard.tsx:587"
+    ],
+    "status_3": [
+      "pages\\admin\\Dashboard.tsx:588",
+      "pages\\admin\\Inventory.tsx:107"
+    ],
+    "action_2": [
+      "pages\\admin\\Dashboard.tsx:589"
+    ],
+    "loading_inventory_2": [
+      "pages\\admin\\Inventory.tsx:70"
+    ],
+    "product_2": [
+      "pages\\admin\\Inventory.tsx:105"
+    ],
+    "price_3": [
+      "pages\\admin\\Inventory.tsx:106"
+    ],
+    "stock_count_2": [
+      "pages\\admin\\Inventory.tsx:108"
+    ],
+    "email_3": [
+      "pages\\admin\\Login.tsx:136"
+    ],
+    "password_3": [
+      "pages\\admin\\Login.tsx:147"
+    ],
+    "or_continue_with_2": [
+      "pages\\admin\\Login.tsx:175"
+    ],
+    "loading_2": [
+      "pages\\admin\\Offers.tsx:116",
+      "pages\\admin\\Settings.tsx:122"
+    ],
+    "all_dates_2": [
+      "pages\\admin\\Orders.tsx:275"
+    ],
+    "export_xls_2": [
+      "pages\\admin\\Products.tsx:332"
+    ],
+    "import_xls_2": [
+      "pages\\admin\\Products.tsx:341"
+    ],
+    "stock_2": [
+      "pages\\admin\\Products.tsx:371"
+    ],
+    "no_data_found_2": [
+      "pages\\admin\\Products.tsx:755"
+    ],
+    "simulate_data_2": [
+      "pages\\admin\\Simulators.tsx:791"
+    ],
+    "import_a_report_or_generate_random_data__2": [
+      "pages\\admin\\Simulators.tsx:792"
+    ],
+    "total_revenue_2": [
+      "pages\\admin\\Simulators.tsx:850"
+    ],
+    "avg_order_value_4": [
+      "pages\\admin\\Simulators.tsx:856"
+    ],
+    "cart_abandonment_2": [
+      "pages\\admin\\Simulators.tsx:862"
+    ],
+    "average_order_value_aov_trend_2": [
+      "pages\\admin\\Simulators.tsx:883"
+    ],
+    "reveals_pricing_effectiveness_and_upsell_2": [
+      "pages\\admin\\Simulators.tsx:884"
+    ],
+    "no_data_3": [
+      "pages\\admin\\Simulators.tsx:1572"
+    ],
+    "revenue_by_channel_2": [
+      "pages\\admin\\Simulators.tsx:902"
+    ],
+    "new_vs_returning_customers_revenue_2": [
+      "pages\\admin\\Simulators.tsx:921"
+    ],
+    "shows_whether_growth_is_from_acquisition_2": [
+      "pages\\admin\\Simulators.tsx:922"
+    ],
+    "sales_over_time_3": [
+      "pages\\admin\\Simulators.tsx:952"
+    ],
+    "revenue_vs_orders_trend_2": [
+      "pages\\admin\\Simulators.tsx:970"
+    ],
+    "conversion_funnel_2": [
+      "pages\\admin\\Simulators.tsx:1005"
+    ],
+    "cart_abandonment_rate_2": [
+      "pages\\admin\\Simulators.tsx:1031"
+    ],
+    "one_of_the_biggest_hidden_revenue_leaks_2": [
+      "pages\\admin\\Simulators.tsx:1032"
+    ],
+    "customer_behavior_2": [
+      "pages\\admin\\Simulators.tsx:1068"
+    ],
+    "customer_lifetime_value_clv_distribution_2": [
+      "pages\\admin\\Simulators.tsx:1075"
+    ],
+    "identifies_your_most_valuable_customer_s_2": [
+      "pages\\admin\\Simulators.tsx:1076"
+    ],
+    "repeat_purchase_rate_2": [
+      "pages\\admin\\Simulators.tsx:1094"
+    ],
+    "core_signal_of_brand_loyalty_2": [
+      "pages\\admin\\Simulators.tsx:1095"
+    ],
+    "cohort_retention_chart_2": [
+      "pages\\admin\\Simulators.tsx:1119"
+    ],
+    "shows_how_long_customers_stick_around_si_2": [
+      "pages\\admin\\Simulators.tsx:1120"
+    ],
+    "product_performance_deep_dive_2": [
+      "pages\\admin\\Simulators.tsx:1150"
+    ],
+    "product_conversion_rate_2": [
+      "pages\\admin\\Simulators.tsx:1157"
+    ],
+    "inventory_turnover_rate_2": [
+      "pages\\admin\\Simulators.tsx:1181"
+    ],
+    "helps_avoid_overstocking_or_dead_invento_2": [
+      "pages\\admin\\Simulators.tsx:1182"
+    ],
+    "profit_margin_by_product_2": [
+      "pages\\admin\\Simulators.tsx:1200"
+    ],
+    "top_products_revenue_2": [
+      "pages\\admin\\Simulators.tsx:1219"
+    ],
+    "no_products_sold_4": [
+      "pages\\admin\\Simulators.tsx:1233"
+    ],
+    "all_products_performing_well_4": [
+      "pages\\admin\\Simulators.tsx:1252"
+    ],
+    "order_fulfillment_time_2": [
+      "pages\\admin\\Simulators.tsx:1273"
+    ],
+    "impacts_customer_satisfaction_directly_d_2": [
+      "pages\\admin\\Simulators.tsx:1274"
+    ],
+    "return_rate_by_product_2": [
+      "pages\\admin\\Simulators.tsx:1295"
+    ],
+    "flags_quality_or_expectation_issues_2": [
+      "pages\\admin\\Simulators.tsx:1296"
+    ],
+    "geographic_insights_2": [
+      "pages\\admin\\Simulators.tsx:1322"
+    ],
+    "sales_by_location_2": [
+      "pages\\admin\\Simulators.tsx:1327"
+    ],
+    "useful_for_targeting_ads_shipping_strate_2": [
+      "pages\\admin\\Simulators.tsx:1328"
+    ],
+    "no_location_data_2": [
+      "pages\\admin\\Simulators.tsx:1347"
+    ],
+    "time_based_patterns_2": [
+      "pages\\admin\\Simulators.tsx:1360"
+    ],
+    "hourly_sales_heatmap_2": [
+      "pages\\admin\\Simulators.tsx:1367"
+    ],
+    "helps_optimize_ad_timing_and_promotions_2": [
+      "pages\\admin\\Simulators.tsx:1368"
+    ],
+    "seasonality_trends_2": [
+      "pages\\admin\\Simulators.tsx:1407"
+    ],
+    "critical_for_forecasting_and_inventory_p_2": [
+      "pages\\admin\\Simulators.tsx:1408"
+    ],
+    "marketing_performance_2": [
+      "pages\\admin\\Simulators.tsx:1436"
+    ],
+    "customer_acquisition_cost_cac_2": [
+      "pages\\admin\\Simulators.tsx:1443"
+    ],
+    "keeps_ad_spend_sustainable_2": [
+      "pages\\admin\\Simulators.tsx:1444"
+    ],
+    "roas_by_campaign_2": [
+      "pages\\admin\\Simulators.tsx:1462"
+    ],
+    "tells_you_which_campaigns_are_actually_p_2": [
+      "pages\\admin\\Simulators.tsx:1463"
+    ],
+    "low_stock_forecast_2": [
+      "pages\\admin\\Simulators.tsx:1496"
+    ],
+    "prevents_stockouts_before_they_happen_2": [
+      "pages\\admin\\Simulators.tsx:1497"
+    ],
+    "no_products_with_low_stock_2": [
+      "pages\\admin\\Simulators.tsx:1518"
+    ],
+    "sales_forecast_vs_actual_2": [
+      "pages\\admin\\Simulators.tsx:1524"
+    ],
+    "helps_planning_and_goal_tracking_2": [
+      "pages\\admin\\Simulators.tsx:1525"
+    ],
+    "sales_by_day_of_week_2": [
+      "pages\\admin\\Simulators.tsx:1560"
+    ],
+    "inventory_health_2": [
+      "pages\\admin\\Simulators.tsx:1578"
+    ],
+    "sales_by_category_2": [
+      "pages\\admin\\Simulators.tsx:1598"
+    ],
+    "no_category_data_2": [
+      "pages\\admin\\Simulators.tsx:1612"
+    ],
+    "preparing_cinematic_experience_2": [
+      "pages\\Animation.tsx:149"
+    ],
+    "dates_2": [
+      "pages\\Animation.tsx:175"
+    ],
+    "sweet_2": [
+      "pages\\Animation.tsx:184"
+    ],
+    "your_cart_is_waiting_to_be_filled_with_s": [
+      "pages\\Cart.tsx:96"
+    ],
+    "cart_2": [
+      "pages\\Cart.tsx:371"
+    ],
+    "no_image": [
+      "pages\\Cart.tsx:392",
+      "pages\\Products.tsx:607"
+    ],
+    "subtotal_3": [
+      "pages\\Cart.tsx:482",
+      "pages\\Checkout.tsx:225"
+    ],
+    "total_due_2": [
+      "pages\\Cart.tsx:489"
+    ],
+    "our_collection": [
+      "pages\\Categories.tsx:330",
+      "pages\\Landing.tsx:487",
+      "pages\\Landing2.tsx:754"
+    ],
+    "categories_2": [
+      "pages\\Categories.tsx:331"
+    ],
+    "no_categories_yet": [
+      "pages\\Categories.tsx:369"
+    ],
+    "check_back_soon_for_our_curated_collecti": [
+      "pages\\Categories.tsx:370"
+    ],
+    "all_items_2": [
+      "pages\\CategoryView.tsx:374",
+      "pages\\Home.tsx:179",
+      "pages\\Products.tsx:548"
+    ],
+    "in_stock_only_2": [
+      "pages\\CategoryView.tsx:375",
+      "pages\\Products.tsx:549"
+    ],
+    "default_sorting_2": [
+      "pages\\CategoryView.tsx:382",
+      "pages\\Home.tsx:188",
+      "pages\\Products.tsx:557"
+    ],
+    "price_low_to_high_2": [
+      "pages\\CategoryView.tsx:383",
+      "pages\\Home.tsx:189"
+    ],
+    "price_high_to_low_2": [
+      "pages\\CategoryView.tsx:384",
+      "pages\\Home.tsx:190"
+    ],
+    "no_products_found": [
+      "pages\\CategoryView.tsx:404",
+      "pages\\Products.tsx:583"
+    ],
+    "try_adjusting_your_filters_or_check_back": [
+      "pages\\CategoryView.tsx:405"
+    ],
+    "in_stock": [
+      "pages\\CategoryView.tsx:448",
+      "pages\\ProductView.tsx:529"
+    ],
+    "out_of_stock_2": [
+      "pages\\CategoryView.tsx:450",
+      "pages\\ProductView.tsx:530"
+    ],
+    "in_stock_only_3": [
+      "pages\\Home.tsx:180"
+    ],
+    "jamhawi": [
+      "pages\\Landing.tsx:575",
+      "pages\\Landing2.tsx:836"
+    ],
+    "shop_now": [
+      "pages\\Landing.tsx:393",
+      "pages\\Landing2.tsx:652"
+    ],
+    "the_art_of_details": [
+      "pages\\Landing.tsx:418",
+      "pages\\Landing2.tsx:668"
+    ],
+    "immersive": [
+      "pages\\Landing.tsx:419"
+    ],
+    "purity": [
+      "pages\\Landing.tsx:419",
+      "pages\\Landing2.tsx:670"
+    ],
+    "signature_harvest": [
+      "pages\\Landing.tsx:434",
+      "pages\\Landing2.tsx:696"
+    ],
+    "pure_origin": [
+      "pages\\Landing.tsx:446",
+      "pages\\Landing2.tsx:713"
+    ],
+    "cultivated_in_the_world_renowned_mineral": [
+      "pages\\Landing.tsx:447",
+      "pages\\Landing2.tsx:714"
+    ],
+    "hand_selected": [
+      "pages\\Landing.tsx:453",
+      "pages\\Landing2.tsx:720",
+      "pages\\ProductView.tsx:527"
+    ],
+    "each_date_undergoes_rigorous_inspection_": [
+      "pages\\Landing.tsx:454",
+      "pages\\Landing2.tsx:721"
+    ],
+    "jamhawi_gold": [
+      "pages\\Landing.tsx:471",
+      "pages\\Landing2.tsx:736"
+    ],
+    "limited_edition_harvest": [
+      "pages\\Landing.tsx:473"
+    ],
+    "est_1984": [
+      "pages\\Landing.tsx:474",
+      "pages\\Landing2.tsx:739"
+    ],
+    "shop_by_category": [
+      "pages\\Landing.tsx:488",
+      "pages\\Landing2.tsx:755"
+    ],
+    "our_heritage": [
+      "pages\\Landing.tsx:553",
+      "pages\\Landing2.tsx:807"
+    ],
+    "a_legacy_of_pure_taste": [
+      "pages\\Landing.tsx:554",
+      "pages\\Landing2.tsx:808"
+    ],
+    "browse_the_store": [
+      "pages\\Landing.tsx:561"
+    ],
+    "subscribe_to_the_club": [
+      "pages\\Landing.tsx:565",
+      "pages\\Landing2.tsx:824"
+    ],
+    "receive_exclusive_access_to_seasonal_har": [
+      "pages\\Landing.tsx:566"
+    ],
+    "join": [
+      "pages\\Landing.tsx:569",
+      "pages\\Landing2.tsx:830"
+    ],
+    "privacy_policy": [
+      "pages\\Landing.tsx:577",
+      "pages\\Landing2.tsx:838"
+    ],
+    "terms_of_service": [
+      "pages\\Landing.tsx:578",
+      "pages\\Landing2.tsx:839"
+    ],
+    "shop": [
+      "pages\\Landing.tsx:579",
+      "pages\\Landing2.tsx:840"
+    ],
+    "discover_more": [
+      "pages\\Landing2.tsx:682"
+    ],
+    "scroll": [
+      "pages\\Landing2.tsx:685"
+    ],
+    "a_symphony_of": [
+      "pages\\Landing2.tsx:697"
+    ],
+    "est_1984_2": [
+      "pages\\Landing2.tsx:707"
+    ],
+    "limited_edition_harvest_2": [
+      "pages\\Landing2.tsx:738"
+    ],
+    "try_adjusting_your_search_or_filters": [
+      "pages\\Products.tsx:584"
+    ],
+    "home": [
+      "pages\\ProductView.tsx:482"
+    ],
+    "products_3": [
+      "pages\\ProductView.tsx:484"
+    ],
+    "jamhawi_premium_collection": [
+      "pages\\ProductView.tsx:517"
+    ],
+    "share_2": [
+      "pages\\ProductView.tsx:592"
+    ],
+    "sourced_directly_from_our_premium_sustai": [
+      "pages\\ProductView.tsx:614"
+    ],
+    "you_may_also_like": [
+      "pages\\ProductView.tsx:673"
+    ]
+  }
+}

@@ -1,0 +1,1602 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jamhawi Market - Storefront and Admin Mockup</title>
+  <meta
+    name="description"
+    content="A standalone HTML mockup showing a separated ecommerce storefront and admin dashboard design."
+  />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&family=Cairo:wght@400;600;700&display=swap');
+
+    :root {
+      --bg: #f7f1e8;
+      --bg-2: #f1e6d6;
+      --surface: #fffaf3;
+      --surface-2: rgba(255, 255, 255, 0.72);
+      --line: rgba(23, 32, 32, 0.09);
+      --text: #132122;
+      --muted: #667173;
+      --muted-2: #8a8f91;
+      --brand: #0f5257;
+      --brand-2: #153338;
+      --brand-soft: rgba(15, 82, 87, 0.1);
+      --accent: #d7a24d;
+      --accent-2: #ecbf73;
+      --success: #1e7a5a;
+      --danger: #b24939;
+      --shadow: 0 26px 80px rgba(17, 28, 30, 0.12);
+      --shadow-soft: 0 16px 40px rgba(17, 28, 30, 0.08);
+      --radius-xl: 34px;
+      --radius-lg: 24px;
+      --radius-md: 18px;
+      --radius-sm: 14px;
+      --container: 1480px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      font-family: "Inter", "Cairo", system-ui, sans-serif;
+      background:
+        radial-gradient(circle at 12% 10%, rgba(215, 162, 77, 0.2), transparent 25%),
+        radial-gradient(circle at 85% 18%, rgba(15, 82, 87, 0.14), transparent 26%),
+        radial-gradient(circle at 52% 92%, rgba(237, 193, 114, 0.18), transparent 23%),
+        linear-gradient(180deg, #fbf6ef 0%, #f6efe5 38%, #f4ecdf 100%);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.16) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.16) 1px, transparent 1px);
+      background-size: 32px 32px;
+      opacity: 0.12;
+      mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.65), transparent 92%);
+    }
+
+    .blob {
+      position: fixed;
+      inset: auto;
+      border-radius: 999px;
+      filter: blur(8px);
+      opacity: 0.35;
+      pointer-events: none;
+      animation: drift 14s ease-in-out infinite alternate;
+    }
+
+    .blob.one {
+      width: 300px;
+      height: 300px;
+      left: -70px;
+      top: 80px;
+      background: rgba(15, 82, 87, 0.18);
+    }
+
+    .blob.two {
+      width: 240px;
+      height: 240px;
+      right: -50px;
+      top: 260px;
+      background: rgba(215, 162, 77, 0.2);
+      animation-delay: -4s;
+    }
+
+    .blob.three {
+      width: 180px;
+      height: 180px;
+      left: 50%;
+      bottom: 14%;
+      background: rgba(236, 191, 115, 0.25);
+      animation-delay: -8s;
+    }
+
+    @keyframes drift {
+      from {
+        transform: translate3d(0, 0, 0) scale(1);
+      }
+      to {
+        transform: translate3d(18px, -22px, 0) scale(1.05);
+      }
+    }
+
+    .page {
+      position: relative;
+      width: min(var(--container), calc(100vw - 32px));
+      margin: 0 auto;
+      padding: 24px 0 40px;
+    }
+
+    .masthead {
+      position: relative;
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: calc(var(--radius-xl) + 10px);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(255, 248, 236, 0.94));
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .masthead::after {
+      content: "";
+      position: absolute;
+      inset: auto -8% -62% auto;
+      width: 360px;
+      height: 360px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(15, 82, 87, 0.08), transparent 65%);
+      pointer-events: none;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .brand-mark {
+      width: 58px;
+      height: 58px;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+      flex: 0 0 auto;
+      background: #0b0b0b;
+    }
+
+    .brand-mark img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .brand-copy {
+      display: grid;
+      gap: 4px;
+    }
+
+    .brand-copy strong {
+      font-size: 1.04rem;
+      letter-spacing: 0.02em;
+    }
+
+    .brand-copy span {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .route-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.68);
+      color: var(--text);
+      text-decoration: none;
+      font-size: 0.92rem;
+      font-weight: 600;
+      box-shadow: 0 6px 18px rgba(18, 30, 31, 0.04);
+    }
+
+    .chip.primary {
+      background: linear-gradient(180deg, var(--brand), var(--brand-2));
+      color: #fff;
+      border-color: transparent;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.12fr) minmax(320px, 0.88fr);
+      gap: 28px;
+      align-items: center;
+      margin-top: 24px;
+    }
+
+    .hero-copy {
+      padding: 18px 0 10px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(15, 82, 87, 0.08);
+      border: 1px solid rgba(15, 82, 87, 0.12);
+      color: var(--brand);
+      font-size: 0.9rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 5px rgba(215, 162, 77, 0.18);
+    }
+
+    h1,
+    h2,
+    h3 {
+      margin: 0;
+      font-family: "Playfair Display", "Cairo", Georgia, serif;
+      line-height: 0.95;
+      letter-spacing: -0.04em;
+    }
+
+    .hero-copy h1 {
+      margin-top: 18px;
+      font-size: clamp(3rem, 6vw, 5.8rem);
+      max-width: 12ch;
+    }
+
+    .hero-copy p {
+      margin: 20px 0 0;
+      max-width: 65ch;
+      color: var(--muted);
+      font-size: 1.05rem;
+      line-height: 1.7;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: 46px;
+      padding: 0 18px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 700;
+      transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease;
+      cursor: default;
+    }
+
+    .button:hover,
+    .chip:hover {
+      transform: translateY(-1px);
+    }
+
+    .button.primary {
+      background: linear-gradient(180deg, var(--brand), var(--brand-2));
+      color: white;
+      box-shadow: 0 18px 36px rgba(15, 82, 87, 0.24);
+    }
+
+    .button.secondary {
+      background: rgba(255, 255, 255, 0.8);
+      color: var(--text);
+      border-color: var(--line);
+    }
+
+    .route-note {
+      margin-top: 20px;
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      align-items: center;
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    .route-note strong {
+      color: var(--text);
+    }
+
+    .route-pills {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .route-pill {
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid var(--line);
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .split-legend {
+      margin-top: 20px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .legend-card {
+      border-radius: 24px;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(255, 251, 244, 0.92));
+      padding: 16px;
+      box-shadow: var(--shadow-soft);
+      min-height: 132px;
+    }
+
+    .legend-card .title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      font-size: 0.92rem;
+      letter-spacing: 0.02em;
+      margin-bottom: 10px;
+    }
+
+    .legend-card .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 6px rgba(215, 162, 77, 0.12);
+    }
+
+    .legend-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.55;
+    }
+
+    .frames {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+      margin-top: 22px;
+      align-items: start;
+    }
+
+    .frame {
+      border-radius: 32px;
+      border: 1px solid rgba(23, 32, 32, 0.08);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      background: var(--surface);
+      min-height: 100%;
+    }
+
+    .frame-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(250, 243, 231, 0.96));
+    }
+
+    .window-dots {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .window-dots span {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #d7d0c3;
+    }
+
+    .frame-badge {
+      padding: 9px 12px;
+      border-radius: 999px;
+      background: rgba(15, 82, 87, 0.08);
+      color: var(--brand);
+      font-size: 0.82rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .frame-badge.dark {
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .storefront {
+      padding: 20px;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(247, 241, 232, 0.96)),
+        radial-gradient(circle at 10% 12%, rgba(15, 82, 87, 0.06), transparent 26%);
+    }
+
+    .storefront-nav {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px;
+      border-radius: 24px;
+      background: linear-gradient(180deg, var(--brand), var(--brand-2));
+      color: white;
+      box-shadow: 0 18px 40px rgba(15, 82, 87, 0.24);
+    }
+
+    .storefront-nav .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: max-content;
+      font-weight: 800;
+    }
+
+    .storefront-nav .logo img {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      object-fit: cover;
+      background: #0a0a0a;
+    }
+
+    .search-bar {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.98);
+      color: var(--muted);
+      border-radius: 999px;
+      padding: 0 18px;
+      min-height: 48px;
+      box-shadow: inset 0 0 0 1px rgba(16, 26, 28, 0.06);
+    }
+
+    .search-bar input {
+      border: none;
+      outline: none;
+      background: transparent;
+      width: 100%;
+      color: var(--text);
+      font: inherit;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: max-content;
+    }
+
+    .nav-badge {
+      min-width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      font-size: 0.9rem;
+      font-weight: 800;
+    }
+
+    .promo {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: minmax(260px, 0.88fr) minmax(260px, 1.12fr);
+      align-items: stretch;
+      gap: 18px;
+    }
+
+    .promo-copy,
+    .promo-art {
+      border-radius: 28px;
+      overflow: hidden;
+      min-height: 220px;
+      position: relative;
+    }
+
+    .promo-copy {
+      background:
+        linear-gradient(135deg, #9e2d2d 0%, #7f1519 52%, #8e1f20 100%);
+      color: #ffe9c6;
+      padding: 28px;
+      display: grid;
+      align-content: center;
+      gap: 16px;
+    }
+
+    .promo-copy h2 {
+      font-size: clamp(1.9rem, 2.6vw, 3rem);
+      max-width: 10ch;
+      line-height: 0.98;
+    }
+
+    .promo-copy p {
+      margin: 0;
+      max-width: 32ch;
+      color: rgba(255, 237, 205, 0.82);
+      line-height: 1.6;
+    }
+
+    .promo-copy .cta {
+      width: fit-content;
+      padding: 14px 18px;
+      border-radius: 999px;
+      border: none;
+      background: #f0c04e;
+      color: #111;
+      font-weight: 800;
+      box-shadow: 0 12px 30px rgba(240, 192, 78, 0.22);
+    }
+
+    .promo-art {
+      background:
+        linear-gradient(180deg, rgba(250, 221, 186, 1), rgba(248, 211, 167, 0.95));
+      display: grid;
+      place-items: center;
+      padding: 20px;
+    }
+
+    .grain-stage {
+      width: 100%;
+      height: 100%;
+      border-radius: 26px;
+      background:
+        radial-gradient(circle at 20% 40%, rgba(113, 76, 46, 0.35), transparent 14%),
+        radial-gradient(circle at 48% 28%, rgba(220, 166, 42, 0.95), transparent 16%),
+        radial-gradient(circle at 67% 55%, rgba(219, 120, 52, 0.9), transparent 14%),
+        radial-gradient(circle at 77% 30%, rgba(128, 98, 56, 0.55), transparent 12%),
+        radial-gradient(circle at 50% 76%, rgba(125, 163, 84, 0.7), transparent 14%),
+        linear-gradient(180deg, rgba(255, 238, 209, 0.28), rgba(255, 238, 209, 0));
+      position: relative;
+      overflow: hidden;
+    }
+
+    .grain-stage::before,
+    .grain-stage::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+    }
+
+    .grain-stage::before {
+      background:
+        radial-gradient(circle at 52% 52%, rgba(97, 58, 33, 0.9) 0 14%, transparent 15%),
+        radial-gradient(circle at 37% 52%, rgba(153, 98, 53, 0.85) 0 13%, transparent 14%),
+        radial-gradient(circle at 68% 44%, rgba(149, 105, 72, 0.8) 0 11%, transparent 12%);
+      opacity: 0.55;
+      transform: scale(1.18);
+    }
+
+    .grain-stage::after {
+      background:
+        radial-gradient(circle at 21% 64%, rgba(95, 68, 40, 0.85) 0 9%, transparent 10%),
+        radial-gradient(circle at 61% 72%, rgba(111, 78, 49, 0.85) 0 8%, transparent 9%),
+        radial-gradient(circle at 80% 59%, rgba(132, 86, 47, 0.85) 0 8%, transparent 9%);
+      transform: scale(1.15);
+      opacity: 0.55;
+    }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+      align-items: center;
+    }
+
+    .filters .pill {
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: #fff;
+      border: 1px solid var(--line);
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text);
+      box-shadow: 0 10px 24px rgba(19, 33, 34, 0.04);
+    }
+
+    .filters .pill.active {
+      background: var(--brand);
+      color: #fff;
+      border-color: transparent;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 18px;
+      margin-top: 22px;
+      margin-bottom: 16px;
+    }
+
+    .section-head h3 {
+      font-size: clamp(1.6rem, 2vw, 2.2rem);
+      line-height: 1.05;
+      max-width: 14ch;
+    }
+
+    .section-head .sub {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .catalog {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .product-card {
+      border-radius: 24px;
+      background: linear-gradient(180deg, #ffffff, #fbf5ec);
+      border: 1px solid rgba(23, 32, 32, 0.06);
+      padding: 14px;
+      box-shadow: 0 12px 30px rgba(18, 31, 32, 0.06);
+      display: grid;
+      gap: 12px;
+    }
+
+    .product-art {
+      height: 145px;
+      border-radius: 20px;
+      position: relative;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 30% 28%, rgba(15, 82, 87, 0.16), transparent 24%),
+        linear-gradient(180deg, rgba(15, 82, 87, 0.08), rgba(215, 162, 77, 0.06));
+    }
+
+    .product-art::before {
+      content: "";
+      position: absolute;
+      inset: auto 15% 12% 18%;
+      height: 54%;
+      border-radius: 50% 50% 44% 44% / 48% 48% 52% 52%;
+      background: linear-gradient(180deg, rgba(231, 195, 114, 0.95), rgba(171, 117, 63, 0.95));
+      box-shadow:
+        -18px 18px 0 -10px rgba(140, 103, 58, 0.6),
+        22px 6px 0 -10px rgba(89, 107, 61, 0.45);
+    }
+
+    .product-card:nth-child(2) .product-art::before {
+      inset: auto 18% 12% 24%;
+      background: linear-gradient(180deg, #2f8c8d, #0c4353);
+    }
+
+    .product-card:nth-child(3) .product-art::before {
+      inset: auto 20% 10% 14%;
+      background: linear-gradient(180deg, #d0556b, #7d1e3a);
+      box-shadow:
+        -14px 14px 0 -10px rgba(148, 41, 74, 0.66),
+        20px 8px 0 -10px rgba(92, 15, 31, 0.35);
+    }
+
+    .product-card:nth-child(4) .product-art::before {
+      inset: auto 19% 10% 19%;
+      background: linear-gradient(180deg, #e3d6bf, #8f8069);
+      box-shadow:
+        -16px 16px 0 -10px rgba(181, 167, 146, 0.56),
+        20px 8px 0 -10px rgba(76, 67, 58, 0.36);
+    }
+
+    .product-card:nth-child(5) .product-art::before {
+      inset: auto 17% 9% 17%;
+      background: linear-gradient(180deg, #f0a97a, #b54a39);
+      box-shadow:
+        -20px 14px 0 -10px rgba(196, 88, 50, 0.55),
+        18px 10px 0 -10px rgba(95, 42, 31, 0.34);
+    }
+
+    .product-meta {
+      display: grid;
+      gap: 6px;
+    }
+
+    .product-meta strong {
+      font-size: 1rem;
+      line-height: 1.35;
+    }
+
+    .product-meta span {
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .price {
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+      font-family: "Playfair Display", "Cairo", serif;
+      font-size: 2rem;
+      letter-spacing: -0.04em;
+      color: var(--brand-2);
+      margin-top: 4px;
+    }
+
+    .price small {
+      font-size: 0.85rem;
+      color: var(--muted);
+      font-family: "Inter", "Cairo", sans-serif;
+      font-weight: 600;
+    }
+
+    .admin {
+      color: #f4efe8;
+      background:
+        linear-gradient(180deg, #16282b 0%, #102022 100%);
+      padding: 20px;
+    }
+
+    .admin .frame-head {
+      background: linear-gradient(180deg, rgba(18, 30, 31, 0.9), rgba(11, 20, 21, 0.98));
+      border-bottom-color: rgba(255, 255, 255, 0.08);
+      color: #f8f4ea;
+    }
+
+    .admin-shell {
+      display: grid;
+      grid-template-columns: 260px minmax(0, 1fr);
+      gap: 16px;
+      min-height: 100%;
+    }
+
+    .sidebar {
+      border-radius: 24px;
+      padding: 18px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.03));
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      display: grid;
+      gap: 18px;
+    }
+
+    .sidebar-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .sidebar-logo {
+      width: 48px;
+      height: 48px;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #0d0d0d;
+      flex: 0 0 auto;
+    }
+
+    .sidebar-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .sidebar-head strong {
+      display: block;
+      font-size: 1rem;
+    }
+
+    .sidebar-head span {
+      display: block;
+      color: rgba(255, 248, 236, 0.64);
+      font-size: 0.88rem;
+      margin-top: 4px;
+    }
+
+    .menu {
+      display: grid;
+      gap: 8px;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.03);
+      color: rgba(255, 250, 242, 0.9);
+      border: 1px solid transparent;
+      font-size: 0.92rem;
+      font-weight: 600;
+    }
+
+    .menu-item.active {
+      background: rgba(215, 162, 77, 0.14);
+      border-color: rgba(215, 162, 77, 0.22);
+      color: #fff;
+    }
+
+    .admin-content {
+      display: grid;
+      gap: 16px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .stat-card {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(248, 240, 228, 0.95));
+      color: var(--text);
+      border-radius: 22px;
+      padding: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.11);
+      box-shadow: 0 16px 34px rgba(4, 12, 13, 0.12);
+      min-height: 122px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .stat-card span {
+      color: var(--muted);
+      font-size: 0.88rem;
+      font-weight: 600;
+    }
+
+    .stat-card strong {
+      font-size: 2rem;
+      font-family: "Playfair Display", "Cairo", serif;
+      letter-spacing: -0.04em;
+      line-height: 1;
+    }
+
+    .stat-card small {
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .stat-card.highlight {
+      background: linear-gradient(180deg, rgba(215, 162, 77, 0.22), rgba(255, 251, 243, 0.96));
+      border-color: rgba(215, 162, 77, 0.18);
+    }
+
+    .admin-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 12px;
+    }
+
+    .panel {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(249, 244, 235, 0.96));
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 24px;
+      padding: 18px;
+      color: var(--text);
+      box-shadow: 0 16px 34px rgba(4, 12, 13, 0.1);
+    }
+
+    .panel h4 {
+      margin: 0 0 12px;
+      font-family: "Inter", "Cairo", sans-serif;
+      font-size: 1rem;
+      letter-spacing: 0.01em;
+    }
+
+    .attention-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .attention-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: rgba(15, 82, 87, 0.06);
+      border: 1px solid rgba(15, 82, 87, 0.1);
+    }
+
+    .attention-item strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 0.94rem;
+    }
+
+    .attention-item span {
+      color: var(--muted);
+      font-size: 0.86rem;
+    }
+
+    .status {
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 0.82rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .status.warn {
+      color: #7e4211;
+      background: rgba(215, 162, 77, 0.2);
+    }
+
+    .status.ok {
+      color: #145b42;
+      background: rgba(30, 122, 90, 0.14);
+    }
+
+    .table {
+      display: grid;
+      gap: 10px;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr 0.7fr 0.55fr;
+      gap: 10px;
+      align-items: center;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.78);
+      border: 1px solid rgba(19, 33, 34, 0.06);
+      font-size: 0.9rem;
+    }
+
+    .row.head {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding-top: 0;
+      padding-bottom: 2px;
+    }
+
+    .product-cell {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .product-thumb {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      background: linear-gradient(180deg, #e9dec7, #caa97b);
+      flex: 0 0 auto;
+    }
+
+    .product-thumb.alt {
+      background: linear-gradient(180deg, #3c8082, #113d43);
+    }
+
+    .product-thumb.soft {
+      background: linear-gradient(180deg, #d8747f, #7f2740);
+    }
+
+    .product-cell strong {
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .product-cell span {
+      color: var(--muted);
+      font-size: 0.84rem;
+    }
+
+    .reference {
+      margin-top: 22px;
+      padding: 22px;
+      border-radius: 30px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.6);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .reference-head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 14px;
+    }
+
+    .reference-head h3 {
+      font-size: clamp(1.45rem, 1.8vw, 2rem);
+      line-height: 1.05;
+    }
+
+    .reference-head p {
+      margin: 0;
+      max-width: 70ch;
+      color: var(--muted);
+      font-size: 0.94rem;
+      line-height: 1.6;
+    }
+
+    .thumbs {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .thumb {
+      border-radius: 22px;
+      overflow: hidden;
+      border: 1px solid rgba(19, 33, 34, 0.08);
+      background: #fff;
+      box-shadow: 0 12px 28px rgba(17, 28, 30, 0.08);
+      display: grid;
+    }
+
+    .thumb img {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+      display: block;
+    }
+
+    .thumb span {
+      padding: 12px 14px 14px;
+      font-size: 0.88rem;
+      color: var(--muted);
+      border-top: 1px solid rgba(19, 33, 34, 0.06);
+      background: linear-gradient(180deg, #fff, #faf3e7);
+    }
+
+    .footer-note {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 0.9rem;
+      text-align: center;
+      line-height: 1.7;
+    }
+
+    @media (max-width: 1320px) {
+      .catalog {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .thumbs {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 1100px) {
+      .hero,
+      .frames,
+      .promo,
+      .admin-shell,
+      .admin-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .split-legend {
+        grid-template-columns: 1fr;
+      }
+
+      .catalog {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 760px) {
+      .page {
+        width: min(100vw - 20px, var(--container));
+        padding-top: 12px;
+      }
+
+      .masthead,
+      .reference {
+        padding: 16px;
+        border-radius: 26px;
+      }
+
+      .hero-copy h1 {
+        font-size: clamp(2.4rem, 12vw, 4rem);
+      }
+
+      .hero-copy p,
+      .reference-head p {
+        font-size: 0.98rem;
+      }
+
+      .catalog,
+      .thumbs,
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .promo-copy,
+      .promo-art {
+        min-height: 180px;
+      }
+
+      .storefront-nav,
+      .section-head,
+      .reference-head,
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .search-bar {
+        width: 100%;
+      }
+
+      .nav-actions {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .row {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+
+      .row.head {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="blob one"></div>
+  <div class="blob two"></div>
+  <div class="blob three"></div>
+
+  <main class="page">
+    <section class="masthead">
+      <div class="topbar">
+        <a class="brand" href="#overview">
+          <div class="brand-mark">
+            <img src="src/assets/logo.jpeg" alt="Jamhawi brand mark" />
+          </div>
+          <div class="brand-copy">
+            <strong>Jamhawi Market</strong>
+            <span>One brand, two distinct experiences</span>
+          </div>
+        </a>
+
+        <div class="route-chips" aria-label="Routes">
+          <a class="chip primary" href="#storefront">Public storefront</a>
+          <a class="chip" href="#admin">Admin workspace</a>
+          <a class="chip" href="#reference">Reference moodboard</a>
+        </div>
+      </div>
+
+      <section class="hero" id="overview">
+        <div class="hero-copy">
+          <span class="eyebrow">New ecommerce structure</span>
+          <h1>Separate the shop for customers and the control room for the team.</h1>
+          <p>
+            This mockup turns the project into two focused experiences: a polished storefront for browsing
+            and buying, and a dense admin dashboard for managing products, orders, and inventory without
+            exposing internal tools to shoppers.
+          </p>
+
+          <div class="hero-actions">
+            <a class="button primary" href="#storefront">View storefront concept</a>
+            <a class="button secondary" href="#admin">View admin concept</a>
+          </div>
+
+          <div class="route-note">
+            <strong>Routing idea:</strong>
+            <div class="route-pills">
+              <span class="route-pill">/ -> public shopping</span>
+              <span class="route-pill">/admin -> staff dashboard</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="split-legend">
+          <article class="legend-card">
+            <div class="title"><span class="dot"></span>Shared brand system</div>
+            <p>
+              Keep the same logo, warm neutral palette, rounded surfaces, and gold accent so the app
+              feels like one polished product even though the routes are separated.
+            </p>
+          </article>
+
+          <article class="legend-card">
+            <div class="title"><span class="dot"></span>Customer experience</div>
+            <p>
+              Make the storefront fast to scan, with a strong search bar, editorial hero, product cards,
+              and simple filtering that feels familiar from the reference.
+            </p>
+          </article>
+
+          <article class="legend-card">
+            <div class="title"><span class="dot"></span>Admin experience</div>
+            <p>
+              Give staff a more data-dense workspace with clear metrics, stock alerts, order status, and
+              quick actions that do not overwhelm shoppers.
+            </p>
+          </article>
+        </div>
+      </section>
+    </section>
+
+    <section class="frames">
+      <article class="frame" id="storefront">
+        <div class="frame-head">
+          <div class="window-dots" aria-hidden="true">
+            <span></span><span></span><span></span>
+          </div>
+          <div class="frame-badge">Public storefront</div>
+        </div>
+
+        <div class="storefront">
+          <div class="storefront-nav">
+            <div class="logo">
+              <img src="src/assets/logo.jpeg" alt="Jamhawi logo" />
+              <span>Jamhawi</span>
+            </div>
+
+            <div class="search-bar" role="search" aria-label="Storefront search">
+              <span aria-hidden="true">Search</span>
+              <input
+                type="text"
+                value="Search products, collections, or brands"
+                aria-label="Search products"
+                readonly
+                spellcheck="false"
+              />
+            </div>
+
+            <div class="nav-actions" aria-label="Storefront actions">
+              <div class="nav-badge">2</div>
+              <div class="nav-badge">AED</div>
+              <div class="nav-badge">JM</div>
+            </div>
+          </div>
+
+          <div class="promo">
+            <div class="promo-copy">
+              <span class="eyebrow" style="background: rgba(255,255,255,0.12); color: #ffe8b0; border-color: rgba(255,255,255,0.12);">
+                Featured launch
+              </span>
+              <h2>Curated products, premium presentation.</h2>
+              <p>
+                A large hero gives the store an editorial feel, while the warm product art keeps the page
+                visually rich and easy to scan.
+              </p>
+              <button class="cta" type="button">Shop the drop</button>
+            </div>
+
+            <div class="promo-art" aria-hidden="true">
+              <div class="grain-stage"></div>
+            </div>
+          </div>
+
+          <div class="filters" aria-label="Storefront filters">
+            <span class="pill active">All categories</span>
+            <span class="pill">Home</span>
+            <span class="pill">Gift sets</span>
+            <span class="pill">Packaging</span>
+            <span class="pill">New arrivals</span>
+            <span class="pill">Best sellers</span>
+          </div>
+
+          <div class="section-head">
+            <div>
+              <h3>Featured product wall</h3>
+              <div class="sub">A clean grid with enough space for image, title, price, and quick context.</div>
+            </div>
+            <div class="sub">Sort by: Featured</div>
+          </div>
+
+          <div class="catalog">
+            <article class="product-card">
+              <div class="product-art"></div>
+              <div class="product-meta">
+                <strong>Signature candle bundle</strong>
+                <span>Warm vanilla, cedar, and amber</span>
+              </div>
+              <div class="price">AED 249 <small>/ set</small></div>
+            </article>
+
+            <article class="product-card">
+              <div class="product-art"></div>
+              <div class="product-meta">
+                <strong>Minimal desk organizer</strong>
+                <span>Matte clay finish, premium look</span>
+              </div>
+              <div class="price">AED 189 <small>/ each</small></div>
+            </article>
+
+            <article class="product-card">
+              <div class="product-art"></div>
+              <div class="product-meta">
+                <strong>Gift-ready tote collection</strong>
+                <span>Reusable, branded, shelf friendly</span>
+              </div>
+              <div class="price">AED 149 <small>/ each</small></div>
+            </article>
+
+            <article class="product-card">
+              <div class="product-art"></div>
+              <div class="product-meta">
+                <strong>Luxury wrapping kit</strong>
+                <span>Ribbons, cards, labels, and seals</span>
+              </div>
+              <div class="price">AED 99 <small>/ kit</small></div>
+            </article>
+
+            <article class="product-card">
+              <div class="product-art"></div>
+              <div class="product-meta">
+                <strong>Signature ceramic mug</strong>
+                <span>Soft matte glaze, everyday bestseller</span>
+              </div>
+              <div class="price">AED 129 <small>/ each</small></div>
+            </article>
+          </div>
+        </div>
+      </article>
+
+      <article class="frame" id="admin">
+        <div class="frame-head">
+          <div class="window-dots" aria-hidden="true">
+            <span></span><span></span><span></span>
+          </div>
+          <div class="frame-badge dark">Admin workspace</div>
+        </div>
+
+        <div class="admin">
+          <div class="admin-shell">
+            <aside class="sidebar">
+              <div class="sidebar-head">
+                <div class="sidebar-logo">
+                  <img src="src/assets/logo.jpeg" alt="Jamhawi logo" />
+                </div>
+                <div>
+                  <strong>Jamhawi Admin</strong>
+                  <span>Operations and commerce control</span>
+                </div>
+              </div>
+
+              <div class="menu" aria-label="Admin navigation">
+                <div class="menu-item active">Dashboard <span>01</span></div>
+                <div class="menu-item">Orders <span>18</span></div>
+                <div class="menu-item">Products <span>84</span></div>
+                <div class="menu-item">Inventory <span>Low stock</span></div>
+                <div class="menu-item">Customers <span>214</span></div>
+                <div class="menu-item">Offers <span>07</span></div>
+                <div class="menu-item">Settings <span>Theme</span></div>
+              </div>
+
+              <div class="panel" style="background: rgba(255,255,255,0.05); color: #fff; border-color: rgba(255,255,255,0.08);">
+                <h4 style="color:#fff;">Today at a glance</h4>
+                <div style="display:grid; gap:10px;">
+                  <div style="display:flex; justify-content:space-between; gap:12px;">
+                    <span style="color:rgba(255,255,255,0.68);">Pending orders</span>
+                    <strong>12</strong>
+                  </div>
+                  <div style="display:flex; justify-content:space-between; gap:12px;">
+                    <span style="color:rgba(255,255,255,0.68);">Low stock SKUs</span>
+                    <strong>5</strong>
+                  </div>
+                  <div style="display:flex; justify-content:space-between; gap:12px;">
+                    <span style="color:rgba(255,255,255,0.68);">Revenue</span>
+                    <strong>AED 24.8k</strong>
+                  </div>
+                </div>
+              </div>
+            </aside>
+
+            <section class="admin-content">
+              <div class="stats">
+                <article class="stat-card highlight">
+                  <span>Revenue today</span>
+                  <strong>AED 24.8k</strong>
+                  <small>Up 18 percent vs yesterday</small>
+                </article>
+
+                <article class="stat-card">
+                  <span>Orders in progress</span>
+                  <strong>18</strong>
+                  <small>Most recent orders need packing</small>
+                </article>
+
+                <article class="stat-card">
+                  <span>Low stock alerts</span>
+                  <strong>05</strong>
+                  <small>Restock high-demand products first</small>
+                </article>
+
+                <article class="stat-card">
+                  <span>Conversion rate</span>
+                  <strong>4.2%</strong>
+                  <small>Healthy traffic and product interest</small>
+                </article>
+              </div>
+
+              <div class="admin-grid">
+                <section class="panel">
+                  <h4>Attention needed now</h4>
+                  <div class="attention-list">
+                    <div class="attention-item">
+                      <div>
+                        <strong>Packaging kit nearly out of stock</strong>
+                        <span>Only 8 units left before the weekend rush</span>
+                      </div>
+                      <div class="status warn">Restock</div>
+                    </div>
+
+                    <div class="attention-item">
+                      <div>
+                        <strong>Three orders waiting for confirmation</strong>
+                        <span>Customers paid, but labels are not generated yet</span>
+                      </div>
+                      <div class="status ok">Review</div>
+                    </div>
+
+                    <div class="attention-item">
+                      <div>
+                        <strong>New launch collection ready to publish</strong>
+                        <span>Products uploaded, just need pricing approval</span>
+                      </div>
+                      <div class="status ok">Publish</div>
+                    </div>
+                  </div>
+                </section>
+
+                <section class="panel">
+                  <h4>Quick actions</h4>
+                  <div style="display:grid; gap:10px;">
+                    <div class="button primary" style="width:100%; justify-content:flex-start;">Add product</div>
+                    <div class="button secondary" style="width:100%; justify-content:flex-start;">Create offer</div>
+                    <div class="button secondary" style="width:100%; justify-content:flex-start;">Export orders</div>
+                  </div>
+                </section>
+              </div>
+
+              <section class="panel">
+                <h4>Orders and fulfillment</h4>
+                <div class="table">
+                  <div class="row head">
+                    <div>Product</div>
+                    <div>Customer / route</div>
+                    <div>Status</div>
+                    <div>Total</div>
+                  </div>
+
+                  <div class="row">
+                    <div class="product-cell">
+                      <div class="product-thumb"></div>
+                      <div>
+                        <strong>Signature candle bundle</strong>
+                        <span>Public storefront</span>
+                      </div>
+                    </div>
+                    <div>Amira K. / Cairo</div>
+                    <div><span class="status ok">Packed</span></div>
+                    <div>AED 498</div>
+                  </div>
+
+                  <div class="row">
+                    <div class="product-cell">
+                      <div class="product-thumb alt"></div>
+                      <div>
+                        <strong>Minimal desk organizer</strong>
+                        <span>Public storefront</span>
+                      </div>
+                    </div>
+                    <div>Youssef S. / Giza</div>
+                    <div><span class="status warn">Pending</span></div>
+                    <div>AED 189</div>
+                  </div>
+
+                  <div class="row">
+                    <div class="product-cell">
+                      <div class="product-thumb soft"></div>
+                      <div>
+                        <strong>Luxury wrapping kit</strong>
+                        <span>Admin promo order</span>
+                      </div>
+                    </div>
+                    <div>Team order / Store</div>
+                    <div><span class="status ok">Ready</span></div>
+                    <div>AED 99</div>
+                  </div>
+                </div>
+              </section>
+            </section>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="reference" id="reference">
+      <div class="reference-head">
+        <div>
+          <span class="eyebrow">Reference moodboard</span>
+          <h3 style="margin-top:14px;">The provided images were used as the visual cue for the header, hero, search, and product-card rhythm.</h3>
+        </div>
+        <p>
+          These previews are included here as a small moodboard so the concept can be checked against the
+          inspiration while still remaining a fresh, project-specific design.
+        </p>
+      </div>
+
+      <div class="thumbs">
+        <figure class="thumb">
+          <img src="futuredesign/image.png" alt="Reference design 1" />
+          <span>Header, hero, and product wall rhythm</span>
+        </figure>
+
+        <figure class="thumb">
+          <img src="futuredesign/image%20copy.png" alt="Reference design 2" />
+          <span>Search overlay and recommendation layout</span>
+        </figure>
+
+        <figure class="thumb">
+          <img src="futuredesign/image%20copy%202.png" alt="Reference design 3" />
+          <span>Compact suggestion panel and list density</span>
+        </figure>
+
+        <figure class="thumb">
+          <img src="futuredesign/image%20copy%203.png" alt="Reference design 4" />
+          <span>Product detail composition and spacing</span>
+        </figure>
+      </div>
+
+      <div class="footer-note">
+        Suggested next step: turn this concept into separate `/` and `/admin` routes in the app, then
+        reuse the same tokens, spacing, and card patterns across both pages.
+      </div>
+    </section>
+  </main>
+</body>
+</html>

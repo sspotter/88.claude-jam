@@ -1,0 +1,156 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() { return request.auth != null; }
+    function isAdmin() { return isSignedIn() && (request.auth.token.email == 'tony.m.arks1989xx@gmail.com' || request.auth.token.email == '123@123.com' || exists(/databases/$(database)/documents/admins/$(request.auth.uid))); }
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+
+    function isValidId(id) { return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); }
+
+    function isValidProduct(data) {
+      return data.keys().hasAll(['name', 'price', 'categoryId', 'isAvailable', 'stockCount', 'createdAt']) &&
+             data.keys().size() <= 10 &&
+             data.name is string && data.name.size() > 0 && data.name.size() <= 100 &&
+             data.get('nameAr', '') is string && data.get('nameAr', '').size() <= 100 &&
+             data.price is number && data.price >= 0 &&
+             data.get('pricingType', 'fixed') in ['fixed', 'per_kg'] &&
+             data.categoryId is string && data.categoryId.size() <= 128 &&
+             data.isAvailable is bool &&
+             data.stockCount is number && data.stockCount >= 0 &&
+             data.createdAt is number &&
+             data.get('image', '') is string && data.get('image', '').size() <= 2000 &&
+             data.get('description', '') is string && data.get('description', '').size() <= 1000;
+    }
+
+    function isValidCategory(data) {
+      return data.keys().hasAll(['name', 'createdAt']) &&
+             data.keys().size() <= 5 &&
+             data.name is string && data.name.size() > 0 && data.name.size() <= 100 &&
+             data.get('nameAr', '') is string && data.get('nameAr', '').size() <= 100 &&
+             data.get('image', '') is string && data.get('image', '').size() <= 2000 &&
+             data.get('isHidden', false) is bool &&
+             data.createdAt is number;
+    }
+
+    function isValidOrder(data) {
+      return data.keys().hasAll(['customerName', 'phone', 'address', 'items', 'totalPrice', 'status', 'createdAt']) &&
+             data.keys().size() <= 10 &&
+             data.customerName is string && data.customerName.size() > 0 && data.customerName.size() <= 100 &&
+             data.phone is string && data.phone.size() > 0 && data.phone.size() <= 20 &&
+             data.address is string && data.address.size() > 0 && data.address.size() <= 500 &&
+             data.get('notes', '') is string && data.get('notes', '').size() <= 1000 &&
+             data.get('currency', 'AED') in ['AED', 'USD', 'EGP', 'SAR', 'EUR'] &&
+             data.items is list && data.items.size() >= 0 && data.items.size() <= 50 &&
+             data.totalPrice is number && data.totalPrice >= 0 &&
+             data.status in ['pending', 'shipped'] &&
+             data.createdAt is number;
+    }
+
+    function isValidCurrencyRate(data) {
+      return data.keys().hasAll(['base_currency', 'target_currency', 'rate', 'provider', 'synced_at', 'created_at', 'updated_at']) &&
+             data.base_currency == 'AED' &&
+             data.target_currency in ['USD', 'EGP', 'SAR', 'EUR'] &&
+             data.rate is number && data.rate > 0 &&
+             data.provider is string && data.provider.size() <= 50 &&
+             data.synced_at is number &&
+             data.created_at is number &&
+             data.updated_at is number;
+    }
+
+    function isValidSyncMeta(data) {
+      return data.keys().hasAll(['last_sync_at', 'status']) &&
+             data.keys().size() <= 5 &&
+             data.last_sync_at is number &&
+             data.status in ['success', 'failed'] &&
+             data.get('provider', null) == null || data.provider is string &&
+             data.get('rates_updated', 0) is number &&
+             data.get('error', '') is string;
+    }
+
+    function isValidProductPrice(data) {
+      return data.keys().hasAll(['product_id', 'currency_code', 'price', 'is_manual', 'created_at', 'updated_at']) &&
+             data.product_id is string && data.product_id.size() <= 128 &&
+             data.currency_code in ['AED', 'USD', 'EGP', 'SAR', 'EUR'] &&
+             data.price is number && data.price >= 0 &&
+             data.is_manual is bool &&
+             data.created_at is number &&
+             data.updated_at is number;
+    }
+
+    function isValidSetting(data) {
+      return data.keys().hasOnly(['selectedTheme']) &&
+             data.keys().size() == 1 &&
+             data.selectedTheme is string && data.selectedTheme.size() <= 50;
+    }
+
+    function isValidOffer(data) {
+      return data.keys().hasAll(['title', 'discountPercentage', 'isActive', 'createdAt']) &&
+             data.keys().size() <= 6 &&
+             data.title is string && data.title.size() > 0 && data.title.size() <= 100 &&
+             data.get('description', '') is string && data.get('description', '').size() <= 500 &&
+             data.discountPercentage is number && data.discountPercentage >= 0 && data.discountPercentage <= 100 &&
+             data.isActive is bool &&
+             data.createdAt is number;
+    }
+
+    match /offers/{offerId} {
+      allow read: if true;
+      allow create: if isAdmin() && isValidId(offerId) && isValidOffer(incoming());
+      allow update: if isAdmin() && isValidId(offerId) && isValidOffer(incoming()) && incoming().createdAt == existing().createdAt;
+      allow delete: if isAdmin() && isValidId(offerId);
+    }
+
+    match /admins/{adminId} {
+      allow read: if isAdmin();
+      allow write: if false; 
+    }
+
+    match /settings/{settingId} {
+      allow read: if true;
+      allow write: if isAdmin() && isValidSetting(incoming());
+    }
+
+    match /products/{productId} {
+      allow read: if true;
+      allow create: if isAdmin() && isValidId(productId) && isValidProduct(incoming());
+      allow update: if isAdmin() && isValidId(productId) && isValidProduct(incoming()) && incoming().createdAt == existing().createdAt;
+      allow delete: if isAdmin() && isValidId(productId);
+    }
+
+    match /categories/{categoryId} {
+      allow read: if true;
+      allow create: if isAdmin() && isValidId(categoryId) && isValidCategory(incoming());
+      allow update: if isAdmin() && isValidId(categoryId) && isValidCategory(incoming()) && incoming().createdAt == existing().createdAt;
+      allow delete: if isAdmin() && isValidId(categoryId);
+    }
+
+    match /currency_rates/{rateId} {
+      allow read: if true;
+      allow create, update: if isAdmin() && isValidId(rateId) &&
+        (rateId == '_sync_meta' ? isValidSyncMeta(incoming()) : isValidCurrencyRate(incoming()));
+      allow delete: if isAdmin() && isValidId(rateId);
+    }
+
+    match /product_prices/{priceId} {
+      allow read: if true;
+      allow create, update: if isAdmin() && isValidId(priceId) && isValidProductPrice(incoming());
+      allow delete: if isAdmin() && isValidId(priceId);
+    }
+
+    match /orders/{orderId} {
+      allow read: if isAdmin();
+      allow create: if isValidId(orderId) && isValidOrder(incoming()) && incoming().status == 'pending';
+      allow update: if isAdmin() && isValidId(orderId) && isValidOrder(incoming()) && 
+                    incoming().diff(existing()).affectedKeys().hasOnly(['status']) &&
+                    incoming().createdAt == existing().createdAt &&
+                    existing().status == 'pending' &&
+                    incoming().status == 'shipped';
+      allow delete: if isAdmin();
+    }
+  }
+}

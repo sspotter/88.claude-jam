@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frame Loading Test</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 20px; 
+            background: #f0f0f0; 
+        }
+        .test-container { 
+            background: white; 
+            padding: 20px; 
+            border-radius: 10px; 
+            margin-bottom: 20px; 
+        }
+        .frame-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); 
+            gap: 10px; 
+            margin-top: 20px; 
+        }
+        .frame-item img { 
+            width: 100%; 
+            height: 100px; 
+            object-fit: cover; 
+            border: 2px solid #ddd; 
+            border-radius: 5px; 
+        }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h1>Frame Loading Test</h1>
+    <div class="test-container">
+        <h2>Test Individual Frames</h2>
+        <div id="status">Testing frame loading...</div>
+        <div class="frame-grid" id="frameGrid"></div>
+    </div>
+
+    <script>
+        async function testFrameLoading() {
+            const frameGrid = document.getElementById('frameGrid');
+            const status = document.getElementById('status');
+            const testFrames = [1, 50, 100, 150, 200, 240]; // Test various frames
+            let loaded = 0;
+            let errors = 0;
+
+            status.innerHTML = `Testing ${testFrames.length} frames...`;
+
+            for (const frameNum of testFrames) {
+                const frameNumber = frameNum.toString().padStart(3, '0');
+                const img = new Image();
+                const frameItem = document.createElement('div');
+                frameItem.className = 'frame-item';
+                frameItem.innerHTML = `<p>Frame ${frameNumber}</p>`;
+                frameGrid.appendChild(frameItem);
+
+                img.onload = function() {
+                    loaded++;
+                    frameItem.innerHTML += `<img src="${img.src}" alt="Frame ${frameNumber}" />`;
+                    frameItem.innerHTML += `<p class="success">✅ Loaded</p>`;
+                    updateStatus();
+                };
+
+                img.onerror = function() {
+                    errors++;
+                    frameItem.innerHTML += `<p class="error">❌ Failed</p>`;
+                    updateStatus();
+                };
+
+                // Add cache busting
+                img.src = `/assets/animations/frames/ezgif-frame-${frameNumber}.jpg?t=${Date.now()}`;
+            }
+
+            function updateStatus() {
+                status.innerHTML = `Loaded: ${loaded}/${testFrames.length} | Errors: ${errors}`;
+                if (loaded + errors === testFrames.length) {
+                    if (errors === 0) {
+                        status.innerHTML += ' 🎉 All frames loaded successfully!';
+                    } else {
+                        status.innerHTML += ' ⚠️ Some frames failed to load';
+                    }
+                }
+            }
+        }
+
+        // Start testing when page loads
+        window.addEventListener('load', testFrameLoading);
+    </script>
+</body>
+</html>

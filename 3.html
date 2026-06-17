@@ -1,0 +1,816 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jamhawi - Product Detail Mockup</title>
+  <meta name="description" content="Standalone mockup for the product detail page inspired by the future design reference." />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap');
+
+    :root {
+      --bg: #f4f5f3;
+      --surface: #ffffff;
+      --panel: #f2f3f1;
+      --panel-2: #f6f7f5;
+      --line: rgba(11, 31, 31, 0.08);
+      --text: #082b2e;
+      --muted: #667376;
+      --muted-2: #879093;
+      --brand: #0b5a5c;
+      --brand-2: #073f43;
+      --accent: #bfe862;
+      --gold: #ffc84f;
+      --warning: #ff5b45;
+      --shadow: 0 24px 70px rgba(16, 31, 33, 0.12);
+      --shadow-soft: 0 14px 38px rgba(16, 31, 33, 0.08);
+      --radius-xl: 28px;
+      --radius-lg: 22px;
+      --radius-md: 16px;
+      --radius-sm: 12px;
+      --max: 1360px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: "Inter", system-ui, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 14% 12%, rgba(11, 90, 92, 0.06), transparent 20%),
+        radial-gradient(circle at 85% 18%, rgba(191, 232, 98, 0.09), transparent 20%),
+        linear-gradient(180deg, #f8f9f6 0%, #f2f4f1 100%);
+      min-height: 100vh;
+    }
+
+    .page {
+      width: min(var(--max), calc(100vw - 30px));
+      margin: 0 auto;
+      padding: 14px 0 36px;
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: auto minmax(340px, 1fr) auto;
+      gap: 16px;
+      align-items: center;
+      padding: 14px 18px;
+      border-radius: 16px;
+      background: linear-gradient(180deg, var(--brand), var(--brand-2));
+      box-shadow: var(--shadow);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #fff;
+      min-width: max-content;
+    }
+
+    .brand img {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      object-fit: cover;
+      background: #080808;
+    }
+
+    .brand strong {
+      font-size: 1rem;
+      letter-spacing: 0.01em;
+    }
+
+    .search {
+      height: 40px;
+      border-radius: 999px;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 14px;
+      box-shadow: inset 0 0 0 1px rgba(8, 43, 46, 0.08);
+    }
+
+    .search input {
+      width: 100%;
+      border: 0;
+      outline: 0;
+      font: inherit;
+      color: var(--text);
+      background: transparent;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #fff;
+      min-width: max-content;
+    }
+
+    .mini {
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      background: rgba(255, 255, 255, 0.11);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      font-size: 0.86rem;
+      font-weight: 800;
+    }
+
+    .announcement {
+      margin-left: 8px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.9);
+      white-space: nowrap;
+    }
+
+    .announcement b {
+      color: #ffd760;
+    }
+
+    .content {
+      padding-top: 26px;
+    }
+
+    .title {
+      margin: 8px 0 22px;
+      font-family: "Playfair Display", Georgia, serif;
+      font-size: clamp(2rem, 2.6vw, 3rem);
+      line-height: 1.03;
+      letter-spacing: -0.04em;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(360px, 0.95fr);
+      gap: 38px;
+      align-items: start;
+    }
+
+    .gallery {
+      display: grid;
+      gap: 18px;
+    }
+
+    .image-card {
+      position: relative;
+      min-height: 394px;
+      border-radius: 26px;
+      background: linear-gradient(180deg, #f3f4f2, #eceeea);
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(11, 31, 31, 0.04);
+      overflow: hidden;
+      display: grid;
+      place-items: center;
+      padding: 28px;
+    }
+
+    .delivery {
+      position: absolute;
+      top: 0;
+      left: 0;
+      padding: 10px 20px;
+      border-radius: 0 0 18px 0;
+      color: #fff;
+      background: linear-gradient(180deg, #144b8d, #13397d);
+      font-size: 0.92rem;
+      font-weight: 700;
+      box-shadow: 0 12px 20px rgba(17, 42, 87, 0.18);
+    }
+
+    .bag {
+      width: min(320px, 74%);
+      aspect-ratio: 0.76 / 1;
+      position: relative;
+      transform: translateY(8px);
+      filter: drop-shadow(0 26px 30px rgba(89, 45, 25, 0.28));
+    }
+
+    .bag .front,
+    .bag .side,
+    .bag .top {
+      position: absolute;
+      background: linear-gradient(180deg, #f6c7a2 0%, #c15d31 14%, #b3542a 100%);
+      border: 1px solid rgba(73, 34, 15, 0.22);
+    }
+
+    .bag .front {
+      inset: 10% 18% 2% 0;
+      border-radius: 18px 18px 12px 12px;
+      transform: skewY(-2deg);
+      overflow: hidden;
+    }
+
+    .bag .side {
+      inset: 10% 0 2% 67%;
+      border-radius: 0 18px 12px 0;
+      background: linear-gradient(180deg, #f0c199 0%, #aa4a24 12%, #8d3417 100%);
+      transform: skewY(5deg);
+    }
+
+    .bag .top {
+      inset: 0 14% 82% 10%;
+      border-radius: 18px 18px 8px 8px;
+      background: linear-gradient(180deg, #ea8b54, #df7641);
+      transform: skewX(-10deg);
+    }
+
+    .bag .front::before {
+      content: "";
+      position: absolute;
+      inset: 6% 8% 10% 8%;
+      border-radius: 14px;
+      background:
+        linear-gradient(180deg, #134f4b 0 25%, #da8d33 25% 28%, #f2e1bc 28% 42%, #bb4c31 42% 46%, #f4efe4 46% 100%);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+    }
+
+    .bag .front::after {
+      content: "ORGANIC FLOUR";
+      position: absolute;
+      left: 50%;
+      bottom: 28%;
+      transform: translateX(-50%);
+      padding: 8px 10px;
+      border-radius: 8px;
+      background: rgba(173, 38, 42, 0.96);
+      color: #fff;
+      letter-spacing: 0.08em;
+      font-size: 0.78rem;
+      font-weight: 800;
+      box-shadow: 0 6px 14px rgba(150, 41, 41, 0.3);
+    }
+
+    .bag .label {
+      position: absolute;
+      inset: 24% 16% auto 16%;
+      color: #0c433e;
+      text-align: center;
+      font-size: 0.9rem;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+    }
+
+    .bag .label .big {
+      display: block;
+      margin-top: 8px;
+      color: #0e513f;
+      font-family: "Playfair Display", Georgia, serif;
+      font-size: clamp(1.6rem, 4vw, 2.6rem);
+      line-height: 0.95;
+      text-transform: uppercase;
+      letter-spacing: 0.01em;
+    }
+
+    .bag .brand-tag {
+      position: absolute;
+      inset: 14px auto auto 18px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.92);
+      color: #b33e38;
+      font-size: 0.72rem;
+      font-weight: 800;
+    }
+
+    .bag .grain {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: rgba(98, 60, 26, 0.18);
+      filter: blur(0.2px);
+    }
+
+    .bag .grain.g1 { top: 28%; left: 18%; }
+    .bag .grain.g2 { top: 34%; right: 18%; }
+    .bag .grain.g3 { top: 50%; left: 26%; width: 8px; height: 8px; }
+    .bag .grain.g4 { top: 56%; right: 28%; width: 9px; height: 9px; }
+    .bag .grain.g5 { top: 66%; left: 32%; width: 8px; height: 8px; }
+
+    .thumbs {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .thumb {
+      height: 72px;
+      border-radius: 14px;
+      background: linear-gradient(180deg, #f5f5f2, #eceeea);
+      border: 1px solid rgba(11, 31, 31, 0.05);
+      box-shadow: 0 10px 22px rgba(16, 31, 33, 0.05);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .thumb::before {
+      content: "";
+      position: absolute;
+      inset: 16px 20px 8px 20px;
+      border-radius: 10px;
+      background:
+        linear-gradient(180deg, #ea8a53, #c05b30 30%, #b35228 100%);
+      transform: skewY(-6deg);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.14);
+    }
+
+    .thumb:nth-child(2)::before {
+      inset: 12px 28px 10px 28px;
+      transform: skewY(1deg);
+      background: linear-gradient(180deg, #ebd6b8, #b87d4d 58%, #94461f 100%);
+    }
+
+    .thumb:nth-child(3)::before {
+      inset: 10px 18px 8px 18px;
+      background: linear-gradient(180deg, #f3b28a, #d46536 35%, #9f431f 100%);
+    }
+
+    .thumb:nth-child(4)::before {
+      inset: 14px 24px 8px 24px;
+      background: linear-gradient(180deg, #f0c8a3, #b85d2c 32%, #8d3418 100%);
+    }
+
+    .thumb:nth-child(5)::before {
+      inset: 12px 25px 8px 25px;
+      background: linear-gradient(180deg, #f1d7bc, #a3552c 30%, #76321a 100%);
+    }
+
+    .details {
+      padding-top: 6px;
+    }
+
+    .countdown {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--warning);
+      font-weight: 700;
+      font-size: 0.98rem;
+      margin-bottom: 12px;
+    }
+
+    .countdown .clock {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 2px solid var(--warning);
+      position: relative;
+      flex: 0 0 auto;
+    }
+
+    .countdown .clock::before,
+    .countdown .clock::after {
+      content: "";
+      position: absolute;
+      background: var(--warning);
+      left: 50%;
+      top: 50%;
+      transform-origin: left top;
+    }
+
+    .countdown .clock::before {
+      width: 5px;
+      height: 2px;
+      transform: translate(-1px, -1px) rotate(0deg);
+    }
+
+    .countdown .clock::after {
+      width: 2px;
+      height: 6px;
+      transform: translate(-1px, -5px) rotate(0deg);
+    }
+
+    .vendor {
+      color: var(--muted);
+      font-size: 0.94rem;
+      margin-bottom: 8px;
+    }
+
+    .product-name {
+      margin: 0;
+      font-family: "Playfair Display", Georgia, serif;
+      font-size: clamp(2rem, 2.2vw, 3.4rem);
+      line-height: 1.04;
+      letter-spacing: -0.04em;
+      max-width: 12ch;
+    }
+
+    .rating {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 10px;
+      color: var(--text);
+      flex-wrap: wrap;
+    }
+
+    .rating .star {
+      color: #ffb625;
+      font-size: 1rem;
+    }
+
+    .rating small {
+      color: var(--muted);
+      text-decoration: underline;
+    }
+
+    .price {
+      margin-top: 10px;
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      font-family: "Playfair Display", Georgia, serif;
+      font-size: 3rem;
+      line-height: 1;
+      letter-spacing: -0.05em;
+    }
+
+    .price small {
+      font-family: "Inter", system-ui, sans-serif;
+      font-size: 0.9rem;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .divider {
+      margin: 22px 0 20px;
+      height: 1px;
+      background: rgba(11, 31, 31, 0.08);
+    }
+
+    .klarna {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: #fff;
+      border: 1px solid rgba(11, 31, 31, 0.06);
+      width: min(100%, 330px);
+      box-shadow: 0 8px 24px rgba(16, 31, 33, 0.05);
+    }
+
+    .klarna .mark {
+      border-radius: 10px;
+      padding: 8px 10px;
+      background: #ffc0d3;
+      font-weight: 800;
+      color: #101010;
+      font-size: 0.95rem;
+      flex: 0 0 auto;
+    }
+
+    .klarna .copy {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.45;
+    }
+
+    .klarna b { color: var(--text); }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: 46px;
+      padding: 0 18px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      font: inherit;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: default;
+      transition: transform 180ms ease, box-shadow 180ms ease;
+    }
+
+    .btn:hover { transform: translateY(-1px); }
+
+    .btn.light {
+      background: #eef3e2;
+      color: #15201d;
+      border-color: rgba(11, 31, 31, 0.04);
+    }
+
+    .btn.green {
+      background: linear-gradient(180deg, #b7e859, #a8de42);
+      color: #163112;
+      min-width: 140px;
+    }
+
+    .secondary-actions {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+      color: var(--text);
+      font-size: 0.92rem;
+    }
+
+    .secondary-actions span {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #0b2a2c;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .meta-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+      margin-top: 22px;
+      flex-wrap: wrap;
+    }
+
+    .icons {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .ico {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 800;
+    }
+
+    .ico.i1 { background: #7b305a; }
+    .ico.i2 { background: #cf6b14; }
+    .ico.i3 { background: #0d4b89; }
+
+    .sold {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #9e2618;
+      font-weight: 700;
+      font-size: 0.94rem;
+      white-space: nowrap;
+    }
+
+    .sold::before {
+      content: "";
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #c53d2c;
+      box-shadow: 0 0 0 6px rgba(197, 61, 44, 0.12);
+    }
+
+    .sku {
+      margin-top: 18px;
+      color: var(--text);
+      font-size: 0.94rem;
+      line-height: 1.7;
+    }
+
+    .sku strong { font-weight: 800; }
+
+    .sku span {
+      color: var(--muted);
+    }
+
+    .description {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.65;
+      max-width: 62ch;
+    }
+
+    .floating {
+      position: fixed;
+      left: 26px;
+      bottom: 22px;
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--line);
+      z-index: 3;
+      overflow: hidden;
+      display: grid;
+      place-items: center;
+    }
+
+    .floating img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    @media (max-width: 1180px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .product-name {
+        max-width: none;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .topbar {
+        grid-template-columns: 1fr;
+      }
+
+      .search {
+        order: 3;
+      }
+
+      .thumbs {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 680px) {
+      .page {
+        width: min(100vw - 18px, var(--max));
+        padding-top: 9px;
+      }
+
+      .content {
+        padding-top: 18px;
+      }
+
+      .title {
+        font-size: clamp(1.6rem, 8vw, 2.3rem);
+      }
+
+      .image-card {
+        min-height: 300px;
+        padding: 18px;
+      }
+
+      .bag {
+        width: min(260px, 80%);
+      }
+
+      .thumbs {
+        grid-template-columns: repeat(5, minmax(80px, 1fr));
+        overflow-x: auto;
+        padding-bottom: 4px;
+      }
+
+      .btn.green {
+        min-width: 0;
+        flex: 1;
+      }
+
+      .meta-row {
+        align-items: center;
+      }
+
+      .floating {
+        left: 12px;
+        bottom: 12px;
+        width: 58px;
+        height: 58px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="topbar">
+      <a class="brand" href="#">
+        <img src="src/assets/logo.jpeg" alt="Jamhawi logo" />
+        <strong>Jamhawi</strong>
+      </a>
+
+      <label class="search" aria-label="Search products">
+        <span style="color:var(--muted); font-size:0.92rem;">Frozen</span>
+        <input type="text" value="" readonly />
+        <span aria-hidden="true" style="color:var(--text); font-weight:700;">⌕</span>
+      </label>
+
+      <div class="header-actions">
+        <span class="announcement">⚡ Order now and get it within <b>15 mint!</b></span>
+        <div class="mini">🛒</div>
+        <div class="mini">◔</div>
+      </div>
+    </header>
+
+    <section class="content">
+      <h1 class="title">All category / Bobs Red</h1>
+
+      <div class="layout">
+        <section class="gallery">
+          <div class="image-card">
+            <div class="delivery">Free Delivery</div>
+            <div class="bag" aria-hidden="true">
+              <div class="top"></div>
+              <div class="front">
+                <div class="brand-tag">Bobs Red Mill</div>
+                <div class="label">
+                  100% STONE GROUND
+                  <span class="big">Whole Wheat</span>
+                  <span style="display:block; margin-top:8px; font-size:0.78rem; letter-spacing:0.1em; color:#bb4f2f;">ORGANIC FLOUR</span>
+                </div>
+              </div>
+              <div class="side"></div>
+              <div class="grain g1"></div>
+              <div class="grain g2"></div>
+              <div class="grain g3"></div>
+              <div class="grain g4"></div>
+              <div class="grain g5"></div>
+            </div>
+          </div>
+
+          <div class="thumbs" aria-label="Product thumbnails">
+            <div class="thumb"></div>
+            <div class="thumb"></div>
+            <div class="thumb"></div>
+            <div class="thumb"></div>
+            <div class="thumb"></div>
+          </div>
+        </section>
+
+        <aside class="details">
+          <div class="countdown">
+            <span class="clock" aria-hidden="true"></span>
+            <span>270 : 13 : 10 : 32</span>
+          </div>
+
+          <div class="vendor">Bevmo grocery</div>
+          <h2 class="product-name">Bobs red mill whole wheat organic flour</h2>
+
+          <div class="rating">
+            <span class="star">★</span>
+            <strong>4.5 Rating</strong>
+            <small>(15 reviews)</small>
+          </div>
+
+          <div class="price">29.<small>12$</small></div>
+
+          <div class="divider"></div>
+
+          <div class="klarna">
+            <div class="mark">Klarna.</div>
+            <div class="copy">Split in to 3 interest-free payments <b>110$</b></div>
+          </div>
+
+          <div class="actions">
+            <a class="btn light" href="#">🛒 Add to bucket</a>
+            <a class="btn green" href="#">Buy now</a>
+          </div>
+
+          <div class="secondary-actions">
+            <span>♡ ADD TO WISHLIST</span>
+            <span>▣ Compare with other vendor</span>
+          </div>
+
+          <div class="meta-row">
+            <div class="icons" aria-label="Social or attribute icons">
+              <div class="ico i1">◔</div>
+              <div class="ico i2">✦</div>
+              <div class="ico i3">◌</div>
+            </div>
+            <div class="sold">100 sold in last 35 hour</div>
+          </div>
+
+          <div class="sku">
+            <div><strong>SKU:</strong> <span>MB3442</span></div>
+            <div><strong>Categories:</strong> <span>Fruits, Hoodies, Juice, snacks, Tshirts</span></div>
+          </div>
+
+          <div class="description">
+            Coconut oil is a great-tasting, nutritious alternative to use when cooking or baking. Coconut
+            oil is a naturally rich source of medium chain triglycerides.
+          </div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <div class="floating" aria-hidden="true">
+    <img src="src/assets/logo.jpeg" alt="" />
+  </div>
+</body>
+</html>
