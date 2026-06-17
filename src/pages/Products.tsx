@@ -623,7 +623,7 @@ export default function Products() {
                     <span className="anp2-card__price">
                       <ProductListPrice
                         productId={product.id}
-                        aedPrice={product.price}
+                        basePrice={product.price}
                       />
                     </span>
                     {product.isAvailable ? (

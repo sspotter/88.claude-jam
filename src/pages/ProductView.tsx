@@ -682,7 +682,7 @@ export default function ProductView() {
                         <p className="anp-sim-card__price">
                           <ProductListPrice
                             productId={sim.id}
-                            aedPrice={sim.price ?? 0}
+                            basePrice={sim.price ?? 0}
                           />
                         </p>
                       </div>

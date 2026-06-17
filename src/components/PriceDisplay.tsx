@@ -19,7 +19,7 @@ export default function PriceDisplay({
 
 	const fontSize = size === 'lg' ? '1.5rem' : size === 'sm' ? '0.875rem' : '1rem'
 
-	const indicatorKey = resolved.fallbackToAed
+	const indicatorKey = resolved.fallbackToBase
 		? 'price_fallback_aed'
 		: resolved.source === 'manual'
 			? 'price_source_manual'
@@ -39,10 +39,10 @@ export default function PriceDisplay({
 					}}
 				>
 					{t(indicatorKey)}
-					{resolved.source === 'converted' && !resolved.fallbackToAed && (
+					{resolved.source === 'converted' && !resolved.fallbackToBase && (
 						<>
 							{' '}
-							({formatPrice(resolved.aedPrice, 'AED')})
+							({formatPrice(resolved.basePrice, resolved.baseCurrency)})
 						</>
 					)}
 				</p>

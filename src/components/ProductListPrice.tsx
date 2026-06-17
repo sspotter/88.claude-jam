@@ -3,14 +3,14 @@ import { formatPrice } from '../lib/pricing/formatPrice'
 
 interface ProductListPriceProps {
 	productId: string
-	aedPrice: number
+	basePrice: number
 }
 
 export default function ProductListPrice({
 	productId,
-	aedPrice,
+	basePrice,
 }: ProductListPriceProps) {
-	const resolved = useResolvedPrice(productId, aedPrice)
+	const resolved = useResolvedPrice(productId, basePrice)
 	return (
 		<span style={{ color: 'var(--th-gold)', fontWeight: 600 }}>
 			{formatPrice(resolved.price, resolved.currency)}

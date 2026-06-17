@@ -19,7 +19,7 @@ export interface CartItem {
   currency?: CurrencyCode;
   priceSource?: PriceSource;
   exchangeRateUsed?: number | null;
-  aedPrice?: number;
+  basePrice?: number;
   weight?: string;
   pricePerKg?: number;
   pricingType?: ProductPricingType;

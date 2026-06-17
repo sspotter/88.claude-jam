@@ -80,14 +80,14 @@ export async function removeProductPrice(
 
 export async function saveProductPricing(
 	productId: string,
-	aedPrice: number,
+	basePrice: number,
 	manualPrices: Partial<Record<CurrencyCode, number | null>>,
 ): Promise<void> {
-	if (aedPrice < 0 || Number.isNaN(aedPrice)) {
-		throw new Error('AED price is required.')
+	if (basePrice < 0 || Number.isNaN(basePrice)) {
+		throw new Error('Base price is required.')
 	}
 
-	await saveProductPrice(productId, BASE_CURRENCY, aedPrice, true)
+	await saveProductPrice(productId, BASE_CURRENCY, basePrice, true)
 
 	for (const [currency, price] of Object.entries(manualPrices)) {
 		const code = currency as CurrencyCode

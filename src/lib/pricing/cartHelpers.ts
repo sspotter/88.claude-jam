@@ -7,6 +7,7 @@ import type {
 import type { CartItem } from '../../store/cartStore'
 import { buildManualPriceMap, resolveProductPrice } from './pricingEngine'
 import { getCartLineId } from './weightPricing'
+import { BASE_CURRENCY } from './constants'
 
 export interface BuildCartItemOptions {
 	pricingType?: ProductPricingType
@@ -50,7 +51,7 @@ export function buildCartItem(
 		currency: resolved.currency,
 		priceSource: resolved.source,
 		exchangeRateUsed: resolved.exchangeRate,
-		aedPrice: resolved.aedPrice,
+		basePrice: resolved.basePrice,
 		weight,
 		pricePerKg,
 		pricingType,
@@ -63,10 +64,11 @@ export function repriceCartItem(
 	pricesByProduct: Map<string, ProductPrice[]>,
 	rateMap: Partial<Record<CurrencyCode, number>>,
 ): CartItem {
-	const aedPrice = item.aedPrice ?? item.price
+	const basePrice = item.basePrice ?? item.price
 	const productPrices = pricesByProduct.get(item.productId) ?? []
 	const resolved = resolveProductPrice({
-		aedPrice,
+		basePrice,
+		baseCurrency: BASE_CURRENCY,
 		targetCurrency: currency,
 		manualPrices: buildManualPriceMap(productPrices),
 		rates: rateMap,
@@ -78,6 +80,6 @@ export function repriceCartItem(
 		currency: resolved.currency,
 		priceSource: resolved.source,
 		exchangeRateUsed: resolved.exchangeRate,
-		aedPrice: resolved.aedPrice,
+		basePrice: resolved.basePrice,
 	}
 }

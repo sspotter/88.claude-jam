@@ -433,7 +433,7 @@ export default function CategoryView() {
                     <span className="anc-card__price">
                       <ProductListPrice
                         productId={product.id}
-                        aedPrice={product.price}
+                        basePrice={product.price}
                       />
                     </span>
                     {product.isAvailable ? (

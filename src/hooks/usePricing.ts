@@ -9,6 +9,7 @@ import { getStoredRates, getSyncMeta } from '../lib/pricing/currencyService'
 import { getAllProductPrices } from '../lib/pricing/productPriceService'
 import { useCurrencyStore } from '../store/currencyStore'
 import { useCartStore } from '../store/cartStore'
+import { BASE_CURRENCY } from '../lib/pricing/constants'
 
 export function useCurrencyRates() {
 	const rates = useCurrencyStore((s) => s.rates)
@@ -38,7 +39,7 @@ export function useCurrencyRates() {
 		return () => { cancelled = true }
 	}, [ratesLoaded, setRates])
 
-	const rateMap = useMemo(() => buildRateMap(rates), [rates])
+	const rateMap = useMemo(() => buildRateMap(rates, BASE_CURRENCY), [rates])
 
 	return { rates, rateMap, lastSyncAt, ratesLoaded }
 }
@@ -77,7 +78,7 @@ export function useProductPricesCache() {
 
 export function useResolvedPrice(
 	productId: string,
-	aedPrice: number,
+	basePrice: number,
 	currency?: CurrencyCode,
 ): ResolvedPrice {
 	const selectedCurrency = useCurrencyStore((s) => s.currency)
@@ -89,12 +90,13 @@ export function useResolvedPrice(
 		const productPrices = pricesByProduct.get(productId) ?? []
 		const manualPrices = buildManualPriceMap(productPrices)
 		return resolveProductPrice({
-			aedPrice,
+			basePrice,
+			baseCurrency: BASE_CURRENCY,
 			targetCurrency,
 			manualPrices,
 			rates: rateMap,
 		})
-	}, [productId, aedPrice, targetCurrency, pricesByProduct, rateMap])
+	}, [productId, basePrice, targetCurrency, pricesByProduct, rateMap])
 }
 
 export function useRepriceCartOnCurrencyChange() {
@@ -119,7 +121,7 @@ export function useRepriceCartOnCurrencyChange() {
 
 export function resolvePriceForProduct(
 	productId: string,
-	aedPrice: number,
+	basePrice: number,
 	currency: CurrencyCode,
 	pricesByProduct: Map<string, ProductPrice[]>,
 	rateMap: Partial<Record<CurrencyCode, number>>,
@@ -127,7 +129,8 @@ export function resolvePriceForProduct(
 	const productPrices = pricesByProduct.get(productId) ?? []
 	const manualPrices = buildManualPriceMap(productPrices)
 	return resolveProductPrice({
-		aedPrice,
+		basePrice,
+		baseCurrency: BASE_CURRENCY,
 		targetCurrency: currency,
 		manualPrices,
 		rates: rateMap,

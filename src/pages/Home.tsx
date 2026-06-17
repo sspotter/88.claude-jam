@@ -223,7 +223,7 @@ export default function Home() {
                   <p className="text-[var(--color-accent)] font-semibold text-sm md:text-base">
                     <ProductListPrice
                       productId={product.id}
-                      aedPrice={product.price}
+                      basePrice={product.price}
                     />
                   </p>
                   {product.isAvailable ? (

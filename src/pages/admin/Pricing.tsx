@@ -52,7 +52,7 @@ export default function Pricing() {
 
 	const [products, setProducts] = useState<Product[]>([])
 	const [selectedProductId, setSelectedProductId] = useState<string>('')
-	const [aedPrice, setAedPrice] = useState('')
+	const [basePrice, setBasePrice] = useState('')
 	const [manualPrices, setManualPrices] = useState<ManualPriceForm>({})
 	const [savedManual, setSavedManual] = useState<Set<CurrencyCode>>(new Set())
 	const [loadingProduct, setLoadingProduct] = useState(false)
@@ -75,7 +75,7 @@ export default function Pricing() {
 			createdAt: 0,
 			updatedAt: 0,
 		}))
-		return buildRateMap(entries)
+		return buildRateMap(entries, BASE_CURRENCY)
 	}, [rates])
 
 	const isStale = lastSyncAt
@@ -152,7 +152,7 @@ export default function Pricing() {
 			const prices = await getProductPrices(productId)
 			const aedEntry = prices.find((p) => p.currencyCode === BASE_CURRENCY)
 			const aed = aedEntry?.price ?? product?.price ?? 0
-			setAedPrice(String(aed))
+			setBasePrice(String(aed))
 
 			const manual: ManualPriceForm = {}
 			const saved = new Set<CurrencyCode>()
@@ -230,8 +230,8 @@ export default function Pricing() {
 	}
 
 	async function handleSavePricing() {
-		const aed = parseFloat(aedPrice)
-		if (!selectedProductId || Number.isNaN(aed) || aedPrice.trim() === '') {
+		const aed = parseFloat(basePrice)
+		if (!selectedProductId || Number.isNaN(aed) || basePrice.trim() === '') {
 			toast.error(t('aed_price_required'))
 			return
 		}
@@ -265,7 +265,7 @@ export default function Pricing() {
 		}
 	}
 
-	const aedNumeric = parseFloat(aedPrice) || 0
+	const aedNumeric = parseFloat(basePrice) || 0
 
 	return (
 		<div className="p-6 max-w-5xl mx-auto space-y-8">
@@ -432,8 +432,8 @@ export default function Pricing() {
 								type="number"
 								min="0"
 								step="0.01"
-								value={aedPrice}
-								onChange={(e) => setAedPrice(e.target.value)}
+								value={basePrice}
+								onChange={(e) => setBasePrice(e.target.value)}
 								className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
 								required
 							/>
@@ -446,6 +446,7 @@ export default function Pricing() {
 								&& manualPrices[code]?.trim() !== ''
 							const estimated = estimateConversion(
 								aedNumeric,
+								BASE_CURRENCY,
 								code,
 								rateMap[code],
 							)
