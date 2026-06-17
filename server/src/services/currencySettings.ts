@@ -47,3 +47,18 @@ export function normalizeCurrencySettings(input: unknown): CurrencySettings {
 
   return { enabled, default: def };
 }
+
+export interface BaseCurrencySetting {
+  base: CurrencyCode;
+}
+
+export const DEFAULT_BASE_CURRENCY: CurrencyCode = "AED";
+
+export function normalizeBaseCurrency(input: unknown): BaseCurrencySetting {
+  const raw = (input ?? {}) as Partial<BaseCurrencySetting>;
+  const base = raw.base as CurrencyCode | undefined;
+  if (!base || !MASTER_CURRENCIES.includes(base)) {
+    throw new CurrencySettingsValidationError("`base` must be a supported currency.");
+  }
+  return { base };
+}

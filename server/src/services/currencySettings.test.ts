@@ -4,6 +4,7 @@ import {
   MASTER_CURRENCIES,
   normalizeCurrencySettings,
 } from "./currencySettings.js";
+import { normalizeBaseCurrency, DEFAULT_BASE_CURRENCY } from './currencySettings.js'
 
 describe("normalizeCurrencySettings", () => {
   it("accepts a valid payload unchanged", () => {
@@ -45,3 +46,18 @@ describe("normalizeCurrencySettings", () => {
     });
   });
 });
+
+describe('normalizeBaseCurrency', () => {
+	it('accepts a supported currency', () => {
+		expect(normalizeBaseCurrency({ base: 'EGP' })).toEqual({ base: 'EGP' })
+	})
+	it('rejects an unknown currency', () => {
+		expect(() => normalizeBaseCurrency({ base: 'GBP' })).toThrow()
+	})
+	it('rejects a missing base', () => {
+		expect(() => normalizeBaseCurrency({})).toThrow()
+	})
+	it('default base is AED', () => {
+		expect(DEFAULT_BASE_CURRENCY).toBe('AED')
+	})
+})
