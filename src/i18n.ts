@@ -404,6 +404,11 @@ export const resources = {
       share_2: "Share",
       sourced_directly_from_our_premium_sustai: "Sourced directly from our premium sustainable farms. Naturally sweetened by solar energy, without any artificial additives.",
       you_may_also_like: "You May Also Like",
+      base_currency: "العملة الأساسية",
+      base_currency_desc: "العملة التي تُسعّر بها المنتجات وتُحتسب منها أسعار الصرف.",
+      base_currency_switch_note: "سيُعاد تفسير الأسعار الأساسية بالعملة الجديدة وتحديث أسعار الصرف. هل تريد المتابعة؟",
+      base_currency_saved: "تم تحديث العملة الأساسية",
+      base_currency_save_failed: "فشل تحديث العملة الأساسية",
     },
   },
   en: {
@@ -807,6 +812,11 @@ export const resources = {
       share_2: "Share",
       sourced_directly_from_our_premium_sustai: "Sourced directly from our premium sustainable farms. Naturally sweetened by solar energy, without any artificial additives.",
       you_may_also_like: "You May Also Like",
+      base_currency: "Base Currency",
+      base_currency_desc: "The currency products are priced in and exchange rates are anchored to.",
+      base_currency_switch_note: "Base prices will be re-interpreted in the new currency and rates re-synced. Continue?",
+      base_currency_saved: "Base currency updated",
+      base_currency_save_failed: "Failed to update base currency",
     },
   },
 };

@@ -34,6 +34,7 @@ import type { Product as ApiProduct } from '../../lib/api/catalog'
 import { useCurrencySettingsStore } from '../../store/currencySettingsStore'
 import { handleApiError, OperationType } from '../../lib/api/errors'
 import { useCurrencyStore } from '../../store/currencyStore'
+import { useBaseCurrencyStore, saveBaseCurrency } from '../../store/baseCurrencyStore'
 
 type Product = Pick<ApiProduct, 'id' | 'name' | 'nameAr' | 'price'>
 
@@ -43,6 +44,7 @@ export default function Pricing() {
 	const { t } = useTranslation()
 	const setRates = useCurrencyStore((s) => s.setRates)
 	const applyCurrencySettings = useCurrencySettingsStore((s) => s.setSettings)
+	const baseCurrency = useBaseCurrencyStore((s) => s.baseCurrency)
 
 	const [enabledSet, setEnabledSet] = useState<Set<CurrencyCode>>(
 		new Set(SUPPORTED_CURRENCIES),
@@ -192,6 +194,19 @@ export default function Pricing() {
 		}
 	}
 
+	async function handleBaseChange(next: CurrencyCode) {
+		if (next === baseCurrency) return
+		if (!window.confirm(t('base_currency_switch_note'))) return
+		try {
+			await saveBaseCurrency(next)
+			await syncExchangeRates(next)
+			await loadRates()
+			toast.success(t('base_currency_saved'))
+		} catch {
+			toast.error(t('base_currency_save_failed'))
+		}
+	}
+
 	function toggleCurrencyEnabled(code: CurrencyCode) {
 		setEnabledSet((prev) => {
 			const next = new Set(prev)
@@ -275,6 +290,27 @@ export default function Pricing() {
 				</h1>
 				<p className="text-gray-500 mt-1">{t('pricing_management_desc')}</p>
 			</div>
+
+			{/* Base Currency Section */}
+			<section className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+				<h2 className="text-lg font-semibold text-gray-900">
+					{t('base_currency')}
+				</h2>
+				<p className="text-gray-500 text-sm mt-1 mb-4">
+					{t('base_currency_desc')}
+				</p>
+				<div className="max-w-xs">
+					<select
+						value={baseCurrency}
+						onChange={(e) => handleBaseChange(e.target.value as CurrencyCode)}
+						className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
+					>
+						{SUPPORTED_CURRENCIES.map((c) => (
+							<option key={c} value={c}>{c}</option>
+						))}
+					</select>
+				</div>
+			</section>
 
 			{/* Currency Availability Section */}
 			<section className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
@@ -426,7 +462,7 @@ export default function Pricing() {
 					<div className="space-y-4">
 						<div>
 							<label className="block text-sm font-medium text-gray-700 mb-1">
-								{t('aed_price')} *
+								{`${baseCurrency} ${t('price')}`} *
 							</label>
 							<input
 								type="number"
