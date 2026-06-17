@@ -5,7 +5,7 @@ import {
   serializeCategory,
   serializeOffer,
 } from "../lib/serialize.js";
-import { DEFAULT_CURRENCY_SETTINGS } from "../services/currencySettings.js";
+import { DEFAULT_CURRENCY_SETTINGS, DEFAULT_BASE_CURRENCY } from "../services/currencySettings.js";
 
 // Public storefront reads. These replace the direct Firestore queries the
 // frontend used to run from the browser (Home, CategoryView, ProductView,
@@ -134,6 +134,19 @@ router.get("/settings/currency", async (_req: Request, res: Response) => {
     return res.json(value);
   } catch (error: any) {
     return res.status(500).json({ error: error.message || "Failed to fetch currency settings." });
+  }
+});
+
+/**
+ * GET /api/settings/base-currency — public read for storefront base currency.
+ */
+router.get("/settings/base-currency", async (_req: Request, res: Response) => {
+  try {
+    const setting = await prisma.setting.findUnique({ where: { id: "base_currency" } });
+    const value = (setting?.value as { base?: string } | undefined) ?? {};
+    return res.json({ base: value.base ?? DEFAULT_BASE_CURRENCY });
+  } catch (error: any) {
+    return res.status(500).json({ error: error.message || "Failed to fetch base currency." });
   }
 });
 

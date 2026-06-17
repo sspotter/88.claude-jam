@@ -14,6 +14,7 @@ import {
 import {
   CurrencySettingsValidationError,
   normalizeCurrencySettings,
+  normalizeBaseCurrency,
 } from "../services/currencySettings.js";
 
 const router = Router();
@@ -355,6 +356,23 @@ router.put("/settings/currency", async (req: Request, res: Response) => {
     const isValidation = error instanceof CurrencySettingsValidationError;
     return res.status(isValidation ? 400 : 500).json({
       error: error.message || "Failed to save currency settings.",
+    });
+  }
+});
+
+router.put("/settings/base-currency", async (req: Request, res: Response) => {
+  try {
+    const value = normalizeBaseCurrency(req.body);
+    await prisma.setting.upsert({
+      where: { id: "base_currency" },
+      update: { value: value as any },
+      create: { id: "base_currency", value: value as any },
+    });
+    return res.json(value);
+  } catch (error: any) {
+    const isValidation = error instanceof CurrencySettingsValidationError;
+    return res.status(isValidation ? 400 : 500).json({
+      error: error.message || "Failed to save base currency.",
     });
   }
 });
