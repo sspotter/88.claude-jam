@@ -1,25 +1,19 @@
 import type { CurrencyCode } from '../../types/pricing'
+import { CURRENCY_LABELS } from './constants'
 
-const localeMap: Record<CurrencyCode, string> = {
-	AED: 'ar-AE',
-	USD: 'en-US',
-	EGP: 'ar-EG',
-	SAR: 'ar-SA',
-	EUR: 'de-DE',
-}
+export type DisplayLang = 'en' | 'ar'
 
 export function formatPrice(
 	amount: number,
 	currency: CurrencyCode,
-	locale?: string,
+	lang: DisplayLang = 'en',
 ): string {
-	const resolvedLocale = locale ?? localeMap[currency] ?? 'en-US'
-	return new Intl.NumberFormat(resolvedLocale, {
-		style: 'currency',
-		currency,
+	const num = new Intl.NumberFormat(lang === 'ar' ? 'ar-EG' : 'en-US', {
 		minimumFractionDigits: 2,
 		maximumFractionDigits: 2,
 	}).format(amount)
+	const label = CURRENCY_LABELS[currency]?.[lang] ?? currency
+	return `${num} ${label}`
 }
 
 export function formatRate(rate: number): string {

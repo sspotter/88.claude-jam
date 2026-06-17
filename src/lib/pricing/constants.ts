@@ -30,3 +30,11 @@ export const CURRENCY_LOCALE_MAP: Record<string, CurrencyCode> = {
 	'en-SA': 'SAR',
 	'en-EG': 'EGP',
 }
+
+export const CURRENCY_LABELS: Record<CurrencyCode, { en: string; ar: string }> = {
+	AED: { en: 'AED', ar: 'د.إ' },
+	USD: { en: 'USD', ar: '$' },
+	EGP: { en: 'EGP', ar: 'ج م' },
+	SAR: { en: 'SAR', ar: 'ر.س' },
+	EUR: { en: 'EUR', ar: '€' },
+}
