@@ -177,7 +177,7 @@ export default function Pricing() {
 	async function handleRefreshRates() {
 		setRefreshing(true)
 		try {
-			const result = await syncExchangeRates()
+			const result = await syncExchangeRates(BASE_CURRENCY)
 			if (result.success) {
 				toast.success(t('rates_refreshed'))
 				await loadRates()
