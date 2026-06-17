@@ -36,3 +36,24 @@ export function checkout(payload: CheckoutPayload): Promise<CheckoutResult> {
 export function getOrderStatus(id: string): Promise<Order> {
   return apiFetch<Order>(`/api/orders/${id}/status`);
 }
+
+export interface VerifyPaymentResult {
+  orderId: string;
+  status: string;
+  paymentStatus?: string;
+}
+
+/**
+ * Verify a Paymob redirect by forwarding its signed query params to the backend,
+ * which checks the HMAC and resolves the order. Used by the checkout-success page
+ * so payment confirmation works even when the webhook can't reach the server.
+ */
+export function verifyPayment(
+  orderId: string,
+  params: Record<string, string>,
+): Promise<VerifyPaymentResult> {
+  return apiFetch<VerifyPaymentResult>("/api/payments/verify", {
+    method: "POST",
+    body: JSON.stringify({ orderId, params }),
+  });
+}

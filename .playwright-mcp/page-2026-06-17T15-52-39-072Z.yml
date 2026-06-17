@@ -1,0 +1,16 @@
+- generic [ref=e3]:
+  - generic [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - generic:
+          - generic:
+            - paragraph
+      - generic [ref=e8]: Total Amount
+    - generic [ref=e9]:
+      - generic [ref=e11]:
+        - paragraph [ref=e12]: Powered by
+        - img "paymob" [ref=e13]
+      - paragraph [ref=e14]:
+        - generic [ref=e15]: Secure payment
+  - status [ref=e18]:
+    - img [ref=e19]

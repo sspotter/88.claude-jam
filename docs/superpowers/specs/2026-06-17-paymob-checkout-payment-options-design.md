@@ -16,9 +16,13 @@ resolving in real time.
 This is a **frontend-only** job. The backend and API client already support all
 three methods:
 
-- `server/src/services/payment.service.ts` — full Paymob legacy flow
-  (auth token → ecommerce order → payment key → unified checkout URL) for both
-  `card` and `wallet`.
+- `server/src/services/payment.service.ts` — Paymob **Intention API** flow
+  (`POST /v1/intention/` authenticated with the Secret Key as `Token <key>`,
+  returning a `client_secret`) for both `card` and `wallet`. The `client_secret`
+  + Public Key build the Unified Checkout URL. `notification_url` (webhook) and
+  `redirection_url` (`/checkout/success?orderId=…`) are set per-intention, so no
+  dashboard redirect config is required. (Refactored 2026-06-17 from the older
+  auth-token → ecommerce-order → payment-key flow.)
 - `server/src/routes/order.routes.ts` — `POST /api/orders/checkout` accepts
   `paymentMethod: "whatsapp" | "paymob_card" | "paymob_wallet"`, validates items
   and coupon, creates a `pending` order, and returns `{ success, orderId, redirectUrl }`
@@ -115,26 +119,36 @@ Add keys to both `en` and `ar` resource bundles:
 
 ## Prerequisites (configuration, not code)
 
-- In the **Paymob dashboard**, set each integration's redirect / "Transaction
-  response callback" URL to `https://<site>/checkout/success`. Paymob appends
-  result params (`merchant_order_id`, `success`, `order`, …) to this URL, which the
-  return page reads.
-- The webhook callback URL (`https://<site>/api/payments/paymob-webhook`) must also
-  be configured in the dashboard — assumed already done since the handler exists.
+With the Intention API the redirect and webhook URLs are passed **per intention**
+(`redirection_url` / `notification_url`), so no dashboard redirect setup is needed.
+The only requirements:
+
+- `server/.env` must contain `PAYMOB_PUBLIC_KEY`, `PAYMOB_SECRET_KEY`,
+  `PAYMOB_HMAC_SECRET`, `PAYMOB_CARD_INTEGRATION_ID`, `PAYMOB_WALLET_INTEGRATION_ID`,
+  plus `FRONTEND_URL` and `PUBLIC_BASE_URL` (used to build the redirect/webhook URLs).
+- For Paymob to deliver the webhook, `PUBLIC_BASE_URL` must be a **publicly
+  reachable** origin. On localhost the redirect + success page work, but the order
+  is only marked paid/failed once the webhook lands — use a tunnel (e.g. ngrok) to
+  test the webhook locally.
 
 ## Assumptions & constraints
 
 - **Currency:** Paymob charges in **EGP**. The checkout total for card/wallet is
-  sent as `amount_cents` (EGP) by the existing backend. Storefront prices are
-  treated as EGP at checkout. Multi-currency reconciliation with Paymob is **out of
-  scope**.
+  sent as the intention `amount` (in EGP piasters) by the backend. Storefront
+  prices are treated as EGP at checkout. Multi-currency reconciliation with Paymob
+  is **out of scope**.
 - Test credentials for card/wallet are in `docs/paymobdocs/tezstcredentials.md`.
 
 ## Out of scope
 
-- Any backend, Paymob service, schema, or webhook changes.
+- Schema changes; webhook handler logic (unchanged — it already reads
+  `obj.order.merchant_order_id`, which the intention's `special_reference` maps to).
 - New payment providers or Paymob features (refunds, saved cards, installments).
 - Multi-currency handling at the Paymob layer.
+
+> Note: the Paymob service WAS refactored (legacy payment-key flow → Intention
+> API) on 2026-06-17 at the user's request after the initial frontend wiring. See
+> the Background section.
 
 ## Testing
 

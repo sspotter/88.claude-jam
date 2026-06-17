@@ -19,6 +19,7 @@ import CategoryView from "./pages/CategoryView";
 import ProductView from "./pages/ProductView";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
+import CheckoutSuccess from "./pages/CheckoutSuccess";
 import Animation from "./pages/Animation";
 import Products from "./pages/Products";
 import Categories from "./pages/Categories";
@@ -90,6 +91,7 @@ function AppRoutes() {
         { path: "product/:id", element: <ProductView /> },
         { path: "cart", element: <Cart /> },
         { path: "checkout", element: <Checkout /> },
+        { path: "checkout/success", element: <CheckoutSuccess /> },
         { path: "animation", element: <Animation /> },
         { path: "products", element: <Products /> },
         { path: "categories", element: <Categories /> },
@@ -105,6 +107,7 @@ function AppRoutes() {
         { path: "product/:id", element: <ProductView /> },
         { path: "cart", element: <Cart /> },
         { path: "checkout", element: <Checkout /> },
+        { path: "checkout/success", element: <CheckoutSuccess /> },
         { path: "animation", element: <Animation /> },
         { path: "products", element: <Products /> },
         { path: "categories", element: <Categories /> },
