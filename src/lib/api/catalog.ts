@@ -1,4 +1,5 @@
 import { apiFetch } from "./client.js";
+import type { CurrencySettings } from "../../types/pricing";
 
 export interface Category {
   id: string;
@@ -67,4 +68,8 @@ export function validateCoupon(code: string): Promise<{
 
 export function getTheme(): Promise<ThemeSettings> {
   return apiFetch<ThemeSettings>("/api/settings/theme");
+}
+
+export function getCurrencySettings(): Promise<CurrencySettings> {
+  return apiFetch<CurrencySettings>("/api/settings/currency");
 }

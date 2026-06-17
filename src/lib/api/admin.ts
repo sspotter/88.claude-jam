@@ -1,5 +1,6 @@
 import { apiFetch } from "./client.js";
 import type { Category, Product, Offer } from "./catalog.js";
+import type { CurrencySettings } from "../../types/pricing";
 
 export interface OrderItem {
   productId: string;
@@ -101,6 +102,12 @@ export const updateTheme = (selectedTheme: string) =>
   adminFetch<{ selectedTheme: string }>("/api/admin/settings/theme", {
     method: "PUT",
     body: JSON.stringify({ selectedTheme }),
+  });
+
+export const updateCurrencySettings = (settings: CurrencySettings) =>
+  adminFetch<CurrencySettings>("/api/admin/settings/currency", {
+    method: "PUT",
+    body: JSON.stringify(settings),
   });
 
 // Customers & Analytics
