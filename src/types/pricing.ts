@@ -35,8 +35,9 @@ export interface ResolvedPrice {
 	currency: CurrencyCode
 	source: PriceSource
 	exchangeRate: number | null
-	aedPrice: number
-	fallbackToAed?: boolean
+	basePrice: number
+	baseCurrency: CurrencyCode
+	fallbackToBase?: boolean
 }
 
 export interface OrderPriceSnapshot {

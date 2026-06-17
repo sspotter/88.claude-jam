@@ -9,6 +9,7 @@ import {
 	resolveProductPrice,
 	estimateConversion,
 	roundPrice,
+	buildRateMap,
 } from '../lib/pricing/pricingEngine'
 
 let passed = 0
@@ -29,9 +30,10 @@ function test(label: string, fn: () => void) {
 
 console.log('\npricingEngine()\n')
 
-test('returns AED price directly for AED currency', () => {
+test('returns base price directly for base currency', () => {
 	const result = resolveProductPrice({
-		aedPrice: 100,
+		basePrice: 100,
+		baseCurrency: 'AED',
 		targetCurrency: 'AED',
 	})
 	assert.equal(result.price, 100)
@@ -41,7 +43,8 @@ test('returns AED price directly for AED currency', () => {
 
 test('returns manual USD price when set', () => {
 	const result = resolveProductPrice({
-		aedPrice: 100,
+		basePrice: 100,
+		baseCurrency: 'AED',
 		targetCurrency: 'USD',
 		manualPrices: { USD: 50 },
 		rates: { USD: 0.2722 },
@@ -51,9 +54,10 @@ test('returns manual USD price when set', () => {
 	assert.equal(result.exchangeRate, null)
 })
 
-test('converts AED to USD when no manual price', () => {
+test('converts base to USD when no manual price', () => {
 	const result = resolveProductPrice({
-		aedPrice: 100,
+		basePrice: 100,
+		baseCurrency: 'AED',
 		targetCurrency: 'USD',
 		rates: { USD: 0.2722 },
 	})
@@ -64,7 +68,8 @@ test('converts AED to USD when no manual price', () => {
 
 test('manual price takes priority over conversion', () => {
 	const result = resolveProductPrice({
-		aedPrice: 100,
+		basePrice: 100,
+		baseCurrency: 'AED',
 		targetCurrency: 'EGP',
 		manualPrices: { EGP: 100 },
 		rates: { EGP: 13.48 },
@@ -73,20 +78,22 @@ test('manual price takes priority over conversion', () => {
 	assert.equal(result.source, 'manual')
 })
 
-test('falls back to AED when rate unavailable', () => {
+test('falls back to base when rate unavailable', () => {
 	const result = resolveProductPrice({
-		aedPrice: 100,
+		basePrice: 100,
+		baseCurrency: 'AED',
 		targetCurrency: 'EUR',
 		rates: {},
 	})
 	assert.equal(result.price, 100)
 	assert.equal(result.currency, 'AED')
-	assert.equal(result.fallbackToAed, true)
+	assert.equal(result.fallbackToBase, true)
 })
 
 test('treats zero as valid manual price', () => {
 	const result = resolveProductPrice({
-		aedPrice: 100,
+		basePrice: 100,
+		baseCurrency: 'AED',
 		targetCurrency: 'USD',
 		manualPrices: { USD: 0 },
 		rates: { USD: 0.2722 },
@@ -96,11 +103,41 @@ test('treats zero as valid manual price', () => {
 })
 
 test('estimateConversion returns null without rate', () => {
-	assert.equal(estimateConversion(100, 'USD', undefined), null)
+	assert.equal(estimateConversion(100, 'AED', 'USD', undefined), null)
 })
 
 test('roundPrice rounds to 2 decimal places', () => {
 	assert.equal(roundPrice(27.224), 27.22)
+})
+
+test('EGP base: base currency returns face value', () => {
+	const r = resolveProductPrice({ basePrice: 50, baseCurrency: 'EGP', targetCurrency: 'EGP' })
+	assert.equal(r.price, 50)
+	assert.equal(r.currency, 'EGP')
+	assert.equal(r.source, 'manual')
+})
+
+test('EGP base: converts to AED via base-anchored rate', () => {
+	const r = resolveProductPrice({ basePrice: 50, baseCurrency: 'EGP', targetCurrency: 'AED', rates: { AED: 0.12 } })
+	assert.equal(r.price, 6)
+	assert.equal(r.source, 'converted')
+	assert.equal(r.exchangeRate, 0.12)
+})
+
+test('decision 2a: base price wins over a manual override in the base currency', () => {
+	const r = resolveProductPrice({ basePrice: 50, baseCurrency: 'EGP', targetCurrency: 'EGP', manualPrices: { EGP: 999 } })
+	assert.equal(r.price, 50)
+})
+
+test('buildRateMap filters by the given base currency', () => {
+	const map = buildRateMap(
+		[
+			{ baseCurrency: 'EGP', targetCurrency: 'AED', rate: 0.12 } as any,
+			{ baseCurrency: 'AED', targetCurrency: 'USD', rate: 0.27 } as any,
+		],
+		'EGP',
+	)
+	assert.deepEqual(map, { AED: 0.12 })
 })
 
 console.log(`\n${passed + failed} tests: ${passed} passed, ${failed} failed\n`)
