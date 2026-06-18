@@ -93,3 +93,18 @@ model Setting {
   id    String @id // e.g. "theme"
   value Json // e.g. { "selectedTheme": "..." }
 }
+
+model AuditLog {
+  id         String   @id @default(uuid())
+  createdAt  DateTime @default(now())
+  actorId    String
+  actorEmail String
+  action     String   // create | update | delete
+  entity     String
+  entityId   String?
+  before     Json?
+  after      Json?
+
+  @@index([entity])
+  @@index([createdAt])
+}
