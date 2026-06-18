@@ -15,6 +15,7 @@ import {
   Tag,
   Activity,
   DollarSign,
+  ScrollText,
 } from "lucide-react";
 import NotificationsDropdown from "./NotificationsDropdown";
 import { useAuth } from "../context/AuthContext";
@@ -121,6 +122,7 @@ export default function AdminLayout() {
     { name: t("offers"), path: "/admin/offers", icon: Tag },
     { name: t("pricing_management"), path: "/admin/pricing", icon: DollarSign },
     { name: t("settings"), path: "/admin/settings", icon: Settings },
+    { name: t("activity_log"), path: "/admin/audit", icon: ScrollText },
   ];
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);

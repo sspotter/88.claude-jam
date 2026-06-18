@@ -37,6 +37,7 @@ import AdminSettings from "./pages/admin/Settings";
 import AdminOffers from "./pages/admin/Offers";
 import AdminPricing from "./pages/admin/Pricing";
 import AdminSimulators from "./pages/admin/Simulators";
+import AdminAuditLog from "./pages/admin/AuditLog";
 
 function AppRoutes() {
   const { isAdmin, loading } = useAuth();
@@ -137,6 +138,7 @@ function AppRoutes() {
             { path: "offers", element: <AdminOffers /> },
             { path: "pricing", element: <AdminPricing /> },
             { path: "settings", element: <AdminSettings /> },
+            { path: "audit", element: <AdminAuditLog /> },
             {
               index: true,
               element: <Navigate to="/admin/dashboard" replace />,
