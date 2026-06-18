@@ -16,7 +16,7 @@ import {
   normalizeCurrencySettings,
   normalizeBaseCurrency,
 } from "../services/currencySettings.js";
-import { recordAudit } from "../services/audit.service.js";
+import { recordAudit, listAuditLogs } from "../services/audit.service.js";
 
 const router = Router();
 
@@ -664,6 +664,18 @@ router.delete("/pricing/product-prices", async (req: Request, res: Response) => 
     return res.json({ success: true });
   } catch (error: any) {
     return res.status(500).json({ error: error.message || "Failed to delete product price." });
+  }
+});
+
+/* ----------------------------- Audit Logs ----------------------------- */
+
+router.get("/audit-logs", async (req: Request, res: Response) => {
+  try {
+    const { entity, action, limit, offset } = req.query as Record<string, string | undefined>;
+    const result = await listAuditLogs({ entity, action, limit, offset });
+    return res.json(result);
+  } catch (error: any) {
+    return res.status(500).json({ error: error.message || "Failed to fetch audit logs." });
   }
 });
 
