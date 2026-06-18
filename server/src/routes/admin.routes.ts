@@ -16,8 +16,13 @@ import {
   normalizeCurrencySettings,
   normalizeBaseCurrency,
 } from "../services/currencySettings.js";
+import { recordAudit } from "../services/audit.service.js";
 
 const router = Router();
+
+function auditActor(req: Request) {
+  return { actorId: req.admin!.adminId, actorEmail: req.admin!.email };
+}
 
 // Every route in this file requires a valid admin JWT. This middleware is the
 // replacement for the firestore.rules `isAdmin()` checks.
@@ -46,6 +51,7 @@ router.post("/products", async (req: Request, res: Response) => {
         description: description ?? null,
       },
     });
+    await recordAudit({ ...auditActor(req), action: "create", entity: "product", entityId: product.id, before: null, after: serializeProduct(product) });
     return res.status(201).json(serializeProduct(product));
   } catch (error: any) {
     return res.status(500).json({ error: error.message || "Failed to create product." });
@@ -55,6 +61,7 @@ router.post("/products", async (req: Request, res: Response) => {
 router.put("/products/:id", async (req: Request, res: Response) => {
   try {
     const { name, nameAr, price, categoryId, isAvailable, stockCount, image, pricingType, description } = req.body;
+    const prev = await prisma.product.findUnique({ where: { id: req.params.id } });
     const product = await prisma.product.update({
       where: { id: req.params.id },
       data: {
@@ -69,6 +76,7 @@ router.put("/products/:id", async (req: Request, res: Response) => {
         ...(description !== undefined && { description }),
       },
     });
+    await recordAudit({ ...auditActor(req), action: "update", entity: "product", entityId: req.params.id, before: prev ? serializeProduct(prev) : null, after: serializeProduct(product) });
     return res.json(serializeProduct(product));
   } catch (error: any) {
     return res.status(500).json({ error: error.message || "Failed to update product." });
@@ -77,7 +85,9 @@ router.put("/products/:id", async (req: Request, res: Response) => {
 
 router.delete("/products/:id", async (req: Request, res: Response) => {
   try {
+    const prev = await prisma.product.findUnique({ where: { id: req.params.id } });
     await prisma.product.delete({ where: { id: req.params.id } });
+    await recordAudit({ ...auditActor(req), action: "delete", entity: "product", entityId: req.params.id, before: prev ? serializeProduct(prev) : null, after: null });
     return res.json({ success: true });
   } catch (error: any) {
     return res.status(500).json({ error: error.message || "Failed to delete product." });
@@ -143,6 +153,7 @@ router.post("/categories", async (req: Request, res: Response) => {
         isHidden: isHidden ?? false,
       },
     });
+    await recordAudit({ ...auditActor(req), action: "create", entity: "category", entityId: category.id, before: null, after: serializeCategory(category) });
     return res.status(201).json(serializeCategory(category));
   } catch (error: any) {
     return res.status(500).json({ error: error.message || "Failed to create category." });
@@ -152,6 +163,7 @@ router.post("/categories", async (req: Request, res: Response) => {
 router.put("/categories/:id", async (req: Request, res: Response) => {
   try {
     const { name, nameAr, image, isHidden } = req.body;
+    const prev = await prisma.category.findUnique({ where: { id: req.params.id } });
     const category = await prisma.category.update({
       where: { id: req.params.id },
       data: {
@@ -161,6 +173,7 @@ router.put("/categories/:id", async (req: Request, res: Response) => {
         ...(isHidden !== undefined && { isHidden }),
       },
     });
+    await recordAudit({ ...auditActor(req), action: "update", entity: "category", entityId: req.params.id, before: prev ? serializeCategory(prev) : null, after: serializeCategory(category) });
     return res.json(serializeCategory(category));
   } catch (error: any) {
     return res.status(500).json({ error: error.message || "Failed to update category." });
@@ -169,7 +182,9 @@ router.put("/categories/:id", async (req: Request, res: Response) => {
 
 router.delete("/categories/:id", async (req: Request, res: Response) => {
   try {
+    const prev = await prisma.category.findUnique({ where: { id: req.params.id } });
     await prisma.category.delete({ where: { id: req.params.id } });
+    await recordAudit({ ...auditActor(req), action: "delete", entity: "category", entityId: req.params.id, before: prev ? serializeCategory(prev) : null, after: null });
     return res.json({ success: true });
   } catch (error: any) {
     return res.status(500).json({ error: error.message || "Failed to delete category." });
@@ -201,6 +216,7 @@ router.post("/offers", async (req: Request, res: Response) => {
         isActive: isActive ?? true,
       },
     });
+    await recordAudit({ ...auditActor(req), action: "create", entity: "offer", entityId: offer.id, before: null, after: serializeOffer(offer) });
     return res.status(201).json(serializeOffer(offer));
   } catch (error: any) {
     return res.status(500).json({ error: error.message || "Failed to create offer." });
@@ -210,6 +226,7 @@ router.post("/offers", async (req: Request, res: Response) => {
 router.put("/offers/:id", async (req: Request, res: Response) => {
   try {
     const { title, description, discountPercentage, isActive } = req.body;
+    const prev = await prisma.offer.findUnique({ where: { id: req.params.id } });
     const offer = await prisma.offer.update({
       where: { id: req.params.id },
       data: {
@@ -219,6 +236,7 @@ router.put("/offers/:id", async (req: Request, res: Response) => {
         ...(isActive !== undefined && { isActive }),
       },
     });
+    await recordAudit({ ...auditActor(req), action: "update", entity: "offer", entityId: req.params.id, before: prev ? serializeOffer(prev) : null, after: serializeOffer(offer) });
     return res.json(serializeOffer(offer));
   } catch (error: any) {
     return res.status(500).json({ error: error.message || "Failed to update offer." });
@@ -227,7 +245,9 @@ router.put("/offers/:id", async (req: Request, res: Response) => {
 
 router.delete("/offers/:id", async (req: Request, res: Response) => {
   try {
+    const prev = await prisma.offer.findUnique({ where: { id: req.params.id } });
     await prisma.offer.delete({ where: { id: req.params.id } });
+    await recordAudit({ ...auditActor(req), action: "delete", entity: "offer", entityId: req.params.id, before: prev ? serializeOffer(prev) : null, after: null });
     return res.json({ success: true });
   } catch (error: any) {
     return res.status(500).json({ error: error.message || "Failed to delete offer." });
@@ -344,12 +364,14 @@ router.put("/settings/theme", async (req: Request, res: Response) => {
 
 router.put("/settings/currency", async (req: Request, res: Response) => {
   try {
+    const before = (await prisma.setting.findUnique({ where: { id: "currency_settings" } }))?.value ?? null;
     const value = normalizeCurrencySettings(req.body);
     await prisma.setting.upsert({
       where: { id: "currency_settings" },
       update: { value: value as any },
       create: { id: "currency_settings", value: value as any },
     });
+    await recordAudit({ ...auditActor(req), action: "update", entity: "currency_settings", entityId: "currency_settings", before, after: value });
     return res.json(value);
   } catch (error: any) {
     // Validation errors -> 400; anything else (e.g. DB failure) -> 500.
@@ -362,12 +384,14 @@ router.put("/settings/currency", async (req: Request, res: Response) => {
 
 router.put("/settings/base-currency", async (req: Request, res: Response) => {
   try {
+    const before = (await prisma.setting.findUnique({ where: { id: "base_currency" } }))?.value ?? null;
     const value = normalizeBaseCurrency(req.body);
     await prisma.setting.upsert({
       where: { id: "base_currency" },
       update: { value: value as any },
       create: { id: "base_currency", value: value as any },
     });
+    await recordAudit({ ...auditActor(req), action: "update", entity: "base_currency", entityId: "base_currency", before, after: value });
     return res.json(value);
   } catch (error: any) {
     const isValidation = error instanceof CurrencySettingsValidationError;
@@ -570,6 +594,7 @@ router.get("/pricing/rates", async (_req: Request, res: Response) => {
 
 router.put("/pricing/rates", async (req: Request, res: Response) => {
   try {
+    const before = (await prisma.setting.findUnique({ where: { id: "currency_rates" } }))?.value ?? null;
     const rates: CurrencyRateRow[] = Array.isArray(req.body?.rates) ? req.body.rates : [];
     const syncMeta = req.body?.syncMeta ?? {};
     await prisma.setting.upsert({
@@ -577,6 +602,7 @@ router.put("/pricing/rates", async (req: Request, res: Response) => {
       update: { value: { rates, syncMeta } },
       create: { id: "currency_rates", value: { rates, syncMeta } },
     });
+    await recordAudit({ ...auditActor(req), action: "update", entity: "currency_rates", entityId: "currency_rates", before, after: { rates, syncMeta } });
     return res.json({ success: true, ratesUpdated: rates.length });
   } catch (error: any) {
     return res.status(500).json({ error: error.message || "Failed to save currency rates." });
@@ -600,6 +626,7 @@ router.put("/pricing/product-prices", async (req: Request, res: Response) => {
   try {
     const incoming: ProductPriceRow[] = Array.isArray(req.body?.prices) ? req.body.prices : [];
     const data = await getPricingSetting("product_prices", { prices: [] as ProductPriceRow[] });
+    const beforePrices = { prices: data.prices };
     const byKey = new Map(data.prices.map((p) => [`${p.productId}_${p.currencyCode}`, p]));
     for (const p of incoming) {
       byKey.set(`${p.productId}_${p.currencyCode}`, p);
@@ -610,6 +637,7 @@ router.put("/pricing/product-prices", async (req: Request, res: Response) => {
       update: { value: { prices } },
       create: { id: "product_prices", value: { prices } },
     });
+    await recordAudit({ ...auditActor(req), action: "update", entity: "product_prices", entityId: "product_prices", before: beforePrices, after: { prices } });
     return res.json({ success: true });
   } catch (error: any) {
     return res.status(500).json({ error: error.message || "Failed to save product prices." });
@@ -623,6 +651,7 @@ router.delete("/pricing/product-prices", async (req: Request, res: Response) => 
       return res.status(400).json({ error: "productId and currencyCode are required." });
     }
     const data = await getPricingSetting("product_prices", { prices: [] as ProductPriceRow[] });
+    const beforePrices = { prices: data.prices };
     const prices = data.prices.filter(
       (p) => !(p.productId === productId && p.currencyCode === currencyCode),
     );
@@ -631,6 +660,7 @@ router.delete("/pricing/product-prices", async (req: Request, res: Response) => 
       update: { value: { prices } },
       create: { id: "product_prices", value: { prices } },
     });
+    await recordAudit({ ...auditActor(req), action: "delete", entity: "product_prices", entityId: "product_prices", before: beforePrices, after: { prices } });
     return res.json({ success: true });
   } catch (error: any) {
     return res.status(500).json({ error: error.message || "Failed to delete product price." });
