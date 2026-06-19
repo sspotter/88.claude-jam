@@ -423,6 +423,11 @@ export const resources = {
       audit_loading: "جارٍ تحميل النشاط…",
       audit_prev: "السابق",
       audit_next: "التالي",
+      tab_details: "التفاصيل",
+      tab_prices: "الأسعار",
+      filter_by_category: "تصفية حسب الفئة",
+      search_products: "بحث عن المنتجات",
+      save_product_first: "احفظ المنتج أولاً لتعيين الأسعار لكل عملة.",
     },
   },
   en: {
@@ -845,6 +850,11 @@ export const resources = {
       audit_loading: "Loading activity…",
       audit_prev: "Previous",
       audit_next: "Next",
+      tab_details: "Details",
+      tab_prices: "Prices",
+      filter_by_category: "Filter by category",
+      search_products: "Search products",
+      save_product_first: "Save the product first to set per-currency prices.",
     },
   },
 };
