@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
 	RefreshCw,
@@ -10,38 +10,33 @@ import { toast } from 'sonner'
 import type { CurrencyCode, CurrencySettings } from '../../types/pricing'
 import {
 	BASE_CURRENCY,
-	OPTIONAL_CURRENCIES,
 	RATE_STALE_MS,
 	SUPPORTED_CURRENCIES,
 } from '../../lib/pricing/constants'
 import { formatPrice, formatRate } from '../../lib/pricing/formatPrice'
 import {
-	buildRateMap,
-	estimateConversion,
-} from '../../lib/pricing/pricingEngine'
-import {
 	getStoredRates,
 	getSyncMeta,
 	syncExchangeRates,
 } from '../../lib/pricing/currencyService'
-import {
-	getProductPrices,
-	saveProductPricing,
-} from '../../lib/pricing/productPriceService'
 import { getCurrencySettings } from '../../lib/api/catalog'
-import { listProducts, updateProduct, updateCurrencySettings } from '../../lib/api/admin'
-import type { Product as ApiProduct } from '../../lib/api/catalog'
+import { listProducts, listCategories, updateCurrencySettings } from '../../lib/api/admin'
+import type { Product as ApiProduct, Category as ApiCategory } from '../../lib/api/catalog'
 import { useCurrencySettingsStore } from '../../store/currencySettingsStore'
 import { handleApiError, OperationType } from '../../lib/api/errors'
 import { useCurrencyStore } from '../../store/currencyStore'
 import { useBaseCurrencyStore, saveBaseCurrency } from '../../store/baseCurrencyStore'
+import ProductPricingEditor from '../../components/admin/ProductPricingEditor'
 
-type Product = Pick<ApiProduct, 'id' | 'name' | 'nameAr' | 'price'>
-
-type ManualPriceForm = Partial<Record<CurrencyCode, string>>
+type Product = Pick<
+	ApiProduct,
+	'id' | 'name' | 'nameAr' | 'price' | 'image' | 'categoryId'
+>
+type Category = Pick<ApiCategory, 'id' | 'name'>
 
 export default function Pricing() {
-	const { t } = useTranslation()
+	const { t, i18n } = useTranslation()
+	const lang = i18n.language === 'ar' ? 'ar' : 'en'
 	const setRates = useCurrencyStore((s) => s.setRates)
 	const applyCurrencySettings = useCurrencySettingsStore((s) => s.setSettings)
 	const baseCurrency = useBaseCurrencyStore((s) => s.baseCurrency)
@@ -53,12 +48,9 @@ export default function Pricing() {
 	const [savingCurrency, setSavingCurrency] = useState(false)
 
 	const [products, setProducts] = useState<Product[]>([])
+	const [categories, setCategories] = useState<Category[]>([])
+	const [filterCategoryId, setFilterCategoryId] = useState<string>('')
 	const [selectedProductId, setSelectedProductId] = useState<string>('')
-	const [basePrice, setBasePrice] = useState('')
-	const [manualPrices, setManualPrices] = useState<ManualPriceForm>({})
-	const [savedManual, setSavedManual] = useState<Set<CurrencyCode>>(new Set())
-	const [loadingProduct, setLoadingProduct] = useState(false)
-	const [saving, setSaving] = useState(false)
 	const [refreshing, setRefreshing] = useState(false)
 
 	const [rates, setLocalRates] = useState<
@@ -66,19 +58,6 @@ export default function Pricing() {
 	>([])
 	const [lastSyncAt, setLastSyncAt] = useState<number | null>(null)
 	const [syncStatus, setSyncStatus] = useState<string | null>(null)
-
-	const rateMap = useMemo(() => {
-		const entries = rates.map((r) => ({
-			baseCurrency: BASE_CURRENCY as CurrencyCode,
-			targetCurrency: r.target,
-			rate: r.rate,
-			provider: r.provider,
-			syncedAt: r.syncedAt,
-			createdAt: 0,
-			updatedAt: 0,
-		}))
-		return buildRateMap(entries, BASE_CURRENCY)
-	}, [rates])
 
 	const isStale = lastSyncAt
 		? Date.now() - lastSyncAt > RATE_STALE_MS
@@ -101,6 +80,12 @@ export default function Pricing() {
 	}, [selectedProductId])
 
 	useEffect(() => {
+		listCategories()
+			.then((cats) => setCategories(cats.map((c) => ({ id: c.id, name: c.name }))))
+			.catch((e) => handleApiError(e, OperationType.GET, 'categories'))
+	}, [])
+
+	useEffect(() => {
 		loadRates()
 	}, [])
 
@@ -119,11 +104,6 @@ export default function Pricing() {
 			if (firstEnabled) setDefaultCurrency(firstEnabled)
 		}
 	}, [enabledSet, defaultCurrency])
-
-	useEffect(() => {
-		if (!selectedProductId) return
-		loadProductPricing(selectedProductId)
-	}, [selectedProductId, products])
 
 	async function loadRates() {
 		try {
@@ -144,35 +124,6 @@ export default function Pricing() {
 			setRates(stored, meta.lastSyncAt)
 		} catch (e) {
 			handleApiError(e, OperationType.GET, 'currency_rates')
-		}
-	}
-
-	async function loadProductPricing(productId: string) {
-		setLoadingProduct(true)
-		try {
-			const product = products.find((p) => p.id === productId)
-			const prices = await getProductPrices(productId)
-			const aedEntry = prices.find((p) => p.currencyCode === BASE_CURRENCY)
-			const aed = aedEntry?.price ?? product?.price ?? 0
-			setBasePrice(String(aed))
-
-			const manual: ManualPriceForm = {}
-			const saved = new Set<CurrencyCode>()
-			for (const code of OPTIONAL_CURRENCIES) {
-				const entry = prices.find((p) => p.currencyCode === code && p.isManual)
-				if (entry) {
-					manual[code] = String(entry.price)
-					saved.add(code)
-				} else {
-					manual[code] = ''
-				}
-			}
-			setManualPrices(manual)
-			setSavedManual(saved)
-		} catch (e) {
-			handleApiError(e, OperationType.GET, 'product_prices')
-		} finally {
-			setLoadingProduct(false)
 		}
 	}
 
@@ -243,44 +194,6 @@ export default function Pricing() {
 			setSavingCurrency(false)
 		}
 	}
-
-	async function handleSavePricing() {
-		const aed = parseFloat(basePrice)
-		if (!selectedProductId || Number.isNaN(aed) || basePrice.trim() === '') {
-			toast.error(t('aed_price_required'))
-			return
-		}
-
-		const parsedManual: Partial<Record<CurrencyCode, number | null>> = {}
-		for (const code of OPTIONAL_CURRENCIES) {
-			const raw = manualPrices[code]?.trim()
-			if (!raw) {
-				parsedManual[code] = null
-				continue
-			}
-			const val = parseFloat(raw)
-			if (val === 0) {
-				const confirmed = window.confirm(t('confirm_zero_price'))
-				if (!confirmed) return
-			}
-			parsedManual[code] = val
-		}
-
-		setSaving(true)
-		try {
-			await saveProductPricing(selectedProductId, aed, parsedManual)
-			await updateProduct(selectedProductId, { price: aed })
-			toast.success(t('save') + '!')
-			await loadProductPricing(selectedProductId)
-		} catch (e) {
-			const msg = e instanceof Error ? e.message : t('save_failed')
-			toast.error(msg)
-		} finally {
-			setSaving(false)
-		}
-	}
-
-	const aedNumeric = parseFloat(basePrice) || 0
 
 	return (
 		<div className="p-6 max-w-5xl mx-auto space-y-8">
@@ -439,108 +352,82 @@ export default function Pricing() {
 					{t('product_pricing')}
 				</h2>
 
-				<div className="mb-4">
+				<div className="mb-4 max-w-xs">
 					<label className="block text-sm font-medium text-gray-700 mb-1">
-						{t('select_product')}
+						{t('filter_by_category')}
 					</label>
 					<select
-						value={selectedProductId}
-						onChange={(e) => setSelectedProductId(e.target.value)}
+						value={filterCategoryId}
+						onChange={(e) => setFilterCategoryId(e.target.value)}
 						className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
 					>
-						{products.map((p) => (
-							<option key={p.id} value={p.id}>
-								{p.name}
+						<option value="">{t('all_categories')}</option>
+						{categories.map((c) => (
+							<option key={c.id} value={c.id}>
+								{c.name}
 							</option>
 						))}
 					</select>
 				</div>
 
-				{loadingProduct ? (
-					<p className="text-gray-400 text-sm">{t('loading')}...</p>
-				) : (
-					<div className="space-y-4">
-						<div>
-							<label className="block text-sm font-medium text-gray-700 mb-1">
-								{`${baseCurrency} ${t('price')}`} *
-							</label>
-							<input
-								type="number"
-								min="0"
-								step="0.01"
-								value={basePrice}
-								onChange={(e) => setBasePrice(e.target.value)}
-								className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
-								required
-							/>
-						</div>
-
-						<p className="text-xs text-gray-500">{t('leave_empty_convert')}</p>
-
-						{OPTIONAL_CURRENCIES.map((code) => {
-							const hasManual = savedManual.has(code)
-								&& manualPrices[code]?.trim() !== ''
-							const estimated = estimateConversion(
-								aedNumeric,
-								BASE_CURRENCY,
-								code,
-								rateMap[code],
+				<div className="grid gap-6 md:grid-cols-[18rem_1fr]">
+					<div className="max-h-96 overflow-y-auto rounded-lg border border-gray-200 divide-y divide-gray-100">
+						{products
+							.filter(
+								(p) => !filterCategoryId || p.categoryId === filterCategoryId,
 							)
-
-							return (
-								<div key={code}>
-									<div className="flex items-center gap-2 mb-1">
-										<label className="text-sm font-medium text-gray-700">
-											{code} {t('price')} ({t('optional')})
-										</label>
-										<span
-											className={`text-xs px-2 py-0.5 rounded-full ${
-												hasManual
-													? 'bg-blue-100 text-blue-700'
-													: 'bg-gray-100 text-gray-600'
-											}`}
-										>
-											{hasManual
-												? t('price_badge_manual')
-												: t('price_badge_auto')}
+							.map((p) => (
+								<button
+									key={p.id}
+									type="button"
+									onClick={() => setSelectedProductId(p.id)}
+									className={`flex w-full items-center gap-3 px-3 py-2 text-left transition-colors ${
+										selectedProductId === p.id
+											? 'bg-gray-900/5'
+											: 'hover:bg-gray-50'
+									}`}
+								>
+									<div className="w-10 h-10 rounded-md bg-gray-100 overflow-hidden shrink-0">
+										{p.image ? (
+											<img
+												src={p.image}
+												alt={p.name}
+												className="w-full h-full object-cover"
+											/>
+										) : null}
+									</div>
+									<div className="flex flex-col min-w-0">
+										<span className="text-sm font-medium text-gray-900 truncate">
+											{p.name}
+										</span>
+										<span className="text-xs text-gray-500">
+											{formatPrice(p.price, baseCurrency, lang)}
 										</span>
 									</div>
-									<input
-										type="number"
-										min="0"
-										step="0.01"
-										value={manualPrices[code] ?? ''}
-										onChange={(e) =>
-											setManualPrices((prev) => ({
-												...prev,
-												[code]: e.target.value,
-											}))
-										}
-										placeholder={t('leave_empty_convert')}
-										className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
-									/>
-									{!manualPrices[code]?.trim() && (
-										<p className="text-xs text-gray-500 mt-1">
-											{t('estimated_price')}:{' '}
-											{estimated !== null
-												? formatPrice(estimated, code)
-												: t('rate_unavailable')}
-										</p>
-									)}
-								</div>
-							)
-						})}
-
-						<button
-							onClick={handleSavePricing}
-							disabled={saving}
-							className="inline-flex items-center gap-2 px-5 py-2.5 bg-gray-900 hover:bg-gray-800 text-white rounded-lg text-sm font-medium disabled:opacity-50"
-						>
-							<Save className="w-4 h-4" />
-							{saving ? t('saving') : t('save')}
-						</button>
+								</button>
+							))}
+						{products.filter(
+							(p) => !filterCategoryId || p.categoryId === filterCategoryId,
+						).length === 0 && (
+							<p className="px-3 py-4 text-sm text-gray-400">
+								No products found.
+							</p>
+						)}
 					</div>
-				)}
+
+					<div>
+						{selectedProductId ? (
+							<ProductPricingEditor
+								productId={selectedProductId}
+								productBasePrice={
+									products.find((p) => p.id === selectedProductId)?.price ?? 0
+								}
+							/>
+						) : (
+							<p className="text-sm text-gray-400">{t('select_product')}</p>
+						)}
+					</div>
+				</div>
 			</section>
 		</div>
 	)
