@@ -2,7 +2,17 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Save } from 'lucide-react'
 import { toast } from 'sonner'
-import type { CurrencyCode } from '../../types/pricing'
+import type { CurrencyCode, WeightOption } from '../../types/pricing'
+import {
+	WEIGHT_OPTIONS,
+	ANCHOR_WEIGHT,
+	DEFAULT_VISIBLE_WEIGHTS,
+	resolveWeightBasePrice,
+} from '../../lib/pricing/weightPricing'
+import {
+	getProductWeights,
+	saveProductWeights,
+} from '../../lib/pricing/productWeightService'
 import { BASE_CURRENCY, OPTIONAL_CURRENCIES } from '../../lib/pricing/constants'
 import { formatPrice } from '../../lib/pricing/formatPrice'
 import { estimateConversion } from '../../lib/pricing/pricingEngine'
@@ -39,6 +49,12 @@ export default function ProductPricingEditor({
 	const [savedManual, setSavedManual] = useState<Set<CurrencyCode>>(new Set())
 	const [loadingProduct, setLoadingProduct] = useState(false)
 	const [saving, setSaving] = useState(false)
+	const [visibleWeights, setVisibleWeights] = useState<Set<WeightOption>>(
+		new Set(DEFAULT_VISIBLE_WEIGHTS),
+	)
+	const [weightOverrides, setWeightOverrides] = useState<
+		Partial<Record<WeightOption, string>>
+	>({})
 
 	useEffect(() => {
 		if (!productId) return
@@ -64,6 +80,19 @@ export default function ProductPricingEditor({
 				} else {
 					manual[code] = ''
 				}
+			}
+			const weightConfig = await getProductWeights(id)
+			if (weightConfig) {
+				setVisibleWeights(new Set(weightConfig.visibleWeights))
+				const overrides: Partial<Record<WeightOption, string>> = {}
+				for (const w of WEIGHT_OPTIONS) {
+					const v = weightConfig.weightOverrides[w]
+					overrides[w] = v !== undefined && v !== null ? String(v) : ''
+				}
+				setWeightOverrides(overrides)
+			} else {
+				setVisibleWeights(new Set(DEFAULT_VISIBLE_WEIGHTS))
+				setWeightOverrides({})
 			}
 			setManualPrices(manual)
 			setSavedManual(saved)
@@ -103,6 +132,24 @@ export default function ProductPricingEditor({
 		setSaving(true)
 		try {
 			await saveProductPricing(productId, base, parsedManual)
+			if (visibleWeights.size === 0) {
+				toast.error(t('at_least_one_weight'))
+				setSaving(false)
+				return
+			}
+			const overridesOut: Partial<Record<WeightOption, number>> = {}
+			for (const w of WEIGHT_OPTIONS) {
+				if (w === ANCHOR_WEIGHT) continue // anchor is the base price, not an override
+				const raw = weightOverrides[w]?.trim()
+				if (!raw) continue
+				const val = parseFloat(raw)
+				if (!Number.isNaN(val) && val >= 0) overridesOut[w] = val
+			}
+			await saveProductWeights({
+				productId,
+				visibleWeights: WEIGHT_OPTIONS.filter((w) => visibleWeights.has(w)),
+				weightOverrides: overridesOut,
+			})
 			if (showBasePrice) {
 				await updateProduct(productId, { price: base })
 			}
@@ -120,6 +167,23 @@ export default function ProductPricingEditor({
 	const baseNumeric = showBasePrice
 		? parseFloat(basePrice) || 0
 		: productBasePrice || 0
+
+	function toggleWeightVisible(w: WeightOption) {
+		setVisibleWeights((prev) => {
+			const next = new Set(prev)
+			if (next.has(w)) {
+				if (next.size === 1) return prev // never empty
+				next.delete(w)
+			} else {
+				next.add(w)
+			}
+			return next
+		})
+	}
+
+	function autoWeightPrice(w: WeightOption): number {
+		return resolveWeightBasePrice(baseNumeric, w, {})
+	}
 
 	if (loadingProduct) {
 		return <p className="text-gray-400 text-sm">{t('loading')}...</p>
@@ -143,6 +207,48 @@ export default function ProductPricingEditor({
 					/>
 				</div>
 			)}
+
+			<div className="border-t border-gray-100 pt-4">
+				<label className="block text-sm font-medium text-gray-700 mb-1">
+					{t('weights')}
+				</label>
+				<p className="text-xs text-gray-500 mb-3">{t('weights_desc')}</p>
+				<div className="space-y-2">
+					{WEIGHT_OPTIONS.map((w) => {
+						const isAnchor = w === ANCHOR_WEIGHT
+						const checked = visibleWeights.has(w)
+						return (
+							<div key={w} className="flex items-center gap-3">
+								<input
+									type="checkbox"
+									checked={checked}
+									onChange={() => toggleWeightVisible(w)}
+									className="w-4 h-4"
+									aria-label={`${t('show')} ${w}`}
+								/>
+								<span className="w-12 text-sm font-medium text-gray-700">{w}</span>
+								{isAnchor ? (
+									<span className="text-xs px-2 py-0.5 rounded-full bg-amber-100 text-amber-700">
+										{t('anchor_weight_badge')}
+									</span>
+								) : (
+									<input
+										type="number"
+										min="0"
+										step="0.01"
+										value={weightOverrides[w] ?? ''}
+										onChange={(e) =>
+											setWeightOverrides((prev) => ({ ...prev, [w]: e.target.value }))
+										}
+										placeholder={`${autoWeightPrice(w)} (${t('price_badge_auto')})`}
+										className="flex-1 border border-gray-300 rounded-lg px-3 py-1.5 text-sm"
+									/>
+								)}
+							</div>
+						)
+					})}
+				</div>
+			</div>
 
 			<p className="text-xs text-gray-500">{t('leave_empty_convert')}</p>
 
