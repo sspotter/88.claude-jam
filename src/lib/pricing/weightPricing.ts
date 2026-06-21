@@ -1,5 +1,10 @@
-import type { ProductPricingType, WeightOption } from '../../types/pricing'
-import { roundPrice } from './pricingEngine'
+import type {
+	CurrencyCode,
+	ProductPricingType,
+	ResolvedPrice,
+	WeightOption,
+} from '../../types/pricing'
+import { resolveProductPrice, roundPrice } from './pricingEngine'
 
 export const WEIGHT_MULTIPLIERS: Record<WeightOption, number> = {
 	'500g': 0.5,
@@ -61,4 +66,65 @@ export function resolveWeightBasePrice(
 	}
 	const kg = getWeightMultiplier(weight)
 	return roundPrice((anchorBasePrice * kg) / 2)
+}
+
+export interface WeightedPriceInput {
+	/** Product 2kg anchor price in the base currency. */
+	anchorBasePrice: number
+	weight: string
+	weightOverrides?: Partial<Record<WeightOption, number>>
+	baseCurrency: CurrencyCode
+	targetCurrency: CurrencyCode
+	/** Per-currency manual overrides, interpreted as the 2kg anchor in that currency. */
+	manualPrices?: Partial<Record<CurrencyCode, number>>
+	rates?: Partial<Record<CurrencyCode, number>>
+}
+
+/**
+ * Customer-facing price for (product weight, currency).
+ *
+ * Layer 1: base-currency weight price = override-or-linear (resolveWeightBasePrice).
+ * Layer 2 currency:
+ *   - target == base            → the base weight price
+ *   - per-currency override set  → §3.3: treat it as the 2kg anchor in that
+ *                                  currency and scale linearly (override × kg/2)
+ *   - else                       → convert the base weight price via rate
+ *                                  (falls back to base amount if no rate)
+ */
+export function resolveWeightedPrice(input: WeightedPriceInput): ResolvedPrice {
+	const {
+		anchorBasePrice,
+		weight,
+		weightOverrides = {},
+		baseCurrency,
+		targetCurrency,
+		manualPrices = {},
+		rates = {},
+	} = input
+
+	const baseWeightPrice = resolveWeightBasePrice(anchorBasePrice, weight, weightOverrides)
+
+	if (targetCurrency !== baseCurrency) {
+		const anchorOverride = manualPrices[targetCurrency]
+		if (anchorOverride !== undefined && anchorOverride !== null) {
+			const kg = getWeightMultiplier(weight)
+			return {
+				price: roundPrice((anchorOverride * kg) / 2),
+				currency: targetCurrency,
+				source: 'manual',
+				exchangeRate: null,
+				basePrice: baseWeightPrice,
+				baseCurrency,
+			}
+		}
+	}
+
+	// No per-currency anchor override: convert the base weight price via rate.
+	return resolveProductPrice({
+		basePrice: baseWeightPrice,
+		baseCurrency,
+		targetCurrency,
+		manualPrices: {},
+		rates,
+	})
 }

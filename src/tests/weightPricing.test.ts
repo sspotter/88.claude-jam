@@ -10,6 +10,7 @@ import {
 	getCartLineId,
 	getWeightMultiplier,
 	resolveWeightBasePrice,
+	resolveWeightedPrice,
 } from '../lib/pricing/weightPricing'
 
 let passed = 0
@@ -84,6 +85,41 @@ test('resolveWeightBasePrice: override wins over linear', () => {
 
 test('resolveWeightBasePrice: rounds linear result to 2dp', () => {
 	assert.equal(resolveWeightBasePrice(33, '500g', {}), 8.25)
+})
+
+test('resolveWeightedPrice: base currency returns base weight price', () => {
+	const r = resolveWeightedPrice({
+		anchorBasePrice: 100, weight: '5kg', weightOverrides: {},
+		baseCurrency: 'AED', targetCurrency: 'AED', manualPrices: {}, rates: {},
+	})
+	assert.equal(r.price, 250)
+	assert.equal(r.currency, 'AED')
+})
+
+test('resolveWeightedPrice: converts base weight price via rate', () => {
+	const r = resolveWeightedPrice({
+		anchorBasePrice: 100, weight: '1kg', weightOverrides: {},
+		baseCurrency: 'AED', targetCurrency: 'USD', manualPrices: {}, rates: { USD: 0.27 },
+	})
+	assert.equal(r.price, 13.5) // 50 × 0.27
+	assert.equal(r.source, 'converted')
+})
+
+test('resolveWeightedPrice: §3.3 per-currency override is the 2kg anchor, scaled linearly', () => {
+	const r = resolveWeightedPrice({
+		anchorBasePrice: 100, weight: '5kg', weightOverrides: {},
+		baseCurrency: 'AED', targetCurrency: 'USD', manualPrices: { USD: 30 }, rates: { USD: 0.27 },
+	})
+	assert.equal(r.price, 75) // 30 × 5 / 2, NOT a rate conversion
+	assert.equal(r.source, 'manual')
+})
+
+test('resolveWeightedPrice: base per-weight override converts when currency has no override', () => {
+	const r = resolveWeightedPrice({
+		anchorBasePrice: 100, weight: '5kg', weightOverrides: { '5kg': 200 },
+		baseCurrency: 'AED', targetCurrency: 'USD', manualPrices: {}, rates: { USD: 0.5 },
+	})
+	assert.equal(r.price, 100) // 200 × 0.5
 })
 
 console.log(`\n${passed + failed} tests: ${passed} passed, ${failed} failed\n`)
