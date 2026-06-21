@@ -47,3 +47,9 @@ export interface OrderPriceSnapshot {
 	exchangeRateUsed: number | null
 	priceSource: PriceSource
 }
+
+export interface ProductWeightConfig {
+	productId: string
+	visibleWeights: WeightOption[]
+	weightOverrides: Partial<Record<WeightOption, number>>
+}
