@@ -45,3 +45,20 @@ export function getCartLineId(
 	}
 	return productId
 }
+
+/**
+ * Base-currency price for a single weight. Uses the per-weight override when
+ * present, otherwise derives linearly from the 2kg anchor: anchor × kg / 2.
+ */
+export function resolveWeightBasePrice(
+	anchorBasePrice: number,
+	weight: string,
+	weightOverrides: Partial<Record<WeightOption, number>> = {},
+): number {
+	const override = weightOverrides[weight as WeightOption]
+	if (override !== undefined && override !== null) {
+		return roundPrice(override)
+	}
+	const kg = getWeightMultiplier(weight)
+	return roundPrice((anchorBasePrice * kg) / 2)
+}

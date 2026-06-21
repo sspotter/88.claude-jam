@@ -9,6 +9,7 @@ import {
 	calculateAedUnitPrice,
 	getCartLineId,
 	getWeightMultiplier,
+	resolveWeightBasePrice,
 } from '../lib/pricing/weightPricing'
 
 let passed = 0
@@ -68,6 +69,21 @@ test('fixed products with weight get separate cart lines', () => {
 
 test('getWeightMultiplier returns 0.5 for 500g', () => {
 	assert.equal(getWeightMultiplier('500g'), 0.5)
+})
+
+test('resolveWeightBasePrice: linear from 2kg anchor (anchor=100)', () => {
+	assert.equal(resolveWeightBasePrice(100, '500g', {}), 25)
+	assert.equal(resolveWeightBasePrice(100, '1kg', {}), 50)
+	assert.equal(resolveWeightBasePrice(100, '2kg', {}), 100)
+	assert.equal(resolveWeightBasePrice(100, '5kg', {}), 250)
+})
+
+test('resolveWeightBasePrice: override wins over linear', () => {
+	assert.equal(resolveWeightBasePrice(100, '5kg', { '5kg': 199 }), 199)
+})
+
+test('resolveWeightBasePrice: rounds linear result to 2dp', () => {
+	assert.equal(resolveWeightBasePrice(33, '500g', {}), 8.25)
 })
 
 console.log(`\n${passed + failed} tests: ${passed} passed, ${failed} failed\n`)
