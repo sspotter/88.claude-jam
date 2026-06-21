@@ -5,15 +5,21 @@ export const WEIGHT_MULTIPLIERS: Record<WeightOption, number> = {
 	'500g': 0.5,
 	'1kg': 1,
 	'2kg': 2,
-	'3kg': 3,
+	'5kg': 5,
 }
 
 export const WEIGHT_OPTIONS: WeightOption[] = [
 	'500g',
 	'1kg',
 	'2kg',
-	'3kg',
+	'5kg',
 ]
+
+/** The weight whose price the admin sets directly; all others derive from it. */
+export const ANCHOR_WEIGHT: WeightOption = '2kg'
+
+/** Weights shown for a product that has no saved config. */
+export const DEFAULT_VISIBLE_WEIGHTS: WeightOption[] = ['500g', '1kg', '2kg', '5kg']
 
 export function getWeightMultiplier(weight: string): number {
 	return WEIGHT_MULTIPLIERS[weight as WeightOption] ?? 1

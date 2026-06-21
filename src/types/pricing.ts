@@ -9,7 +9,7 @@ export type PriceSource = 'manual' | 'converted'
 
 export type ProductPricingType = 'per_kg' | 'fixed'
 
-export type WeightOption = '500g' | '1kg' | '2kg' | '3kg'
+export type WeightOption = '500g' | '1kg' | '2kg' | '5kg'
 
 export interface ProductPrice {
 	productId: string

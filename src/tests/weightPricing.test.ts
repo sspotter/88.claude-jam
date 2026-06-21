@@ -41,8 +41,8 @@ test('2kg at 10 AED/kg = 20 AED', () => {
 	assert.equal(calculateAedUnitPrice(10, '2kg', 'per_kg'), 20)
 })
 
-test('3kg at 10 AED/kg = 30 AED', () => {
-	assert.equal(calculateAedUnitPrice(10, '3kg', 'per_kg'), 30)
+test('5kg at 10 AED/kg = 50 AED', () => {
+	assert.equal(calculateAedUnitPrice(10, '5kg', 'per_kg'), 50)
 })
 
 test('fixed pricing ignores weight multiplier', () => {
