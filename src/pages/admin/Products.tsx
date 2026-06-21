@@ -26,6 +26,8 @@ import { toast } from "sonner";
 import * as XLSX from "xlsx";
 import { saveProductPrice } from "../../lib/pricing/productPriceService";
 import { BASE_CURRENCY } from "../../lib/pricing/constants";
+import ProductPriceCell from "../../components/ProductPriceCell";
+import { useAmountFormatter } from "../../hooks/usePricing";
 
 type Product = ApiProduct & {
   pricingType?: "per_kg" | "fixed";
@@ -36,6 +38,7 @@ type Category = Pick<ApiCategory, "id" | "name">;
 
 export default function Products() {
   const { t } = useTranslation();
+  const { format: formatAmount } = useAmountFormatter();
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [isEditing, setIsEditing] = useState<string | null>(null);
@@ -398,7 +401,7 @@ export default function Products() {
                     {getCatName(prod.categoryId)}
                   </td>
                   <td className="p-4 font-medium text-[var(--color-primary)]">
-                    {prod.price} {t("currency")}
+                    <ProductPriceCell productId={prod.id} basePrice={prod.price} />
                   </td>
                   <td className="p-4 text-stone-600 font-medium">
                     {(prod.stockCount || 0) <= 5 ? (
@@ -719,7 +722,7 @@ export default function Products() {
                       Revenue Generated
                     </span>
                     <span className="text-xl font-serif font-bold text-[var(--color-primary)]">
-                      {performanceData.totalRevenue.toFixed(2)} {t("currency")}
+                      {formatAmount(performanceData.totalRevenue)}
                     </span>
                   </div>
                   <div className="bg-stone-50 p-4 rounded-xl border border-stone-100 flex justify-between items-center">

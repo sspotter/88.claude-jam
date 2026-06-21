@@ -1,10 +1,14 @@
 import { useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { CurrencyCode, ProductPrice, ResolvedPrice } from '../types/pricing'
 import {
 	buildManualPriceMap,
 	buildRateMap,
+	estimateConversion,
 	resolveProductPrice,
 } from '../lib/pricing/pricingEngine'
+import { formatPrice } from '../lib/pricing/formatPrice'
+import type { DisplayLang } from '../lib/pricing/formatPrice'
 import { getStoredRates, getSyncMeta } from '../lib/pricing/currencyService'
 import { getAllProductPrices } from '../lib/pricing/productPriceService'
 import { useCurrencyStore } from '../store/currencyStore'
@@ -99,6 +103,38 @@ export function useResolvedPrice(
 			rates: rateMap,
 		})
 	}, [productId, basePrice, baseCurrency, targetCurrency, pricesByProduct, rateMap])
+}
+
+/**
+ * Formats a base-currency money amount (order total, revenue, totalSpent) in the
+ * admin/visitor-selected currency. Converts at the current rate; if no rate is
+ * available, falls back to showing the amount in the base currency.
+ *
+ * For pure money totals not tied to a single product (no manual overrides). For
+ * product prices that should honor per-currency overrides, use `useResolvedPrice`.
+ */
+export function useAmountFormatter(): { format: (baseAmount: number) => string } {
+	const selectedCurrency = useCurrencyStore((s) => s.currency)
+	const baseCurrency = useBaseCurrencyStore((s) => s.baseCurrency)
+	const { rateMap } = useCurrencyRates()
+	const { i18n } = useTranslation()
+	const lang: DisplayLang = i18n.language === 'ar' ? 'ar' : 'en'
+
+	return useMemo(() => {
+		const format = (baseAmount: number): string => {
+			const converted = estimateConversion(
+				baseAmount,
+				baseCurrency,
+				selectedCurrency,
+				rateMap[selectedCurrency],
+			)
+			if (converted === null) {
+				return formatPrice(baseAmount, baseCurrency, lang)
+			}
+			return formatPrice(converted, selectedCurrency, lang)
+		}
+		return { format }
+	}, [selectedCurrency, baseCurrency, rateMap, lang])
 }
 
 export function useRepriceCartOnCurrencyChange() {

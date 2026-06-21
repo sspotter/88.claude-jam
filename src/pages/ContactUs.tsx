@@ -1,10 +1,22 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { Phone, MapPin } from "lucide-react";
+import { Phone, MapPin, Copy, MessageCircle } from "lucide-react";
+import { toast } from "sonner";
+
+const PHONE_NUMBER = "+201008988663";
 
 export default function ContactUs() {
   const { i18n } = useTranslation();
   const isAr = i18n.language === "ar";
+
+  const handleCopyPhone = async () => {
+    try {
+      await navigator.clipboard.writeText(PHONE_NUMBER);
+      toast.success(isAr ? "تم نسخ الرقم" : "Number copied");
+    } catch {
+      toast.error(isAr ? "تعذّر نسخ الرقم" : "Couldn't copy number");
+    }
+  };
 
   return (
     <div
@@ -103,6 +115,31 @@ export default function ContactUs() {
           opacity: 0.8;
         }
 
+        /* ── Phone action icons ── */
+        .ctc-actions {
+          display: flex;
+          gap: 0.5rem;
+          margin-top: 0.65rem;
+        }
+        .ctc-action-btn {
+          width: 2.15rem;
+          height: 2.15rem;
+          border-radius: 10px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          background: rgba(242,202,80,0.08);
+          border: 1px solid var(--ctc-outline);
+          color: var(--ctc-gold);
+          cursor: pointer;
+          text-decoration: none;
+          transition: background 150ms ease, border-color 150ms ease;
+        }
+        .ctc-action-btn:hover {
+          background: rgba(242,202,80,0.18);
+          border-color: rgba(242,202,80,0.40);
+        }
+
         /* ── Map ── */
         .ctc-map-wrap {
           border-radius: 18px;
@@ -138,15 +175,28 @@ export default function ContactUs() {
           </div>
           <div>
             <p className="ctc-info-label">{isAr ? "رقم الهاتف" : "Phone"}</p>
-            <p className="ctc-info-value">
+            <p className="ctc-info-value">+20 100 898 8663</p>
+            <div className="ctc-actions">
+              <button
+                type="button"
+                className="ctc-action-btn"
+                onClick={handleCopyPhone}
+                aria-label={isAr ? "نسخ الرقم" : "Copy number"}
+                title={isAr ? "نسخ الرقم" : "Copy number"}
+              >
+                <Copy size={15} />
+              </button>
               <a
+                className="ctc-action-btn"
                 href="https://wa.me/201008988663"
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label={isAr ? "إرسال رسالة عبر واتساب" : "Send a WhatsApp message"}
+                title={isAr ? "إرسال رسالة عبر واتساب" : "Send a WhatsApp message"}
               >
-                +20 100 898 8663
+                <MessageCircle size={15} />
               </a>
-            </p>
+            </div>
           </div>
         </div>
 
@@ -159,8 +209,8 @@ export default function ContactUs() {
             <p className="ctc-info-label">{isAr ? "العنوان" : "Address"}</p>
             <p className="ctc-info-value" style={{ direction: "auto" }}>
               {isAr
-                ? "الإسكندرية، مصر"
-                : "Alexandria, Egypt"}
+                ? "٨٥ شارع عمرو النجومي، الإسكندرية، مصر"
+                : "85 Amr El-Negoumy Street, Alexandria, Egypt"}
             </p>
           </div>
         </div>

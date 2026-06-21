@@ -81,6 +81,7 @@ type OrderItemRow = {
   name: string;
   price: number;
   quantity: number;
+  priceSource: string | null;
 };
 
 type OrderRow = {
@@ -98,6 +99,7 @@ type OrderRow = {
   failedAt: Date | null;
   couponCode: string | null;
   couponDiscountPercentage: number | null;
+  currency: string;
   createdAt: Date;
   items?: OrderItemRow[];
 };
@@ -114,6 +116,7 @@ export function serializeOrder(o: OrderRow) {
       name: i.name,
       price: i.price,
       quantity: i.quantity,
+      priceSource: i.priceSource ?? "manual",
     })),
     totalPrice: o.totalPrice,
     paymentMethod: o.paymentMethod,
@@ -126,6 +129,7 @@ export function serializeOrder(o: OrderRow) {
       o.couponCode != null && o.couponDiscountPercentage != null
         ? { code: o.couponCode, discountPercentage: o.couponDiscountPercentage }
         : undefined,
+    currency: o.currency,
     createdAt: o.createdAt.getTime(),
   };
 }

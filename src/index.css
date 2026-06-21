@@ -1,6 +1,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Inter:wght@400;500;600&family=Cairo:wght@400;600;700&display=swap');
 @import "tailwindcss";
 
+@font-face {
+  font-family: 'Majalla';
+  src: url('/fonts/majalla.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+[data-font="majalla"] {
+  --font-serif: "Majalla", "Playfair Display", "Cairo", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-sans: "Majalla", "Inter", "Cairo", ui-sans-serif, system-ui, sans-serif;
+}
+
 :root {
   --color-primary: #1C1C1C;
   --color-accent: #8C7A6B;

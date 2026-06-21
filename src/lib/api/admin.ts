@@ -7,6 +7,7 @@ export interface OrderItem {
   name: string;
   price: number;
   quantity: number;
+  priceSource?: "manual" | "converted";
 }
 
 export interface Order {
@@ -21,6 +22,7 @@ export interface Order {
   status: string;
   paymentStatus?: string;
   coupon?: { code: string; discountPercentage: number };
+  currency: string;
   createdAt: number;
 }
 
@@ -102,6 +104,12 @@ export const updateTheme = (selectedTheme: string) =>
   adminFetch<{ selectedTheme: string }>("/api/admin/settings/theme", {
     method: "PUT",
     body: JSON.stringify({ selectedTheme }),
+  });
+
+export const updateFont = (selectedFont: string) =>
+  adminFetch<{ selectedFont: string }>("/api/admin/settings/font", {
+    method: "PUT",
+    body: JSON.stringify({ selectedFont }),
   });
 
 export const updateCurrencySettings = (settings: CurrencySettings) =>

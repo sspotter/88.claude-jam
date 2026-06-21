@@ -109,6 +109,20 @@ router.get("/settings/theme", async (_req: Request, res: Response) => {
 });
 
 /**
+ * GET /api/settings/font
+ */
+router.get("/settings/font", async (_req: Request, res: Response) => {
+  try {
+    const setting = await prisma.setting.findUnique({ where: { id: "font" } });
+    const value = (setting?.value as { selectedFont?: string } | null) ?? null;
+    return res.json({ selectedFont: value?.selectedFont ?? "default" });
+  } catch (error: any) {
+    return res.status(500).json({ error: error.message || "Failed to fetch font." });
+  }
+});
+
+
+/**
  * GET /api/pricing/rates — public read for storefront currency conversion.
  */
 router.get("/pricing/rates", async (_req: Request, res: Response) => {

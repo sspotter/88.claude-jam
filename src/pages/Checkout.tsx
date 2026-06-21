@@ -62,6 +62,7 @@ export default function Checkout() {
         },
         paymentMethod,
         couponCode: coupon?.code,
+        currency: orderCurrency,
       });
 
       if (paymentMethod === "whatsapp") {

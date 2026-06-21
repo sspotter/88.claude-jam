@@ -3,7 +3,7 @@ import { listCustomers, listOrders } from "../../lib/api/admin";
 import type { Order as ApiOrder } from "../../lib/api/admin";
 import { handleApiError, OperationType } from "../../lib/api/errors";
 import { Search, X } from "lucide-react";
-import { useTranslation } from "react-i18next";
+import { useAmountFormatter } from "../../hooks/usePricing";
 
 interface CustomerStat {
   phone: string;
@@ -16,7 +16,7 @@ interface CustomerStat {
 }
 
 export default function Customers() {
-  const { t } = useTranslation();
+  const { format: formatAmount } = useAmountFormatter();
   const [customers, setCustomers] = useState<CustomerStat[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -140,7 +140,7 @@ export default function Customers() {
                   </td>
                   <td className="p-4 text-stone-600">{customer.totalOrders}</td>
                   <td className="p-4 font-medium text-[var(--color-primary)]">
-                    {customer.totalSpent.toFixed(2)} {t("currency")}
+                    {formatAmount(customer.totalSpent)}
                   </td>
                   <td className="p-4 text-sm text-stone-500">
                     {customer.lastOrderDate > 0
@@ -216,7 +216,7 @@ export default function Customers() {
                         {order.status}
                       </span>
                       <span className="font-serif font-bold text-lg text-[var(--color-primary)]">
-                        {order.totalPrice?.toFixed(2)} {t("currency")}
+                        {formatAmount(order.totalPrice ?? 0)}
                       </span>
                     </div>
                   </div>

@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef, type ChangeEvent } from "react";
-import { getTheme } from "../../lib/api/catalog";
-import { updateTheme, getAnalytics, listOffers, importData } from "../../lib/api/admin";
+import { getTheme, getFont } from "../../lib/api/catalog";
+import { updateTheme, updateFont, getAnalytics, listOffers, importData } from "../../lib/api/admin";
 import { handleApiError, OperationType } from "../../lib/api/errors";
 import { toast } from "sonner";
-import { Palette, CheckCircle2, Download, Upload } from "lucide-react";
+import { Palette, CheckCircle2, Download, Upload, Type } from "lucide-react";
 import * as XLSX from "xlsx";
 
 const themes = [
@@ -20,20 +20,26 @@ const themes = [
 
 export default function AdminSettings() {
   const [selected, setSelected] = useState("default");
+  const [selectedFont, setSelectedFont] = useState("default");
   const [saving, setSaving] = useState(false);
+  const [savingFont, setSavingFont] = useState(false);
   const [loading, setLoading] = useState(true);
   const [exporting, setExporting] = useState(false);
   const [importing, setImporting] = useState(false);
   const importInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    getTheme()
-      .then((theme) => {
+    setLoading(true);
+    Promise.all([getTheme(), getFont()])
+      .then(([theme, font]) => {
         if (theme.selectedTheme) {
           setSelected(theme.selectedTheme);
         }
+        if (font.selectedFont) {
+          setSelectedFont(font.selectedFont);
+        }
       })
-      .catch((e) => handleApiError(e, OperationType.GET, "settings/theme"))
+      .catch((e) => handleApiError(e, OperationType.GET, "settings"))
       .finally(() => setLoading(false));
   }, []);
 
@@ -47,6 +53,20 @@ export default function AdminSettings() {
       handleApiError(e, OperationType.WRITE, "settings/theme");
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleSaveFont = async (fontId: string) => {
+    setSelectedFont(fontId);
+    setSavingFont(true);
+    try {
+      await updateFont(fontId);
+      document.documentElement.dataset.font = fontId;
+      toast.success("Font updated for all users");
+    } catch (e) {
+      handleApiError(e, OperationType.WRITE, "settings/font");
+    } finally {
+      setSavingFont(false);
     }
   };
 
@@ -218,7 +238,7 @@ export default function AdminSettings() {
       </div>
 
       <div className="bg-white p-8 rounded-2xl border border-stone-100 shadow-sm">
-        <h2 className="text-xl font-medium text-stone-800 mb-6">
+        <h2 className="text-xl font-medium text-stone-800 mb-6 font-serif">
           Global Theme
         </h2>
         <p className="text-stone-500 mb-8">
@@ -243,7 +263,7 @@ export default function AdminSettings() {
                 {isActive && (
                   <CheckCircle2 className="absolute top-4 right-4 w-6 h-6 text-[var(--color-accent)]" />
                 )}
-                <div className="font-medium text-lg text-stone-800 mb-4">
+                <div className="font-medium text-lg text-stone-800 mb-4 font-serif">
                   {theme.name}
                 </div>
                 <div className="flex gap-3">
@@ -265,6 +285,53 @@ export default function AdminSettings() {
                       Accent
                     </span>
                   </div>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="bg-white p-8 rounded-2xl border border-stone-100 shadow-sm">
+        <h2 className="text-xl font-medium text-stone-800 mb-6 flex items-center gap-3 font-serif">
+          <Type className="w-6 h-6 text-stone-600" />
+          Global Font
+        </h2>
+        <p className="text-stone-500 mb-8">
+          Select a font family for your storefront and admin dashboard. This will update the typography style across the website immediately.
+        </p>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {[
+            { id: "default", name: "Default (System Fonts)", description: "Playfair Display & Inter" },
+            { id: "majalla", name: "Majalla Font", description: "Elegant classic Arabic font" }
+          ].map((fontOption) => {
+            const isActive = selectedFont === fontOption.id;
+            return (
+              <button
+                key={fontOption.id}
+                onClick={() => handleSaveFont(fontOption.id)}
+                disabled={savingFont}
+                className={`relative p-6 rounded-2xl border-2 text-left transition-all ${
+                  isActive
+                    ? "border-[var(--color-accent)] bg-stone-50"
+                    : "border-stone-100 hover:border-stone-200 hover:bg-stone-50"
+                }`}
+                style={{
+                  fontFamily: fontOption.id === "majalla" ? "Majalla" : undefined
+                }}
+              >
+                {isActive && (
+                  <CheckCircle2 className="absolute top-4 right-4 w-6 h-6 text-[var(--color-accent)]" />
+                )}
+                <div className="font-medium text-lg text-stone-800 mb-1 font-serif">
+                  {fontOption.name}
+                </div>
+                <div className="text-xs text-stone-500 mb-4">
+                  {fontOption.description}
+                </div>
+                <div className="text-lg border border-dashed border-stone-200 p-3 rounded-lg bg-white text-stone-800 font-serif">
+                  {fontOption.id === "majalla" ? "خط المجلة - Jamhawi" : "Default Typography"}
                 </div>
               </button>
             );

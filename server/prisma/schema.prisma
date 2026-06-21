@@ -71,6 +71,7 @@ model Order {
   failedAt                 DateTime?
   couponCode               String?
   couponDiscountPercentage Float?
+  currency                 String      @default("AED")
   createdAt                DateTime    @default(now())
   items                    OrderItem[]
 
@@ -78,13 +79,14 @@ model Order {
 }
 
 model OrderItem {
-  id        String @id @default(uuid())
-  orderId   String
-  order     Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  productId String
-  name      String // snapshot at order time
-  price     Float // snapshot at order time
-  quantity  Int
+  id          String @id @default(uuid())
+  orderId     String
+  order       Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId   String
+  name        String // snapshot at order time
+  price       Float // snapshot at order time
+  quantity    Int
+  priceSource String? @default("manual") // manual | converted
 
   @@index([orderId])
 }

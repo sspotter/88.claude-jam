@@ -85,3 +85,28 @@ image.png
 ![alt text](image.png)
 
 ![alt text](<image copy.png>)
+
+
+
+
+
+- Converted from AED -> Converted from {currency}
+- admin dashboard AED -> to variables
+- add custom weights for the products -> default 2kg
+-add the region
+-> logo paymob is uncle jam
+-> any circle logo to be uncle jam
+->font majala discord saved
+--> animation video
+na5la btkbr
+war2 shagr btnzl 3asl
+btktb jamhawy
+
+300 + 100 
+
+
+
+------
+paymob -> developer email 
+change the WhatsApp numbers to his numbers
+

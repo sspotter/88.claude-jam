@@ -3,13 +3,12 @@ import { listProducts, updateProductStock } from "../../lib/api/admin";
 import type { Product as ApiProduct } from "../../lib/api/catalog";
 import { handleApiError, OperationType } from "../../lib/api/errors";
 import { toast } from "sonner";
-import { useTranslation } from "react-i18next";
 import { AlertCircle, CheckCircle } from "lucide-react";
+import ProductPriceCell from "../../components/ProductPriceCell";
 
 type Product = Pick<ApiProduct, "id" | "name" | "price" | "stockCount" | "isAvailable" | "categoryId">;
 
 export default function Inventory() {
-  const { t } = useTranslation();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<"all" | "low" | "out">("all");
@@ -113,7 +112,7 @@ export default function Inventory() {
                     </div>
                   </td>
                   <td className="p-4 text-stone-600">
-                    {prod.price.toFixed(2)} {t("currency")}
+                    <ProductPriceCell productId={prod.id} basePrice={prod.price} />
                   </td>
                   <td className="p-4">
                     {prod.stockCount === 0 ? (

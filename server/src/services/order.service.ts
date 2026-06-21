@@ -19,6 +19,7 @@ export interface ValidatedOrder {
     name: string;
     price: number;
     quantity: number;
+    priceSource?: string;
   }>;
   subtotal: number;
   discount: number;
@@ -36,10 +37,36 @@ export class OrderService {
    */
   public static async validateAndCalculate(
     items: CheckoutItem[],
-    couponCode?: string
+    couponCode?: string,
+    targetCurrency: string = "AED"
   ): Promise<ValidatedOrder> {
     if (!items || items.length === 0) {
       throw new Error("Cart is empty.");
+    }
+
+    // Load configurations for currency and pricing overrides
+    const baseCurrencySetting = await prisma.setting.findUnique({ where: { id: "base_currency" } });
+    const baseCurrency = (baseCurrencySetting?.value as { base?: string } | null)?.base ?? "AED";
+
+    const currencyRatesSetting = await prisma.setting.findUnique({ where: { id: "currency_rates" } });
+    const ratesList = (currencyRatesSetting?.value as { rates?: { baseCurrency: string, targetCurrency: string, rate: number }[] } | null)?.rates ?? [];
+    const rates: Record<string, number> = {};
+    for (const r of ratesList) {
+      if (r.baseCurrency === baseCurrency) {
+        rates[r.targetCurrency] = r.rate;
+      }
+    }
+
+    const productPricesSetting = await prisma.setting.findUnique({ where: { id: "product_prices" } });
+    const pricesList = (productPricesSetting?.value as { prices?: { productId: string, currencyCode: string, price: number, isManual: boolean }[] } | null)?.prices ?? [];
+    const productManualPrices: Record<string, Record<string, number>> = {};
+    for (const p of pricesList) {
+      if (p.isManual) {
+        if (!productManualPrices[p.productId]) {
+          productManualPrices[p.productId] = {};
+        }
+        productManualPrices[p.productId][p.currencyCode] = p.price;
+      }
     }
 
     const validatedItems = [];
@@ -54,10 +81,10 @@ export class OrderService {
         throw new Error(`Product with ID '${item.productId}' not found.`);
       }
 
-      const price = Number(product.price);
+      const basePrice = Number(product.price);
       const name = String(product.name);
 
-      if (isNaN(price) || price <= 0) {
+      if (isNaN(basePrice) || basePrice <= 0) {
         throw new Error(`Invalid price for product '${name}'.`);
       }
 
@@ -66,11 +93,35 @@ export class OrderService {
         throw new Error(`Invalid quantity for product '${name}'.`);
       }
 
+      // Resolve price in target currency
+      let price = basePrice;
+      let priceSource = "manual";
+
+      if (targetCurrency !== baseCurrency) {
+        const manualPrices = productManualPrices[product.id] ?? {};
+        const manualPrice = manualPrices[targetCurrency];
+        if (manualPrice !== undefined && manualPrice !== null) {
+          price = manualPrice;
+          priceSource = "manual";
+        } else {
+          const rate = rates[targetCurrency];
+          if (rate !== undefined && rate !== null) {
+            price = Math.round(basePrice * rate * 100) / 100;
+            priceSource = "converted";
+          } else {
+            // Fallback to base
+            price = basePrice;
+            priceSource = "manual";
+          }
+        }
+      }
+
       validatedItems.push({
         productId: item.productId,
         name,
         price,
         quantity,
+        priceSource,
       });
 
       subtotal += price * quantity;
@@ -116,8 +167,9 @@ export class OrderService {
     customerDetails: OrderCustomerDetails;
     validatedOrder: ValidatedOrder;
     paymentMethod: "whatsapp" | "paymob_card" | "paymob_wallet";
+    currency?: string;
   }): Promise<string> {
-    const { customerDetails, validatedOrder, paymentMethod } = params;
+    const { customerDetails, validatedOrder, paymentMethod, currency = "AED" } = params;
 
     const order = await prisma.$transaction(async (tx) => {
       const created = await tx.order.create({
@@ -131,12 +183,14 @@ export class OrderService {
           status: "pending",
           couponCode: validatedOrder.coupon?.code ?? null,
           couponDiscountPercentage: validatedOrder.coupon?.discountPercentage ?? null,
+          currency,
           items: {
             create: validatedOrder.items.map((i) => ({
               productId: i.productId,
               name: i.name,
               price: i.price,
               quantity: i.quantity,
+              priceSource: i.priceSource ?? "manual",
             })),
           },
         },

@@ -18,6 +18,8 @@ import {
   Search,
   CheckSquare,
   Square,
+  Globe,
+  Tag,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -371,12 +373,32 @@ export default function Orders() {
               <h4 className="font-medium text-stone-700 mb-2">{t("items")}:</h4>
               <ul className="space-y-2 mb-4">
                 {order.items.map((item, idx) => (
-                  <li key={idx} className="flex justify-between text-sm">
-                    <span>
-                      {item.quantity}x {item.name}
+                  <li key={idx} className="flex justify-between items-center text-sm py-1 border-b border-stone-200/40 last:border-0">
+                    <span className="flex items-center gap-2">
+                      <span>
+                        {item.quantity}x {item.name}
+                      </span>
+                      {order.currency && order.currency !== "AED" && order.currency !== "EGP" && (
+                        <span 
+                          className="inline-flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded-full bg-white border border-stone-200 text-stone-500 font-mono shadow-sm" 
+                          title={item.priceSource === "converted" ? "Auto-converted via exchange rates" : "Fixed manual price for this currency"}
+                        >
+                          {item.priceSource === "converted" ? (
+                            <>
+                              <Globe className="w-3 h-3 text-sky-500" />
+                              <span>Converted</span>
+                            </>
+                          ) : (
+                            <>
+                              <Tag className="w-3 h-3 text-emerald-500" />
+                              <span>Fixed Price</span>
+                            </>
+                          )}
+                        </span>
+                      )}
                     </span>
                     <span className="font-medium">
-                      {item.price * item.quantity} {t("currency")}
+                      {item.price * item.quantity} {order.currency || "AED"}
                     </span>
                   </li>
                 ))}
@@ -384,7 +406,7 @@ export default function Orders() {
               <div className="border-t border-stone-200 pt-3 flex justify-between font-bold text-lg text-[var(--color-primary)]">
                 <span>{t("total")}</span>
                 <span>
-                  {order.totalPrice} {t("currency")}
+                  {order.totalPrice} {order.currency || "AED"}
                 </span>
               </div>
             </div>

@@ -18,6 +18,7 @@ export interface CheckoutPayload {
   };
   paymentMethod: "whatsapp" | "paymob_card" | "paymob_wallet";
   couponCode?: string;
+  currency?: string;
 }
 
 export interface CheckoutResult {

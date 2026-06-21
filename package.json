@@ -4,7 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --port=3007 --host=0.0.0.0",
+    "dev:server": "npm run dev --prefix server",
+    "dev:web": "vite --port=3007 --host=0.0.0.0",
+    "dev": "concurrently -k -n server,web -c blue,magenta \"npm:dev:server\" \"npm:dev:web\"",
     "build": "vite build",
     "preview": "vite preview",
     "clean": "rm -rf dist",
@@ -22,6 +24,7 @@
     "@tailwindcss/vite": "^4.1.14",
     "@vitejs/plugin-react": "^5.0.4",
     "clsx": "^2.1.1",
+    "concurrently": "^10.0.3",
     "dotenv": "^17.2.3",
     "express": "^4.21.2",
     "i18next": "^26.0.8",

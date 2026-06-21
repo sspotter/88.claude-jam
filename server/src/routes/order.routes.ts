@@ -13,7 +13,7 @@ const BUSINESS_PHONE = process.env.BUSINESS_PHONE || "201027982033";
 
 router.post("/checkout", async (req: Request, res: Response) => {
   try {
-    const { items, customerDetails, paymentMethod, couponCode } = req.body;
+    const { items, customerDetails, paymentMethod, couponCode, currency } = req.body;
 
     // 1. Basic validation
     if (!items || !Array.isArray(items) || items.length === 0) {
@@ -26,14 +26,17 @@ router.post("/checkout", async (req: Request, res: Response) => {
       return res.status(400).json({ error: "Invalid payment method." });
     }
 
-    // 2. Validate prices, coupons and calculate total price
-    const validatedOrder = await OrderService.validateAndCalculate(items, couponCode);
+    const orderCurrency = String(currency || "AED");
+
+    // 2. Validate prices, coupons and calculate total price in the target currency
+    const validatedOrder = await OrderService.validateAndCalculate(items, couponCode, orderCurrency);
 
     // 3. Create the order in PostgreSQL with "pending" status
     const orderId = await OrderService.createOrder({
       customerDetails,
       validatedOrder,
       paymentMethod,
+      currency: orderCurrency,
     });
 
     // 4. Handle redirects based on payment method choice
@@ -50,15 +53,15 @@ router.post("/checkout", async (req: Request, res: Response) => {
       message += `\n`;
 
       validatedOrder.items.forEach((item) => {
-        message += `- ${item.name} x${item.quantity} = ${(item.price * item.quantity).toFixed(2)} EGP\n`;
+        message += `- ${item.name} x${item.quantity} = ${(item.price * item.quantity).toFixed(2)} ${orderCurrency}\n`;
       });
 
       if (validatedOrder.coupon) {
-        message += `\nSubtotal: ${validatedOrder.subtotal.toFixed(2)} EGP`;
+        message += `\nSubtotal: ${validatedOrder.subtotal.toFixed(2)} ${orderCurrency}`;
         message += `\nDiscount: ${validatedOrder.coupon.discountPercentage}% OFF (Code: ${validatedOrder.coupon.code})`;
       }
 
-      message += `\nTotal: ${validatedOrder.totalPrice.toFixed(2)} EGP`;
+      message += `\nTotal: ${validatedOrder.totalPrice.toFixed(2)} ${orderCurrency}`;
 
       const waRedirectUrl = `https://wa.me/${BUSINESS_PHONE}?text=${encodeURIComponent(message)}`;
 

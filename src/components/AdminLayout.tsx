@@ -18,6 +18,7 @@ import {
   ScrollText,
 } from "lucide-react";
 import NotificationsDropdown from "./NotificationsDropdown";
+import CurrencySelector from "./CurrencySelector";
 import { useAuth } from "../context/AuthContext";
 import { listOrders, listProducts } from "../lib/api/admin";
 import { handleApiError, OperationType } from "../lib/api/errors";
@@ -304,6 +305,7 @@ export default function AdminLayout() {
           </div>
 
           <div className="flex items-center gap-4">
+            <CurrencySelector compact />
             <NotificationsDropdown />
             <div className="w-10 h-10 bg-stone-200 rounded-full overflow-hidden flex items-center justify-center">
               <span className="font-medium text-stone-600">A</span>

@@ -106,6 +106,15 @@ test('estimateConversion returns null without rate', () => {
 	assert.equal(estimateConversion(100, 'AED', 'USD', undefined), null)
 })
 
+test('estimateConversion converts a base amount at the given rate', () => {
+	// Seam used by useAmountFormatter for money totals (revenue, totalSpent, order totals).
+	assert.equal(estimateConversion(100, 'AED', 'USD', 0.2722), 27.22)
+})
+
+test('estimateConversion returns the amount unchanged for the base currency', () => {
+	assert.equal(estimateConversion(100, 'AED', 'AED', undefined), 100)
+})
+
 test('roundPrice rounds to 2 decimal places', () => {
 	assert.equal(roundPrice(27.224), 27.22)
 })

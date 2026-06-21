@@ -362,6 +362,22 @@ router.put("/settings/theme", async (req: Request, res: Response) => {
   }
 });
 
+router.put("/settings/font", async (req: Request, res: Response) => {
+  try {
+    const selectedFont = String(req.body?.selectedFont ?? "");
+    if (!selectedFont) return res.status(400).json({ error: "selectedFont is required." });
+    await prisma.setting.upsert({
+      where: { id: "font" },
+      update: { value: { selectedFont } },
+      create: { id: "font", value: { selectedFont } },
+    });
+    return res.json({ selectedFont });
+  } catch (error: any) {
+    return res.status(500).json({ error: error.message || "Failed to update font." });
+  }
+});
+
+
 router.put("/settings/currency", async (req: Request, res: Response) => {
   try {
     const before = (await prisma.setting.findUnique({ where: { id: "currency_settings" } }))?.value ?? null;

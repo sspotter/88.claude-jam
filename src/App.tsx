@@ -6,7 +6,7 @@ import {
 } from "react-router-dom";
 import { Toaster } from "sonner";
 import { AuthProvider, useAuth } from "./context/AuthContext";
-import { getTheme } from "./lib/api/catalog";
+import { getTheme, getFont } from "./lib/api/catalog";
 
 import Layout from "./components/Layout";
 import AdminLayout from "./components/AdminLayout";
@@ -49,6 +49,13 @@ function AppRoutes() {
       })
       .catch(() => {
         document.documentElement.dataset.theme = "default";
+      });
+    getFont()
+      .then((font) => {
+        document.documentElement.dataset.font = font.selectedFont ?? "default";
+      })
+      .catch(() => {
+        document.documentElement.dataset.font = "default";
       });
   }, []);
 
