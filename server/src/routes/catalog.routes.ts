@@ -179,4 +179,19 @@ router.get("/pricing/product-prices", async (req: Request, res: Response) => {
   }
 });
 
+/**
+ * GET /api/pricing/product-weights?productId= — public read for storefront.
+ */
+router.get("/pricing/product-weights", async (req: Request, res: Response) => {
+  try {
+    const productId = req.query.productId as string | undefined;
+    const setting = await prisma.setting.findUnique({ where: { id: "product_weights" } });
+    const all = ((setting?.value as { configs?: { productId: string }[] } | null)?.configs) ?? [];
+    const configs = productId ? all.filter((c) => c.productId === productId) : all;
+    return res.json({ configs });
+  } catch (error: any) {
+    return res.status(500).json({ error: error.message || "Failed to fetch product weights." });
+  }
+});
+
 export default router;
