@@ -591,6 +591,12 @@ type ProductPriceRow = {
   updatedAt: number;
 };
 
+type ProductWeightRow = {
+  productId: string;
+  visibleWeights: string[];
+  weightOverrides: Record<string, number>;
+};
+
 async function getPricingSetting<T>(id: string, fallback: T): Promise<T> {
   const row = await prisma.setting.findUnique({ where: { id } });
   return (row?.value as T) ?? fallback;
@@ -680,6 +686,46 @@ router.delete("/pricing/product-prices", async (req: Request, res: Response) => 
     return res.json({ success: true });
   } catch (error: any) {
     return res.status(500).json({ error: error.message || "Failed to delete product price." });
+  }
+});
+
+router.get("/pricing/product-weights", async (req: Request, res: Response) => {
+  try {
+    const productId = req.query.productId as string | undefined;
+    const data = await getPricingSetting("product_weights", { configs: [] as ProductWeightRow[] });
+    const configs = productId
+      ? data.configs.filter((c) => c.productId === productId)
+      : data.configs;
+    return res.json({ configs });
+  } catch (error: any) {
+    return res.status(500).json({ error: error.message || "Failed to fetch product weights." });
+  }
+});
+
+router.put("/pricing/product-weights", async (req: Request, res: Response) => {
+  try {
+    const incoming = req.body?.config as ProductWeightRow | undefined;
+    if (!incoming?.productId) {
+      return res.status(400).json({ error: "config.productId is required." });
+    }
+    const data = await getPricingSetting("product_weights", { configs: [] as ProductWeightRow[] });
+    const before = { configs: data.configs };
+    const byId = new Map(data.configs.map((c) => [c.productId, c]));
+    byId.set(incoming.productId, {
+      productId: incoming.productId,
+      visibleWeights: Array.isArray(incoming.visibleWeights) ? incoming.visibleWeights : [],
+      weightOverrides: incoming.weightOverrides ?? {},
+    });
+    const configs = Array.from(byId.values());
+    await prisma.setting.upsert({
+      where: { id: "product_weights" },
+      update: { value: { configs } },
+      create: { id: "product_weights", value: { configs } },
+    });
+    await recordAudit({ ...auditActor(req), action: "update", entity: "product_weights", entityId: incoming.productId, before, after: { configs } });
+    return res.json({ success: true });
+  } catch (error: any) {
+    return res.status(500).json({ error: error.message || "Failed to save product weights." });
   }
 });
 
