@@ -1,6 +1,12 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import type { CurrencyCode, ProductPrice, ResolvedPrice } from '../types/pricing'
+import type {
+	CurrencyCode,
+	ProductPrice,
+	ProductWeightConfig,
+	ResolvedPrice,
+	WeightOption,
+} from '../types/pricing'
 import {
 	buildManualPriceMap,
 	buildRateMap,
@@ -11,6 +17,8 @@ import { formatPrice } from '../lib/pricing/formatPrice'
 import type { DisplayLang } from '../lib/pricing/formatPrice'
 import { getStoredRates, getSyncMeta } from '../lib/pricing/currencyService'
 import { getAllProductPrices } from '../lib/pricing/productPriceService'
+import { resolveWeightedPrice } from '../lib/pricing/weightPricing'
+import { getAllProductWeights } from '../lib/pricing/productWeightService'
 import { useCurrencyStore } from '../store/currencyStore'
 import { useCartStore } from '../store/cartStore'
 import { useBaseCurrencyStore, getBaseCurrencySnapshot } from '../store/baseCurrencyStore'
@@ -81,6 +89,32 @@ export function useProductPricesCache() {
 	return { pricesByProduct, loaded }
 }
 
+export function useProductWeightsCache() {
+	const [weightsByProduct, setWeightsByProduct] = useState<
+		Map<string, ProductWeightConfig>
+	>(new Map())
+	const [loaded, setLoaded] = useState(false)
+
+	useEffect(() => {
+		let cancelled = false
+		async function load() {
+			try {
+				const all = await getAllProductWeights()
+				if (cancelled) return
+				const map = new Map<string, ProductWeightConfig>()
+				for (const config of all) map.set(config.productId, config)
+				setWeightsByProduct(map)
+			} finally {
+				if (!cancelled) setLoaded(true)
+			}
+		}
+		load()
+		return () => { cancelled = true }
+	}, [])
+
+	return { weightsByProduct, loaded }
+}
+
 export function useResolvedPrice(
 	productId: string,
 	basePrice: number,
@@ -103,6 +137,32 @@ export function useResolvedPrice(
 			rates: rateMap,
 		})
 	}, [productId, basePrice, baseCurrency, targetCurrency, pricesByProduct, rateMap])
+}
+
+export function useResolvedWeightPrice(
+	productId: string,
+	anchorBasePrice: number,
+	weight: string,
+	weightOverrides: Partial<Record<WeightOption, number>>,
+): ResolvedPrice {
+	const selectedCurrency = useCurrencyStore((s) => s.currency)
+	const baseCurrency = useBaseCurrencyStore((s) => s.baseCurrency)
+	const { rateMap } = useCurrencyRates()
+	const { pricesByProduct } = useProductPricesCache()
+
+	return useMemo(() => {
+		const productPrices = pricesByProduct.get(productId) ?? []
+		const manualPrices = buildManualPriceMap(productPrices)
+		return resolveWeightedPrice({
+			anchorBasePrice,
+			weight,
+			weightOverrides,
+			baseCurrency,
+			targetCurrency: selectedCurrency,
+			manualPrices,
+			rates: rateMap,
+		})
+	}, [productId, anchorBasePrice, weight, weightOverrides, baseCurrency, selectedCurrency, pricesByProduct, rateMap])
 }
 
 /**
