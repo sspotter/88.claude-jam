@@ -6,7 +6,7 @@ import type {
 } from '../../types/pricing'
 import type { CartItem } from '../../store/cartStore'
 import { buildManualPriceMap, resolveProductPrice } from './pricingEngine'
-import { getCartLineId } from './weightPricing'
+import { getCartLineId, ANCHOR_WEIGHT } from './weightPricing'
 import { BASE_CURRENCY } from './constants'
 
 export interface BuildCartItemOptions {
@@ -23,9 +23,12 @@ export function getListCartOptions(product: {
 	if (pricingType !== 'per_kg') {
 		return { pricingType }
 	}
+	// product.price is the 2kg anchor, and `resolved` (passed to buildCartItem by
+	// the grid quick-add) is computed from it — so the cart line must be labeled
+	// with the anchor weight to keep the label and price consistent.
 	return {
 		pricingType,
-		weight: '1kg',
+		weight: ANCHOR_WEIGHT,
 		pricePerKg: product.price,
 	}
 }
