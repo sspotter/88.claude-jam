@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { getProduct, getCategory, getProducts } from "../lib/api/catalog";
 import { handleApiError, OperationType } from "../lib/api/errors";
@@ -9,11 +9,11 @@ import { useTranslation } from "react-i18next";
 import { motion } from "motion/react";
 import PriceDisplay from "../components/PriceDisplay";
 import ProductListPrice from "../components/ProductListPrice";
-import { useResolvedPrice } from "../hooks/usePricing";
+import { useResolvedWeightPrice, useProductWeightsCache } from "../hooks/usePricing";
 import { buildCartItem } from "../lib/pricing/cartHelpers";
 import {
-  calculateAedUnitPrice,
-  WEIGHT_OPTIONS,
+  ANCHOR_WEIGHT,
+  DEFAULT_VISIBLE_WEIGHTS,
 } from "../lib/pricing/weightPricing";
 import type { ProductPricingType } from "../types/pricing";
 
@@ -26,24 +26,32 @@ export default function ProductView() {
   const [similarProducts, setSimilarProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
-  const [selectedWeight, setSelectedWeight] = useState("1kg");
+  const [selectedWeight, setSelectedWeight] = useState<string>(ANCHOR_WEIGHT);
   const [activeAccordion, setActiveAccordion] = useState<string | null>(null);
 
   const addToCart = useCartStore((state) => state.addItem);
   const isRtl = i18n.language === "ar";
   const pricingType: ProductPricingType = product?.pricingType ?? "fixed";
-  const isWeightBased = pricingType === "per_kg";
-  const aedUnitPrice = useMemo(() => {
-    if (!product) return 0;
-    return calculateAedUnitPrice(
-      product.price ?? 0,
-      selectedWeight,
-      pricingType,
-    );
-  }, [product, selectedWeight, pricingType]);
-  const resolvedPrice = useResolvedPrice(
+
+  const { weightsByProduct } = useProductWeightsCache();
+  const weightConfig = product ? weightsByProduct.get(product.id) : undefined;
+  const visibleWeights = weightConfig?.visibleWeights ?? DEFAULT_VISIBLE_WEIGHTS;
+  const weightOverrides = weightConfig?.weightOverrides ?? {};
+
+  // Keep the selected weight valid for this product's visible set.
+  useEffect(() => {
+    if (!visibleWeights.includes(selectedWeight as never)) {
+      setSelectedWeight(
+        visibleWeights.includes(ANCHOR_WEIGHT) ? ANCHOR_WEIGHT : visibleWeights[0],
+      );
+    }
+  }, [visibleWeights, selectedWeight]);
+
+  const resolvedPrice = useResolvedWeightPrice(
     product?.id ?? "",
-    aedUnitPrice,
+    product?.price ?? 0,
+    selectedWeight,
+    weightOverrides,
   );
 
   useEffect(() => {
@@ -83,7 +91,6 @@ export default function ProductView() {
       {
         pricingType,
         weight: selectedWeight,
-        pricePerKg: isWeightBased ? product.price : undefined,
       },
     );
     addToCart(item, quantity);
@@ -517,7 +524,7 @@ export default function ProductView() {
                 {t("select_weight")}
               </span>
               <div className="anp-weights">
-                {WEIGHT_OPTIONS.map((w) => (
+                {visibleWeights.map((w) => (
                   <button
                     key={w}
                     onClick={() => setSelectedWeight(w)}
