@@ -103,27 +103,33 @@ These are hard-coded (notably the storefront dark shell and gold). Search the co
 
 Fonts are loaded in [src/index.css](../src/index.css) (Google Fonts import + local `@font-face`).
 
+#### Default font: **Maj** ⭐
+
+`Maj` (local `public/fonts/maj.ttf`) is the **default font for the whole app**. It supports **both English and Arabic glyphs**, so it covers the storefront and admin in both languages.
+
 #### Font families (Tailwind `@theme` defaults)
 ```css
---font-serif: "Playfair Display", "Cairo", ui-serif, Georgia, …;  /* headings */
---font-sans:  "Inter", "Cairo", ui-sans-serif, system-ui, …;       /* body */
+--font-serif: "Maj", "Playfair Display", "Cairo", ui-serif, Georgia, …;  /* headings */
+--font-sans:  "Maj", "Inter", "Cairo", ui-sans-serif, system-ui, …;       /* body */
 ```
-- `Cairo` provides Arabic glyph coverage in both stacks.
+- `Maj` is first in both stacks → it is the active font everywhere unless an admin override is selected.
+- `Cairo` remains as a fallback for Arabic glyph coverage.
 - Headings (`h1–h6`) use `font-serif font-medium tracking-tight` (base layer).
 - Body uses `font-sans antialiased`.
 
 #### Selectable fonts (admin-set, applied globally)
 
-| Font option | id | Stack override | Notes |
-|-------------|----|----------------|-------|
-| **Default (System)** | `default` | Playfair Display + Inter (+ Cairo) | the `@theme` defaults |
-| **Majalla** | `majalla` | `Majalla` first, then Playfair/Inter + Cairo | local `/fonts/majalla.ttf`; elegant Arabic |
+| Font option | id | Stack | Notes |
+|-------------|----|-------|-------|
+| **Maj (Default)** | `default` | `Maj` first (+ Playfair/Inter/Cairo fallbacks) | local `/fonts/maj.ttf`; **default**, EN + AR |
+| **Majalla** | `majalla` | `Majalla` first, then Maj/Playfair/Inter + Cairo | local `/fonts/majalla.ttf`; elegant classic Arabic |
 
-When `majalla` is active, `[data-font="majalla"]` overrides `--font-serif` / `--font-sans` (see [src/index.css](../src/index.css)).
+When `majalla` is active, `[data-font="majalla"]` overrides `--font-serif` / `--font-sans`. With no override (`default`), the `@theme` defaults apply → **Maj** (see [src/index.css](../src/index.css)).
 
 #### Loaded sources
-- **Google Fonts:** Playfair Display, Inter, Cairo (`@import` at top of [src/index.css](../src/index.css)).
+- **Local:** **Maj** — `public/fonts/maj.ttf` via `@font-face` (default).
 - **Local:** Majalla — `public/fonts/majalla.ttf` via `@font-face`.
+- **Google Fonts:** Playfair Display, Inter, Cairo (`@import` at top of [src/index.css](../src/index.css)) — now fallbacks only.
 
 > 🔧 **To add a font:** (1) load it (`@import` or `@font-face`) in [src/index.css](../src/index.css); (2) add a `[data-font="x"]` override block; (3) add an option to the font array in [src/pages/admin/Settings.tsx](../src/pages/admin/Settings.tsx). It applies app-wide on save.
 

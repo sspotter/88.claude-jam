@@ -41,7 +41,7 @@ export default function ContactUs() {
 
         /* ── Page title ── */
         .ctc-title {
-          font-family: 'Bodoni Moda', serif;
+          font-family: 'Maj', serif;
           font-size: clamp(1.8rem, 4vw, 2.6rem);
           font-weight: 700;
           letter-spacing: 0.12em;
@@ -92,7 +92,7 @@ export default function ContactUs() {
         }
         .ctc-info-label {
           font-size: 0.7rem;
-          font-family: 'Manrope', sans-serif;
+          font-family: 'Maj', sans-serif;
           text-transform: uppercase;
           letter-spacing: 0.1em;
           color: var(--ctc-muted);
@@ -102,7 +102,7 @@ export default function ContactUs() {
           font-size: 1rem;
           font-weight: 600;
           color: var(--ctc-text);
-          font-family: 'Manrope', sans-serif;
+          font-family: 'Maj', sans-serif;
           direction: ltr;
           unicode-bidi: embed;
         }

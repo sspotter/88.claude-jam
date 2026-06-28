@@ -2,6 +2,14 @@
 @import "tailwindcss";
 
 @font-face {
+  font-family: 'Maj';
+  src: url('/fonts/maj.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
   font-family: 'Majalla';
   src: url('/fonts/majalla.ttf') format('truetype');
   font-weight: normal;
@@ -35,8 +43,8 @@
 }
 
 @theme {
-  --font-serif: "Playfair Display", "Cairo", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
-  --font-sans: "Inter", "Cairo", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Maj", "Playfair Display", "Cairo", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-sans: "Maj", "Inter", "Cairo", ui-sans-serif, system-ui, sans-serif;
   
   --color-luxury-bg: #FAF9F6;
   --color-luxury-text: var(--color-primary);

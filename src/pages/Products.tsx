@@ -138,7 +138,7 @@ export default function Products() {
           --an-outline:     var(--th-outline,       rgba(212,175,55,0.20));
           --an-radius:      0.25rem;
           --an-radius-full: 9999px;
-          font-family: "Manrope", sans-serif;
+          font-family: "Maj", sans-serif;
           background: var(--an-bg);
           color: var(--an-text);
           margin: -1.5rem -1rem -2.5rem;
@@ -156,7 +156,7 @@ export default function Products() {
           border-radius: var(--an-radius-full);
           border: 1px solid var(--an-outline);
           background: transparent; color: var(--an-gold);
-          font-family: "Manrope", sans-serif;
+          font-family: "Maj", sans-serif;
           font-size: 0.72rem; font-weight: 700;
           letter-spacing: 0.08em; text-transform: uppercase;
           text-decoration: none; flex-shrink: 0;
@@ -175,7 +175,7 @@ export default function Products() {
         }
         .anp2-title {
           margin: 0;
-          font-family: "Bodoni Moda", serif;
+          font-family: "Maj", serif;
           font-size: clamp(1.75rem, 4vw, 2.5rem);
           font-weight: 700;
           letter-spacing: -0.01em;
@@ -205,7 +205,7 @@ export default function Products() {
           border: 1px solid var(--an-outline);
           border-radius: var(--an-radius-full);
           color: var(--an-text);
-          font-family: "Manrope", sans-serif;
+          font-family: "Maj", sans-serif;
           font-size: 0.85rem;
           outline: none;
           transition: border-color 200ms ease, box-shadow 200ms ease;
@@ -228,7 +228,7 @@ export default function Products() {
         .anp2-pill {
           padding: 0.45rem 1.1rem;
           border-radius: var(--an-radius-full);
-          font-family: "Manrope", sans-serif;
+          font-family: "Maj", sans-serif;
           font-size: 0.75rem;
           font-weight: 700;
           letter-spacing: 0.05em;
@@ -266,7 +266,7 @@ export default function Products() {
           border: 1px solid var(--an-outline);
           border-radius: var(--an-radius-full);
           color: var(--an-text);
-          font-family: "Manrope", sans-serif;
+          font-family: "Maj", sans-serif;
           font-size: 0.78rem;
           font-weight: 600;
           letter-spacing: 0.04em;
@@ -356,7 +356,7 @@ export default function Products() {
           display: flex; align-items: center; justify-content: center;
         }
         .anp2-card__oos-badge {
-          font-family: "Manrope", sans-serif;
+          font-family: "Maj", sans-serif;
           font-size: 0.65rem; font-weight: 700;
           letter-spacing: 0.12em; text-transform: uppercase;
           color: var(--an-gold);
@@ -376,7 +376,7 @@ export default function Products() {
         }
         .anp2-card__name {
           margin: 0;
-          font-family: "Bodoni Moda", serif;
+          font-family: "Maj", serif;
           font-size: clamp(0.95rem, 1.5vw, 1.1rem);
           font-weight: 500;
           letter-spacing: 0.04em;
@@ -398,7 +398,7 @@ export default function Products() {
           margin-top: 0.25rem;
         }
         .anp2-card__price {
-          font-family: "Manrope", sans-serif;
+          font-family: "Maj", sans-serif;
           font-size: 0.95rem; font-weight: 700;
           color: var(--an-gold);
         }
@@ -429,7 +429,7 @@ export default function Products() {
           border-radius: var(--an-radius-full);
           border: none; cursor: pointer;
           background: var(--an-gold); color: #131313;
-          font-family: "Manrope", sans-serif;
+          font-family: "Maj", sans-serif;
           font-size: 0.72rem; font-weight: 700;
           letter-spacing: 0.1em; text-transform: uppercase;
           transition: all 250ms ease;
@@ -445,7 +445,7 @@ export default function Products() {
           border-radius: var(--an-radius-full);
           border: 1px solid var(--an-outline);
           background: transparent; color: var(--an-muted);
-          font-family: "Manrope", sans-serif;
+          font-family: "Maj", sans-serif;
           font-size: 0.72rem; font-weight: 700;
           letter-spacing: 0.1em; text-transform: uppercase;
           cursor: not-allowed;
@@ -476,7 +476,7 @@ export default function Products() {
           background: var(--an-surface);
         }
         .anp2-empty-title {
-          font-family: "Bodoni Moda", serif;
+          font-family: "Maj", serif;
           font-size: 1.5rem; font-weight: 500;
           color: var(--an-text); margin: 0 0 0.5rem;
         }

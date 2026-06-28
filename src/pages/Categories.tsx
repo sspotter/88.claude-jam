@@ -103,7 +103,7 @@ export default function Categories() {
           --an-card-img-bg: var(--th-card-img-bg,  #201f1f);
           --an-skel-bg:     var(--th-skel-bg,      #2a2a2a);
           --an-skel-line:   var(--th-skel-line,    #353534);
-          font-family: "Manrope", sans-serif;
+          font-family: "Maj", sans-serif;
           background: var(--an-bg);
           color: var(--an-text);
           /* break out of Layout padding */
@@ -127,7 +127,7 @@ export default function Categories() {
         }
         .cats-title {
           margin: 0;
-          font-family: "Bodoni Moda", serif;
+          font-family: "Maj", serif;
           font-size: clamp(1.75rem, 4vw, 2.5rem);
           font-weight: 700; letter-spacing: -0.01em;
           color: var(--an-text); line-height: 1.1;
@@ -142,7 +142,7 @@ export default function Categories() {
           border-radius: 9999px;
           border: 1px solid var(--an-outline);
           background: transparent; color: var(--an-gold);
-          font-family: "Manrope", sans-serif;
+          font-family: "Maj", sans-serif;
           font-size: 0.72rem; font-weight: 700;
           letter-spacing: 0.08em; text-transform: uppercase;
           text-decoration: none; cursor: pointer;
@@ -247,7 +247,7 @@ export default function Categories() {
         }
         .cats-card__name {
           margin: 0;
-          font-family: "Bodoni Moda", serif;
+          font-family: "Maj", serif;
           font-size: clamp(1rem, 2vw, 1.25rem);
           font-weight: 600; letter-spacing: 0.05em;
           color: var(--an-text); line-height: 1.2;
@@ -296,7 +296,7 @@ export default function Categories() {
           background: var(--an-surface);
         }
         .cats-empty-title {
-          font-family: "Bodoni Moda", serif;
+          font-family: "Maj", serif;
           font-size: 1.5rem; font-weight: 500;
           color: var(--an-text); margin: 0 0 0.5rem;
         }

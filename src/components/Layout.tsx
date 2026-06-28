@@ -358,7 +358,7 @@ export default function Layout() {
         }}
       >
         <div className="max-w-7xl mx-auto px-4">
-          <p style={{ fontFamily: "'Bodoni Moda', serif", fontSize: "1.5rem", letterSpacing: "0.25em", color: "var(--th-gold)", marginBottom: "0.75rem" }}>
+          <p style={{ fontFamily: "'Maj', serif", fontSize: "1.5rem", letterSpacing: "0.25em", color: "var(--th-gold)", marginBottom: "0.75rem" }}>
             {t("app_name")}
           </p>
           <p style={{ fontSize: "0.78rem", color: "var(--th-muted)", letterSpacing: "0.04em", marginBottom: "0.75rem" }}>
