@@ -8,3 +8,6 @@ coverage/
 !.env.example
 
 outputfolder/
+
+# Contains Hostinger API token — keep out of git
+.mcp.json

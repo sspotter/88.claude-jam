@@ -1,0 +1,6 @@
+src/pages/Categories.tsx(18,36): error TS2503: Cannot find namespace 'React'.
+src/pages/Landing.tsx(15,36): error TS2503: Cannot find namespace 'React'.
+src/pages/Landing.tsx(514,63): error TS2503: Cannot find namespace 'React'.
+src/pages/Landing2.tsx(15,36): error TS2503: Cannot find namespace 'React'.
+src/tests/fetch-visible-categories.ts(7,31): error TS2307: Cannot find module 'firebase/app' or its corresponding type declarations.
+src/tests/fetch-visible-categories.ts(8,67): error TS2307: Cannot find module 'firebase/firestore' or its corresponding type declarations.

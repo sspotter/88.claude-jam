@@ -32,21 +32,70 @@ import {
 } from "recharts";
 import { toast } from "sonner";
 import * as XLSX from "xlsx";
+import { formatPrice, type DisplayLang } from "../../lib/pricing/formatPrice";
+import { BASE_CURRENCY } from "../../lib/pricing/constants";
+import type { CurrencyCode } from "../../types/pricing";
 
 type OrderData = ApiOrder;
 
 const COLORS = ["#eab308", "#22c55e"]; // yellow for pending, green for shipped
 
+// Per-currency money buckets. Orders store totalPrice in their own currency,
+// so dashboard money is grouped by currency rather than summed blindly.
+type CurrencyTotals = Record<string, number>;
+
+function addTotal(
+  totals: CurrencyTotals,
+  currency: string | undefined,
+  amount: number,
+): void {
+  const code = currency || BASE_CURRENCY;
+  totals[code] = (totals[code] || 0) + amount;
+}
+
+function mergeTotals(...sources: CurrencyTotals[]): CurrencyTotals {
+  const out: CurrencyTotals = {};
+  for (const src of sources) {
+    for (const [code, amount] of Object.entries(src)) {
+      out[code] = (out[code] || 0) + amount;
+    }
+  }
+  return out;
+}
+
+// "1,234.00 AED · 120.00 USD" — formatted, largest first, zero buckets dropped.
+function formatTotalsLines(
+  totals: CurrencyTotals,
+  lang: DisplayLang,
+): string[] {
+  const lines = Object.entries(totals)
+    .filter(([, value]) => value !== 0)
+    .sort((a, b) => b[1] - a[1])
+    .map(([code, value]) => formatPrice(value, code as CurrencyCode, lang));
+  return lines.length > 0 ? lines : [formatPrice(0, BASE_CURRENCY, lang)];
+}
+
+// Distinct colors for the per-currency series on the sales chart.
+const CURRENCY_SERIES_COLORS = [
+  "var(--color-accent)",
+  "#0ea5e9",
+  "#a855f7",
+  "#f97316",
+  "#14b8a6",
+];
+
 export default function Dashboard() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const lang: DisplayLang = i18n.language?.startsWith("ar") ? "ar" : "en";
   const [stats, setStats] = useState({
     products: 0,
     pendingOrdersCount: 0,
     shippedOrdersCount: 0,
-    pendingOrdersValue: 0,
-    shippedOrdersValue: 0,
+    pendingByCurrency: {} as CurrencyTotals,
+    shippedByCurrency: {} as CurrencyTotals,
   });
   const [chartData, setChartData] = useState<any[]>([]);
+  const [chartCurrencies, setChartCurrencies] = useState<string[]>([]);
   const [pieData, setPieData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedDayData, setSelectedDayData] = useState<{
@@ -64,7 +113,7 @@ export default function Dashboard() {
   const [lowStockProducts, setLowStockProducts] = useState<any[]>([]);
   const [topProducts, setTopProducts] = useState<any[]>([]);
   const [recentOrders, setRecentOrders] = useState<OrderData[]>([]);
-  const [aov, setAov] = useState(0);
+  const [aovByCurrency, setAovByCurrency] = useState<CurrencyTotals>({});
 
   const handleMarkShipped = async (orderId: string) => {
     try {
@@ -106,15 +155,17 @@ export default function Dashboard() {
 
     let pendingCount = 0;
     let shippedCount = 0;
-    let pendingValue = 0;
-    let shippedValue = 0;
+    const pendingByCurrency: CurrencyTotals = {};
+    const shippedByCurrency: CurrencyTotals = {};
+    const countByCurrency: CurrencyTotals = {};
+    const currencySet = new Set<string>();
 
     const dailySales: {
       [key: string]: {
         date: string;
-        sales: number;
         orders: number;
         ordersList: OrderData[];
+        byCurrency: CurrencyTotals;
       };
     } = {};
     const filteredOrders: OrderData[] = [];
@@ -141,66 +192,82 @@ export default function Dashboard() {
 
       filteredOrders.push(data);
 
+      const currency = data.currency || BASE_CURRENCY;
+      const amount = data.totalPrice || 0;
+      currencySet.add(currency);
+      addTotal(countByCurrency, currency, 1);
+
       if (data.status === "pending") {
         pendingCount++;
-        pendingValue += data.totalPrice || 0;
+        addTotal(pendingByCurrency, currency, amount);
       } else if (data.status === "shipped") {
         shippedCount++;
-        shippedValue += data.totalPrice || 0;
+        addTotal(shippedByCurrency, currency, amount);
       }
 
       const dateStr = orderDate.toLocaleDateString();
       if (!dailySales[dateStr]) {
         dailySales[dateStr] = {
           date: dateStr,
-          sales: 0,
           orders: 0,
           ordersList: [],
+          byCurrency: {},
         };
       }
-      dailySales[dateStr].sales += data.totalPrice || 0;
+      addTotal(dailySales[dateStr].byCurrency, currency, amount);
       dailySales[dateStr].orders += 1;
       dailySales[dateStr].ordersList.push(data);
     });
 
-    // Compute AOV
-    const totalValue = pendingValue + shippedValue;
-    const totalOrdersCount = pendingCount + shippedCount;
-    setAov(totalOrdersCount > 0 ? totalValue / totalOrdersCount : 0);
+    // Average order value, per currency (mixing currencies would be meaningless).
+    const totalByCurrency = mergeTotals(pendingByCurrency, shippedByCurrency);
+    const aov: CurrencyTotals = {};
+    for (const [currency, total] of Object.entries(totalByCurrency)) {
+      const count = countByCurrency[currency] || 0;
+      if (count > 0) aov[currency] = total / count;
+    }
+    setAovByCurrency(aov);
 
     // Recent Orders
     filteredOrders.sort((a, b) => b.createdAt - a.createdAt);
     setRecentOrders(filteredOrders.slice(0, 5));
 
-    // Top Performers
+    // Top Performers — revenue grouped by the order's currency.
     const productSales: {
-      [key: string]: { name: string; revenue: number; sold: number };
+      [key: string]: { name: string; revenueByCurrency: CurrencyTotals; sold: number };
     } = {};
     filteredOrders.forEach((order) => {
+      const currency = order.currency || BASE_CURRENCY;
       (order as any).items?.forEach((item: any) => {
         if (!productSales[item.id]) {
-          productSales[item.id] = { name: item.name, revenue: 0, sold: 0 };
+          productSales[item.id] = { name: item.name, revenueByCurrency: {}, sold: 0 };
         }
-        productSales[item.id].revenue += item.price * item.quantity;
+        addTotal(productSales[item.id].revenueByCurrency, currency, item.price * item.quantity);
         productSales[item.id].sold += item.quantity;
       });
     });
     const top = Object.values(productSales)
-      .sort((a, b) => b.revenue - a.revenue)
+      .sort((a, b) => b.sold - a.sold)
       .slice(0, 5);
     setTopProducts(top);
 
-    // Convert map to sorted array
-    const sortedChartData = Object.values(dailySales).sort(
-      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
-    );
+    // Convert map to sorted array; flatten per-currency amounts as chart series keys.
+    const sortedChartData = Object.values(dailySales)
+      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+      .map((d) => ({
+        date: d.date,
+        orders: d.orders,
+        ordersList: d.ordersList,
+        ...d.byCurrency,
+      }));
+    setChartCurrencies([...currencySet]);
 
     setStats({
       products: rawProducts.length,
       pendingOrdersCount: pendingCount,
       shippedOrdersCount: shippedCount,
-      pendingOrdersValue: pendingValue,
-      shippedOrdersValue: shippedValue,
+      pendingByCurrency,
+      shippedByCurrency,
     });
 
     setChartData(sortedChartData);
@@ -223,29 +290,34 @@ export default function Dashboard() {
     yesterday.setDate(now.getDate() - 1);
     const yesterdayStr = yesterday.toDateString();
 
-    let todayRev = 0;
-    let yesterdayRev = 0;
-    let totalRevenue = 0;
+    // Revenue grouped by currency so we never compare across currencies.
+    const todayByCurrency: CurrencyTotals = {};
+    const yesterdayByCurrency: CurrencyTotals = {};
 
     rawOrders.forEach((o) => {
       const dStr = new Date(o.createdAt).toDateString();
-      if (dStr === todayStr) todayRev += o.totalPrice || 0;
-      if (dStr === yesterdayStr) yesterdayRev += o.totalPrice || 0;
-      totalRevenue += o.totalPrice || 0;
+      const currency = o.currency || BASE_CURRENCY;
+      if (dStr === todayStr) addTotal(todayByCurrency, currency, o.totalPrice || 0);
+      if (dStr === yesterdayStr)
+        addTotal(yesterdayByCurrency, currency, o.totalPrice || 0);
     });
 
-    // 1. Revenue comparison
-    if (yesterdayRev > 0) {
+    // 1. Revenue comparison — use the currency with the most revenue today.
+    const [topCurrency, todayRev] = Object.entries(todayByCurrency).sort(
+      (a, b) => b[1] - a[1],
+    )[0] ?? [BASE_CURRENCY, 0];
+    const yesterdayRev = yesterdayByCurrency[topCurrency] || 0;
+    if (todayRev > 0 && yesterdayRev > 0) {
       const diff = ((todayRev - yesterdayRev) / yesterdayRev) * 100;
       if (diff > 0) {
         insights.push({
           type: "positive",
-          text: `Revenue is up ${diff.toFixed(0)}% vs yesterday`,
+          text: `${topCurrency} revenue is up ${diff.toFixed(0)}% vs yesterday`,
         });
       } else if (diff < 0) {
         insights.push({
           type: "warning",
-          text: `Revenue is down ${Math.abs(diff).toFixed(0)}% vs yesterday`,
+          text: `${topCurrency} revenue is down ${Math.abs(diff).toFixed(0)}% vs yesterday`,
         });
       }
     } else if (todayRev > 0 && yesterdayRev === 0) {
@@ -255,14 +327,15 @@ export default function Dashboard() {
       });
     }
 
-    // 2. Top Driver
-    if (topProducts.length > 0 && totalRevenue > 0) {
+    // 2. Top Driver — measured by units sold (currency-neutral).
+    const totalUnits = topProducts.reduce((sum, p) => sum + p.sold, 0);
+    if (topProducts.length > 0 && totalUnits > 0) {
       const topProd = topProducts[0];
-      const pct = (topProd.revenue / totalRevenue) * 100;
+      const pct = (topProd.sold / totalUnits) * 100;
       if (pct > 25) {
         insights.push({
           type: "info",
-          text: `${topProd.name} is driving ${pct.toFixed(0)}% of total sales`,
+          text: `${topProd.name} is driving ${pct.toFixed(0)}% of items sold`,
         });
       }
     }
@@ -298,6 +371,12 @@ export default function Dashboard() {
 
   const smartInsights = generateInsights();
 
+  const totalsLines = (totals: CurrencyTotals) => formatTotalsLines(totals, lang);
+  const totalValueByCurrency = mergeTotals(
+    stats.pendingByCurrency,
+    stats.shippedByCurrency,
+  );
+
   const handleExport = () => {
     try {
       if (rawOrders.length === 0) {
@@ -305,17 +384,24 @@ export default function Dashboard() {
         return;
       }
 
-      const wsData = chartData.map((d) => ({
-        Date: d.date,
-        Orders: d.orders,
-        "Total Sales": d.sales.toFixed(2),
-      }));
+      const wsData = chartData.map((d) => {
+        const totals: CurrencyTotals = {};
+        for (const cur of chartCurrencies) {
+          if (typeof d[cur] === "number" && d[cur] > 0) totals[cur] = d[cur];
+        }
+        return {
+          Date: d.date,
+          Orders: d.orders,
+          "Total Sales": formatTotalsLines(totals, lang).join(" · "),
+        };
+      });
 
       const ordersData = rawOrders.map((o) => ({
         "Order ID": o.id,
         Date: new Date(o.createdAt).toLocaleString(),
         "Customer Name": o.customerName || "Unknown",
         "Total Price": o.totalPrice,
+        Currency: o.currency || BASE_CURRENCY,
         Status: o.status,
       }));
 
@@ -385,10 +471,16 @@ export default function Dashboard() {
           <p className="text-3xl font-bold text-[var(--color-primary)]">
             {stats.pendingOrdersCount}
           </p>
-          <p className="text-sm font-medium text-blue-600">
-            {stats.pendingOrdersValue.toFixed(2)} {t("currency")}{" "}
-            {t("pending_value")}
-          </p>
+          <div className="text-sm font-medium text-blue-600">
+            {totalsLines(stats.pendingByCurrency).map((line) => (
+              <span key={line} className="block">
+                {line}
+              </span>
+            ))}
+            <span className="text-stone-400 font-normal">
+              {t("pending_value")}
+            </span>
+          </div>
         </div>
 
         <div className="bg-white p-6 rounded-2xl border border-stone-100 shadow-sm flex flex-col gap-2">
@@ -401,9 +493,14 @@ export default function Dashboard() {
           <p className="text-3xl font-bold text-[var(--color-primary)]">
             {stats.shippedOrdersCount}
           </p>
-          <p className="text-sm font-medium text-green-600">
-            {stats.shippedOrdersValue.toFixed(2)} {t("currency")} {t("revenue")}
-          </p>
+          <div className="text-sm font-medium text-green-600">
+            {totalsLines(stats.shippedByCurrency).map((line) => (
+              <span key={line} className="block">
+                {line}
+              </span>
+            ))}
+            <span className="text-stone-400 font-normal">{t("revenue")}</span>
+          </div>
         </div>
 
         <div className="bg-white p-6 rounded-2xl border border-stone-100 shadow-sm flex flex-col gap-2">
@@ -413,11 +510,15 @@ export default function Dashboard() {
             </div>
             <span className="font-medium">{t("total_value")}</span>
           </div>
-          <p className="text-3xl font-bold text-[var(--color-primary)]">
-            {(stats.pendingOrdersValue + stats.shippedOrdersValue).toFixed(2)}
-          </p>
+          <div className="text-[var(--color-primary)] font-bold leading-tight">
+            {totalsLines(totalValueByCurrency).map((line) => (
+              <p key={line} className="text-2xl">
+                {line}
+              </p>
+            ))}
+          </div>
           <p className="text-sm font-medium text-purple-600">
-            {t("currency")} {t("projected_revenue")}
+            {t("projected_revenue")}
           </p>
         </div>
 
@@ -428,12 +529,14 @@ export default function Dashboard() {
             </div>
             <span className="font-medium">Avg. Order Value</span>
           </div>
-          <p className="text-3xl font-bold text-[var(--color-primary)]">
-            {aov.toFixed(2)}
-          </p>
-          <p className="text-sm font-medium text-stone-500">
-            {t("currency")} per order
-          </p>
+          <div className="text-[var(--color-primary)] font-bold leading-tight">
+            {totalsLines(aovByCurrency).map((line) => (
+              <p key={line} className="text-2xl">
+                {line}
+              </p>
+            ))}
+          </div>
+          <p className="text-sm font-medium text-stone-500">per order</p>
         </div>
       </div>
 
@@ -461,18 +564,25 @@ export default function Dashboard() {
                   }}
                 >
                   <defs>
-                    <linearGradient id="colorSales" x1="0" y1="0" x2="0" y2="1">
-                      <stop
-                        offset="5%"
-                        stopColor="var(--color-accent)"
-                        stopOpacity={0.3}
-                      />
-                      <stop
-                        offset="95%"
-                        stopColor="var(--color-accent)"
-                        stopOpacity={0}
-                      />
-                    </linearGradient>
+                    {chartCurrencies.map((cur, idx) => {
+                      const color =
+                        CURRENCY_SERIES_COLORS[
+                          idx % CURRENCY_SERIES_COLORS.length
+                        ];
+                      return (
+                        <linearGradient
+                          key={cur}
+                          id={`colorSales-${cur}`}
+                          x1="0"
+                          y1="0"
+                          x2="0"
+                          y2="1"
+                        >
+                          <stop offset="5%" stopColor={color} stopOpacity={0.3} />
+                          <stop offset="95%" stopColor={color} stopOpacity={0} />
+                        </linearGradient>
+                      );
+                    })}
                   </defs>
                   <XAxis
                     dataKey="date"
@@ -497,16 +607,29 @@ export default function Dashboard() {
                       border: "1px solid #e7e5e4",
                       boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
                     }}
+                    formatter={(value: number, name: string) => [
+                      formatPrice(value, name as CurrencyCode, lang),
+                      name,
+                    ]}
                   />
-                  <Area
-                    type="monotone"
-                    dataKey="sales"
-                    stroke="var(--color-accent)"
-                    strokeWidth={3}
-                    fillOpacity={1}
-                    fill="url(#colorSales)"
-                    name={t("sales_amount")}
-                  />
+                  {chartCurrencies.length > 1 && (
+                    <Legend verticalAlign="top" height={28} />
+                  )}
+                  {chartCurrencies.map((cur, idx) => (
+                    <Area
+                      key={cur}
+                      type="monotone"
+                      dataKey={cur}
+                      stroke={
+                        CURRENCY_SERIES_COLORS[idx % CURRENCY_SERIES_COLORS.length]
+                      }
+                      strokeWidth={3}
+                      fillOpacity={1}
+                      fill={`url(#colorSales-${cur})`}
+                      name={cur}
+                      connectNulls
+                    />
+                  ))}
                 </AreaChart>
               </ResponsiveContainer>
             ) : (
@@ -585,7 +708,11 @@ export default function Dashboard() {
                       {new Date(order.createdAt).toLocaleDateString()}
                     </td>
                     <td className="p-3 text-[var(--color-primary)] font-medium">
-                      {order.totalPrice.toFixed(2)} {t("currency")}
+                      {formatPrice(
+                        order.totalPrice,
+                        (order.currency as CurrencyCode) || BASE_CURRENCY,
+                        lang,
+                      )}
                     </td>
                     <td className="p-3">
                       <span
@@ -716,9 +843,14 @@ export default function Dashboard() {
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className="font-medium text-[var(--color-primary)] text-sm">
-                      {prod.revenue.toFixed(2)} {t("currency")}
-                    </p>
+                    {totalsLines(prod.revenueByCurrency).map((line) => (
+                      <p
+                        key={line}
+                        className="font-medium text-[var(--color-primary)] text-sm"
+                      >
+                        {line}
+                      </p>
+                    ))}
                   </div>
                 </div>
               ))}
@@ -763,7 +895,11 @@ export default function Dashboard() {
                       </div>
                       <div className="text-right">
                         <p className="font-medium text-[var(--color-primary)]">
-                          {order.totalPrice.toFixed(2)} {t("currency")}
+                          {formatPrice(
+                            order.totalPrice,
+                            (order.currency as CurrencyCode) || BASE_CURRENCY,
+                            lang,
+                          )}
                         </p>
                         <span
                           className={`inline-block px-2 py-1 rounded-md text-xs font-medium mt-1 ${

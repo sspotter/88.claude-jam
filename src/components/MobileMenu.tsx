@@ -17,7 +17,7 @@ export default function MobileMenu({ isOpen, onClose, cartCount }: MobileMenuPro
   if (!isOpen) return null;
 
   const menuItems = [
-    { label: t('home'),       icon: Home,         path: '/shop' },
+    { label: t('home'),       icon: Home,         path: '/landing2' },
     { label: t('categories'), icon: List,         path: '/shop#categories' },
     { label: t('cart'),       icon: ShoppingCart, path: '/cart', badge: cartCount },
     { label: i18n.language === 'ar' ? 'تواصل معنا' : 'Contact Us', icon: Phone, path: '/shop/contact' },

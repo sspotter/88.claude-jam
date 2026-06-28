@@ -644,7 +644,7 @@ export default function Landing2() {
 
         {/* ── Navigation ───────────────────────────────────────────── */}
         <header className="an-nav" ref={headerRef}>
-          <a className="an-nav-brand" href="/landing2">JAMHAWI</a>
+          <a className="an-nav-brand" href="/landing2"><img src="logo-circle.png" className="w-10 h-10 rounded flex items-center justify-center" alt="" /> JAMHAWI</a>
           <Link to="/shop/products" className="an-nav-cta">Shop Now</Link>
         </header>
 

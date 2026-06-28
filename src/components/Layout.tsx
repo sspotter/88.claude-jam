@@ -120,7 +120,7 @@ export default function Layout() {
   className="flex items-center gap-2 hover:opacity-85 transition-opacity"
 >
   <img
-    src="/logonaav.png"
+    src="/logo-circle.png"
     alt="Jamhawi"
     style={{
       height: "2.5rem",
