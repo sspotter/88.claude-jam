@@ -12,7 +12,6 @@ import Layout from "./components/Layout";
 import AdminLayout from "./components/AdminLayout";
 import NotFound from "./components/NotFound";
 
-import Home from "./pages/Home";
 import Landing from "./pages/Landing";
 import Landing2 from "./pages/Landing2";
 import CategoryView from "./pages/CategoryView";
@@ -87,14 +86,15 @@ function AppRoutes() {
     },
     {
       path: "/",
-      element: <Navigate to="/landing2" replace />,
+      element: <Landing2 />,
+      errorElement: <NotFound />,
     },
     {
       path: "/shop",
       element: <Layout />,
       errorElement: <NotFound />,
       children: [
-        { index: true, element: <Home /> },
+        { index: true, element: <Categories /> },
         { path: "category/:id", element: <CategoryView /> },
         { path: "product/:id", element: <ProductView /> },
         { path: "cart", element: <Cart /> },

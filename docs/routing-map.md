@@ -12,13 +12,15 @@ Last generated: 2026-06-29
 
 | Area | Entry path | Layout | Auth |
 |------|-----------|--------|------|
-| Landing | `/`, `/landing`, `/landing2` | none | public |
+| Home | `/`, `/landing2` | none | public |
+| Landing (alt) | `/landing` | none | public |
 | Shop | `/shop/*` | `Layout` | public |
 | Shop (legacy root) | `/*` | `Layout` | public |
 | Admin | `/admin/*` | `AdminLayout` | protected |
 | Fallback | `*` | none | public |
 
-- `/` redirects to **`/landing2`**.
+- `/` renders **`Landing2`** directly (the home page). `/landing2` is kept as an alias.
+- `/shop` (index) renders **`Categories`**. There is no separate shop landing page.
 - `/admin` (index) redirects to **`/admin/dashboard`**.
 - Unmatched paths render **`NotFound`**.
 
@@ -30,15 +32,15 @@ Last generated: 2026-06-29
 
 | Path | Component | File | Notes |
 |------|-----------|------|-------|
-| `/` | → redirect | — | `Navigate` to `/landing2` |
+| `/` | `Landing2` | [src/pages/Landing2.tsx](../src/pages/Landing2.tsx) | home page (rendered directly) |
 | `/landing` | `Landing` | [src/pages/Landing.tsx](../src/pages/Landing.tsx) | |
-| `/landing2` | `Landing2` | [src/pages/Landing2.tsx](../src/pages/Landing2.tsx) | current home / default |
+| `/landing2` | `Landing2` | [src/pages/Landing2.tsx](../src/pages/Landing2.tsx) | alias of `/` |
 
 ### Shop (`/shop`, wrapped in `Layout`)
 
 | Path | Component | File | Notes |
 |------|-----------|------|-------|
-| `/shop` | `Home` | [src/pages/Home.tsx](../src/pages/Home.tsx) | index route |
+| `/shop` | `Categories` | [src/pages/Categories.tsx](../src/pages/Categories.tsx) | index route — shop entry shows categories |
 | `/shop/category/:id` | `CategoryView` | [src/pages/CategoryView.tsx](../src/pages/CategoryView.tsx) | dynamic `:id` |
 | `/shop/product/:id` | `ProductView` | [src/pages/ProductView.tsx](../src/pages/ProductView.tsx) | dynamic `:id` |
 | `/shop/cart` | `Cart` | [src/pages/Cart.tsx](../src/pages/Cart.tsx) | |
@@ -105,7 +107,7 @@ Links currently exposed in the UI chrome:
 
 **Mobile menu** ([src/components/MobileMenu.tsx](../src/components/MobileMenu.tsx))
 - Home → `/landing2`
-- Categories → `/shop#categories`
+- Categories → `/shop`
 - Cart → `/cart`
 - Contact → `/shop/contact`
 - Admin → `/admin/login`
@@ -118,11 +120,12 @@ Links currently exposed in the UI chrome:
 
 ```mermaid
 graph TD
-    Root["/"] -->|redirect| Landing2["/landing2 — Landing2"]
+    Root["/ — Landing2 (home)"]
+    Landing2Alias["/landing2 — Landing2 (alias)"]
     LandingAlt["/landing — Landing"]
 
     subgraph Shop["/shop (Layout)"]
-        ShopHome["/shop (index) — Home"]
+        ShopHome["/shop (index) — Categories"]
         ShopCat["/shop/category/:id — CategoryView"]
         ShopProd["/shop/product/:id — ProductView"]
         ShopCart["/shop/cart — Cart"]
@@ -164,15 +167,15 @@ graph TD
 
     NotFound["* — NotFound"]
 
-    Landing2 -.nav.-> Shop
-    Landing2 -.nav.-> AdminLogin
+    Root -.nav.-> Shop
+    Root -.nav.-> AdminLogin
 ```
 
 ### User journey (happy path)
 
 ```mermaid
 flowchart LR
-    A["/landing2"] --> B["/shop"]
+    A["/ (Landing2)"] --> B["/shop (Categories)"]
     B --> C["/shop/category/:id"]
     C --> D["/shop/product/:id"]
     D --> E["/cart"]

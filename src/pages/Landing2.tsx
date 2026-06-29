@@ -38,9 +38,12 @@ const fallbackBadge = (
 );
 
 export default function Landing2() {
-  const videoRef    = useRef<HTMLVideoElement>(null);
-  const headerRef   = useRef<HTMLElement>(null);
-  const catStageRef = useRef<HTMLElement>(null);
+  const videoRef        = useRef<HTMLVideoElement>(null);
+  const headerRef       = useRef<HTMLElement>(null);
+  const catStageRef     = useRef<HTMLElement>(null);
+  const heroRef         = useRef<HTMLElement>(null);
+  const heroContentRef  = useRef<HTMLDivElement>(null);
+  const heroVignetteRef = useRef<HTMLDivElement>(null);
 
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
@@ -66,9 +69,12 @@ export default function Landing2() {
     link.href = "https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Maj:wght@400;500;700&display=swap";
     document.head.appendChild(link);
 
-    const video    = videoRef.current;
-    const nav      = headerRef.current;
-    const catStage = catStageRef.current;
+    const video       = videoRef.current;
+    const nav         = headerRef.current;
+    const catStage    = catStageRef.current;
+    const hero        = heroRef.current;
+    const heroContent = heroContentRef.current;
+    const heroVignette= heroVignetteRef.current;
 
     if (video) {
       video.muted = true;
@@ -91,6 +97,29 @@ export default function Landing2() {
 
     function tick() {
       if (nav) nav.classList.toggle("an-scrolled", lastY > 50);
+
+      // ── Hero scroll transition ──────────────────────────────────────
+      // As the hero (100vh) scrolls away: copy fades + drifts up, the dark
+      // overlay dissolves, and the video brightens to full — so the content
+      // melts into the video rather than abruptly vanishing.
+      if (hero) {
+        const heroH = hero.offsetHeight || window.innerHeight;
+        const hp = Math.max(0, Math.min(1, lastY / heroH)); // 0 → 1 over hero
+
+        if (heroContent) {
+          // finish the copy fade by ~75% of the scroll for a clean handoff
+          const cp = Math.min(1, hp / 0.75);
+          const ease = cp * (2 - cp); // easeOutQuad
+          heroContent.style.opacity = String(1 - ease);
+          heroContent.style.transform = `translateY(${-ease * 80}px)`;
+          heroContent.style.pointerEvents = ease >= 1 ? "none" : "auto";
+        }
+        // video: brightness 0.45 (dimmed) → 1 (full)
+        if (video) video.style.filter = `brightness(${0.45 + 0.55 * hp}) contrast(1.1)`;
+        // dark overlay/vignette: fully visible → gone
+        if (heroVignette) heroVignette.style.opacity = String(1 - hp);
+      }
+
       if (catStage && catScrollH > 0) {
         let cp = (lastY - catStageTop) / catScrollH;
         cp = Math.max(0, Math.min(1, cp));
@@ -164,10 +193,18 @@ export default function Landing2() {
           box-shadow: 0 1px 0 var(--an-outline);
         }
         .an-nav-brand {
+          display: flex; align-items: center; gap: 12px;
+          text-decoration: none; white-space: nowrap;
+        }
+        .an-nav-brand img {
+          width: 40px; height: 40px;
+          object-fit: cover; flex-shrink: 0;
+        }
+        .an-nav-brand span {
           font-family: "Maj", serif;
           font-size: 1.5rem; font-weight: 700;
           letter-spacing: 0.3em; color: var(--an-gold);
-          text-decoration: none;
+          line-height: 1;
         }
         .an-nav-cta {
           padding: 0.5rem 1.5rem;
@@ -207,7 +244,10 @@ export default function Landing2() {
           display: flex; flex-direction: column; align-items: center;
           text-align: center; padding: 0 clamp(1.5rem, 5vw, 5rem);
           padding-top: var(--an-nav-h);
+          will-change: opacity, transform;
         }
+        .an-hero-video { will-change: filter; }
+        .an-hero-vignette { will-change: opacity; }
         .an-label-caps {
           font-family: "Maj", sans-serif;
           font-size: 12px; font-weight: 700;
@@ -644,23 +684,26 @@ export default function Landing2() {
 
         {/* ── Navigation ───────────────────────────────────────────── */}
         <header className="an-nav" ref={headerRef}>
-          <a className="an-nav-brand" href="/landing2"><img src="logo-circle.png" className="w-10 h-10 rounded flex items-center justify-center" alt="" /> JAMHAWI</a>
+          <a className="an-nav-brand" href="/landing2">
+            <img src="logo-circle.png" className="w-10 h-10 rounded-full object-cover" alt="Jamhawi Logo" />
+            <span>JAMHAWI</span>
+          </a>
           <Link to="/shop/products" className="an-nav-cta">Shop Now</Link>
         </header>
 
         <main>
 
           {/* ── Hero ─────────────────────────────────────────────────── */}
-          <section className="an-hero">
+          <section className="an-hero" ref={heroRef}>
             <video
               ref={videoRef}
               className="an-hero-video"
               src="/video3.mp4"
               muted autoPlay loop playsInline preload="auto"
             />
-            <div className="an-hero-vignette" />
+            <div className="an-hero-vignette" ref={heroVignetteRef} />
 
-            <div className="an-hero-content">
+            <div className="an-hero-content" ref={heroContentRef}>
               <span className="an-label-caps">The Art of Details</span>
               <h1 className="an-hero-title">
                 Immersive<br /><em>Purity</em>
