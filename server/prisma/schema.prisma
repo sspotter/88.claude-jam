@@ -1,4 +1,4 @@
-// Jamhawi — PostgreSQL schema (migrated off Firestore)
+// Jamhawi — MySQL schema (Hostinger shared hosting)
 // createdAt/paidAt/failedAt are DateTime in DB; the API serializes them to
 // epoch-ms numbers so the frontend's existing sorting/formatting is unchanged.
 
@@ -7,7 +7,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
@@ -39,7 +39,7 @@ model Product {
   stockCount  Int      @default(0)
   image       String?
   pricingType String?
-  description String?
+  description String?  @db.Text
   createdAt   DateTime @default(now())
 
   @@index([categoryId])
@@ -60,8 +60,8 @@ model Order {
   id                       String      @id @default(uuid())
   customerName             String
   phone                    String
-  address                  String
-  notes                    String?
+  address                  String      @db.Text
+  notes                    String?     @db.Text
   totalPrice               Float
   paymentMethod            String // whatsapp | paymob_card | paymob_wallet
   status                   String      @default("pending") // pending | shipped | paid | failed

@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Inter:wght@400;500;600&family=Cairo:wght@400;600;700&display=swap');
+@import url('https://fonts.cdnfonts.com/css/sakkal-majalla-2');
 @import "tailwindcss";
 
 @font-face {
@@ -17,9 +18,26 @@
   font-display: swap;
 }
 
+/* Alternate: switch back to the Maj font from admin settings */
+[data-font="maj"] {
+  --font-serif: "Maj", "Playfair Display", "Cairo", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-sans: "Maj", "Inter", "Cairo", ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Majalla (kept for backward compatibility with previously saved "majalla") */
 [data-font="majalla"] {
-  --font-serif: "Majalla", "Playfair Display", "Cairo", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
-  --font-sans: "Majalla", "Inter", "Cairo", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Sakkal Majalla", "Majalla", "Playfair Display", "Cairo", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-sans: "Sakkal Majalla", "Majalla", "Inter", "Cairo", ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Sakkal Majalla has a small x-height and renders smaller than Maj at the
+   same size, so nudge the root size up a bit for the Majalla default. The
+   Maj alternate stays at the normal 16px base. */
+html {
+  font-size: 17.5px;
+}
+html[data-font="maj"] {
+  font-size: 16px;
 }
 
 :root {
@@ -43,8 +61,8 @@
 }
 
 @theme {
-  --font-serif: "Maj", "Playfair Display", "Cairo", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
-  --font-sans: "Maj", "Inter", "Cairo", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Sakkal Majalla", "Majalla", "Playfair Display", "Cairo", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-sans: "Sakkal Majalla", "Majalla", "Inter", "Cairo", ui-sans-serif, system-ui, sans-serif;
   
   --color-luxury-bg: #FAF9F6;
   --color-luxury-text: var(--color-primary);

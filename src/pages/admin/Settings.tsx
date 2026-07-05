@@ -303,8 +303,8 @@ export default function AdminSettings() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {[
-            { id: "default", name: "Maj (Default)", description: "Default font · supports English & Arabic" },
-            { id: "majalla", name: "Majalla Font", description: "Elegant classic Arabic font" }
+            { id: "default", name: "Majalla (Default)", description: "Elegant classic Arabic font · Sakkal Majalla" },
+            { id: "maj", name: "Maj Font", description: "Alternate font · supports English & Arabic" }
           ].map((fontOption) => {
             const isActive = selectedFont === fontOption.id;
             return (
@@ -318,7 +318,7 @@ export default function AdminSettings() {
                     : "border-stone-100 hover:border-stone-200 hover:bg-stone-50"
                 }`}
                 style={{
-                  fontFamily: fontOption.id === "majalla" ? "Majalla" : "Maj"
+                  fontFamily: fontOption.id === "maj" ? "Maj" : "'Sakkal Majalla', 'Majalla'"
                 }}
               >
                 {isActive && (
@@ -331,7 +331,7 @@ export default function AdminSettings() {
                   {fontOption.description}
                 </div>
                 <div className="text-lg border border-dashed border-stone-200 p-3 rounded-lg bg-white text-stone-800 font-serif">
-                  {fontOption.id === "majalla" ? "خط المجلة - Jamhawi" : "جمهاوي - Jamhawi"}
+                  {fontOption.id === "maj" ? "جمهاوي - Jamhawi" : "خط المجلة - Jamhawi"}
                 </div>
               </button>
             );

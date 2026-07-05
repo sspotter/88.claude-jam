@@ -22,7 +22,33 @@ Project Console: https://console.firebase.google.com/project/gen-lang-client-085
 
 
 
-
+JamhawiAdmin2026!
+admin@jamhawi.com
 
 
  firebase deploy --only firestore:rules
+
+
+ The database was created:
+
+Name: u238610321_jamhawi_prod
+User: u238610321_jamhawi_app
+Password: Jamhawi@MySQL2026!
+Host: localhost (standard for Hostinger shared hosting)
+The DATABASE_URL for Prisma:
+mysql://u238610321_jamhawi_app:Jamhawi%40MySQL2026%21@localhost:3306/u238610321_jamhawi_prod
+
+Wait, @ in the password needs to be URL encoded. Actually, let me reconsider:
+The @ character must be URL encoded as %40 in the connection string, while ! can typically remain unencoded. So the proper DATABASE_URL should be mysql://u238610321_jamhawi_app:Jamhawi%40MySQL2026!@localhost:3306/u238610321_jamhawi_prod.
+
+Now I'm ready to deploy this through the application deployment process.
+
+Database confirmed: u238610321_jamhawi_prod, user u238610321_jamhawi_app. Now deploying:
+
+
+
+C:\Users\mazen\.gemini\antigravity-ide\brain\13c76837-270a-43eb-8c39-3fdf0db68b49\scratch\admin_setup.py
+
+
+
+JamhawiApp2026Kx7Qm3

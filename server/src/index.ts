@@ -1,7 +1,11 @@
 import express from "express";
 import cors from "cors";
 import path from "path";
+import { fileURLToPath } from "url";
 import dotenv from "dotenv";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 import orderRouter from "./routes/order.routes.js";
 import paymentRouter from "./routes/payment.routes.js";
 import authRouter from "./routes/auth.routes.js";
@@ -14,10 +18,12 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Enable CORS
-const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000";
+const frontendUrls = (process.env.FRONTEND_URL || "http://localhost:3000")
+  .split(",")
+  .map((u) => u.trim());
 app.use(
   cors({
-    origin: [frontendUrl, "https://accept.paymob.com"],
+    origin: [...frontendUrls, "https://accept.paymob.com"],
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
@@ -42,6 +48,13 @@ app.use("/api", catalogRouter); // public storefront reads (products, categories
 app.use("/api/orders", orderRouter);
 app.use("/api/payments", paymentRouter);
 app.use("/api/admin", adminRouter); // guarded admin CRUD + uploads
+
+// Serve React frontend (built output lives at project root /dist)
+const distPath = path.resolve(__dirname, "../../dist");
+app.use(express.static(distPath));
+app.get("*", (_req, res) => {
+  res.sendFile(path.join(distPath, "index.html"));
+});
 
 // Start Server
 app.listen(PORT, () => {
