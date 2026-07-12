@@ -39,6 +39,7 @@ export interface ThemeSettings {
 
 export interface FontSettings {
   selectedFont: string | null;
+  custom?: { name: string; url: string } | null;
 }
 
 export interface LanguageSettings {
