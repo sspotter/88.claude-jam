@@ -7,6 +7,7 @@ import {
 import { Toaster } from "sonner";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { getTheme, getFont, getLanguageSettings } from "./lib/api/catalog";
+import { applyCustomFont } from "./lib/customFont";
 import i18n, { LANG_CHOSEN_KEY } from "./i18n";
 
 import Layout from "./components/Layout";
@@ -52,6 +53,9 @@ function AppRoutes() {
       });
     getFont()
       .then((font) => {
+        if (font.custom?.url) {
+          applyCustomFont(font.custom.url);
+        }
         document.documentElement.dataset.font = font.selectedFont ?? "default";
       })
       .catch(() => {
