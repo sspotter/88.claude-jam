@@ -17,6 +17,7 @@ import {
   normalizeBaseCurrency,
 } from "../services/currencySettings.js";
 import { recordAudit, listAuditLogs } from "../services/audit.service.js";
+import { isAllowedFontExtension, mergeFontSelection } from "../services/fontSettings.js";
 
 const router = Router();
 
@@ -366,12 +367,14 @@ router.put("/settings/font", async (req: Request, res: Response) => {
   try {
     const selectedFont = String(req.body?.selectedFont ?? "");
     if (!selectedFont) return res.status(400).json({ error: "selectedFont is required." });
+    const existing = (await prisma.setting.findUnique({ where: { id: "font" } }))?.value ?? null;
+    const value = mergeFontSelection(existing, selectedFont);
     await prisma.setting.upsert({
       where: { id: "font" },
-      update: { value: { selectedFont } },
-      create: { id: "font", value: { selectedFont } },
+      update: { value: value as any },
+      create: { id: "font", value: value as any },
     });
-    return res.json({ selectedFont });
+    return res.json(value);
   } catch (error: any) {
     return res.status(500).json({ error: error.message || "Failed to update font." });
   }
@@ -769,6 +772,72 @@ router.post("/uploads", upload.single("file"), (req: Request, res: Response) => 
   const base = process.env.PUBLIC_BASE_URL || `${req.protocol}://${req.get("host")}`;
   const url = `${base.replace(/\/$/, "")}/uploads/${req.file.filename}`;
   return res.status(201).json({ url });
+});
+
+// Fonts get their own multer instance: validation is by extension (font
+// mimetypes are unreliable), and files are prefixed "font-" for easy cleanup.
+const fontStorage = multer.diskStorage({
+  destination: (_req, _file, cb) => cb(null, UPLOAD_DIR),
+  filename: (_req, file, cb) => {
+    const ext = path.extname(file.originalname).toLowerCase();
+    cb(null, `font-${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`);
+  },
+});
+
+const fontUpload = multer({
+  storage: fontStorage,
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10 MB
+  fileFilter: (_req, file, cb) => {
+    if (isAllowedFontExtension(file.originalname)) cb(null, true);
+    else cb(new Error("Only font files (.ttf, .otf, .woff, .woff2) are allowed."));
+  },
+});
+
+// POST /api/admin/settings/font/upload (multipart, field "file").
+// Saves the font, sets it as the active custom font, and best-effort deletes
+// the previously uploaded font file. The multer middleware is invoked manually
+// so filter/size errors return 400 instead of Express's default 500 HTML.
+router.post("/settings/font/upload", (req: Request, res: Response) => {
+  fontUpload.single("file")(req, res, async (err: unknown) => {
+    if (err) return res.status(400).json({ error: (err as Error).message });
+    if (!req.file) return res.status(400).json({ error: "No font file uploaded." });
+    try {
+      const base = process.env.PUBLIC_BASE_URL || `${req.protocol}://${req.get("host")}`;
+      const url = `${base.replace(/\/$/, "")}/uploads/${req.file.filename}`;
+      const name = path.parse(req.file.originalname).name;
+
+      const existing = (await prisma.setting.findUnique({ where: { id: "font" } }))?.value as
+        | { custom?: { url?: string } | null }
+        | null;
+
+      // Best-effort cleanup of the previous custom font file.
+      const prevUrl = existing?.custom?.url;
+      if (prevUrl) {
+        const prevName = path.basename(prevUrl);
+        if (prevName && prevName !== req.file.filename) {
+          fs.promises.unlink(path.join(UPLOAD_DIR, prevName)).catch(() => {});
+        }
+      }
+
+      const value = { selectedFont: "custom", custom: { name, url } };
+      await prisma.setting.upsert({
+        where: { id: "font" },
+        update: { value },
+        create: { id: "font", value },
+      });
+      await recordAudit({
+        ...auditActor(req),
+        action: "update",
+        entity: "font",
+        entityId: "font",
+        before: existing ?? null,
+        after: value,
+      });
+      return res.status(201).json(value);
+    } catch (error: any) {
+      return res.status(500).json({ error: error.message || "Failed to upload font." });
+    }
+  });
 });
 
 export default router;
