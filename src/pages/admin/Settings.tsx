@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef, type ChangeEvent } from "react";
-import { getTheme, getFont } from "../../lib/api/catalog";
-import { updateTheme, updateFont, getAnalytics, listOffers, importData } from "../../lib/api/admin";
+import { getTheme, getFont, getLanguageSettings } from "../../lib/api/catalog";
+import { updateTheme, updateFont, updateLanguage, getAnalytics, listOffers, importData } from "../../lib/api/admin";
 import { handleApiError, OperationType } from "../../lib/api/errors";
 import { toast } from "sonner";
-import { Palette, CheckCircle2, Download, Upload, Type } from "lucide-react";
+import { Palette, CheckCircle2, Download, Upload, Type, Languages } from "lucide-react";
 import * as XLSX from "xlsx";
 
 const themes = [
@@ -21,8 +21,10 @@ const themes = [
 export default function AdminSettings() {
   const [selected, setSelected] = useState("default");
   const [selectedFont, setSelectedFont] = useState("default");
+  const [selectedLanguage, setSelectedLanguage] = useState("ar");
   const [saving, setSaving] = useState(false);
   const [savingFont, setSavingFont] = useState(false);
+  const [savingLanguage, setSavingLanguage] = useState(false);
   const [loading, setLoading] = useState(true);
   const [exporting, setExporting] = useState(false);
   const [importing, setImporting] = useState(false);
@@ -30,13 +32,16 @@ export default function AdminSettings() {
 
   useEffect(() => {
     setLoading(true);
-    Promise.all([getTheme(), getFont()])
-      .then(([theme, font]) => {
+    Promise.all([getTheme(), getFont(), getLanguageSettings()])
+      .then(([theme, font, language]) => {
         if (theme.selectedTheme) {
           setSelected(theme.selectedTheme);
         }
         if (font.selectedFont) {
           setSelectedFont(font.selectedFont);
+        }
+        if (language.defaultLanguage) {
+          setSelectedLanguage(language.defaultLanguage);
         }
       })
       .catch((e) => handleApiError(e, OperationType.GET, "settings"))
@@ -67,6 +72,19 @@ export default function AdminSettings() {
       handleApiError(e, OperationType.WRITE, "settings/font");
     } finally {
       setSavingFont(false);
+    }
+  };
+
+  const handleSaveLanguage = async (languageId: string) => {
+    setSelectedLanguage(languageId);
+    setSavingLanguage(true);
+    try {
+      await updateLanguage(languageId);
+      toast.success("Default language updated");
+    } catch (e) {
+      handleApiError(e, OperationType.WRITE, "settings/language");
+    } finally {
+      setSavingLanguage(false);
     }
   };
 
@@ -332,6 +350,48 @@ export default function AdminSettings() {
                 </div>
                 <div className="text-lg border border-dashed border-stone-200 p-3 rounded-lg bg-white text-stone-800 font-serif">
                   {fontOption.id === "maj" ? "جمهاوي - Jamhawi" : "خط المجلة - Jamhawi"}
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="bg-white p-8 rounded-2xl border border-stone-100 shadow-sm">
+        <h2 className="text-xl font-medium text-stone-800 mb-6 flex items-center gap-3 font-serif">
+          <Languages className="w-6 h-6 text-stone-600" />
+          Default Language
+        </h2>
+        <p className="text-stone-500 mb-8">
+          Sets the language first-time visitors see. Visitors who already
+          picked a language using the site's toggle keep their own choice.
+        </p>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {[
+            { id: "ar", name: "Arabic", sample: "جمهاوي" },
+            { id: "en", name: "English", sample: "Jamhawi" },
+          ].map((option) => {
+            const isActive = selectedLanguage === option.id;
+            return (
+              <button
+                key={option.id}
+                onClick={() => handleSaveLanguage(option.id)}
+                disabled={savingLanguage}
+                className={`relative p-6 rounded-2xl border-2 text-left transition-all ${
+                  isActive
+                    ? "border-[var(--color-accent)] bg-stone-50"
+                    : "border-stone-100 hover:border-stone-200 hover:bg-stone-50"
+                }`}
+              >
+                {isActive && (
+                  <CheckCircle2 className="absolute top-4 right-4 w-6 h-6 text-[var(--color-accent)]" />
+                )}
+                <div className="font-medium text-lg text-stone-800 mb-4 font-serif">
+                  {option.name}
+                </div>
+                <div className="text-lg border border-dashed border-stone-200 p-3 rounded-lg bg-white text-stone-800 font-serif">
+                  {option.sample}
                 </div>
               </button>
             );

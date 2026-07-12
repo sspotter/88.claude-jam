@@ -112,6 +112,12 @@ export const updateFont = (selectedFont: string) =>
     body: JSON.stringify({ selectedFont }),
   });
 
+export const updateLanguage = (defaultLanguage: string) =>
+  adminFetch<{ defaultLanguage: string }>("/api/admin/settings/language", {
+    method: "PUT",
+    body: JSON.stringify({ defaultLanguage }),
+  });
+
 export const updateCurrencySettings = (settings: CurrencySettings) =>
   adminFetch<CurrencySettings>("/api/admin/settings/currency", {
     method: "PUT",

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Outlet, Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { setUserLanguage } from "../i18n";
 import { ShoppingCart, LogIn, Menu, Search, Sun, Moon } from "lucide-react";
 import { useCartStore } from "../store/cartStore";
 import { useSearchStore } from "../store/searchStore";
@@ -73,7 +74,7 @@ export default function Layout() {
   }, [i18n.language]);
 
   const toggleLanguage = () => {
-    i18n.changeLanguage(i18n.language === "ar" ? "en" : "ar");
+    setUserLanguage(i18n.language === "ar" ? "en" : "ar");
   };
 
   const toggleMobileMenu = () => {

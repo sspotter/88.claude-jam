@@ -41,6 +41,10 @@ export interface FontSettings {
   selectedFont: string | null;
 }
 
+export interface LanguageSettings {
+  defaultLanguage: string;
+}
+
 export function getCategories(): Promise<Category[]> {
   return apiFetch<Category[]>("/api/categories");
 }
@@ -76,6 +80,10 @@ export function getTheme(): Promise<ThemeSettings> {
 
 export function getFont(): Promise<FontSettings> {
   return apiFetch<FontSettings>("/api/settings/font");
+}
+
+export function getLanguageSettings(): Promise<LanguageSettings> {
+  return apiFetch<LanguageSettings>("/api/settings/language");
 }
 
 export function getCurrencySettings(): Promise<CurrencySettings> {

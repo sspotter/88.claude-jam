@@ -6,7 +6,8 @@ import {
 } from "react-router-dom";
 import { Toaster } from "sonner";
 import { AuthProvider, useAuth } from "./context/AuthContext";
-import { getTheme, getFont } from "./lib/api/catalog";
+import { getTheme, getFont, getLanguageSettings } from "./lib/api/catalog";
+import i18n, { LANG_CHOSEN_KEY } from "./i18n";
 
 import Layout from "./components/Layout";
 import AdminLayout from "./components/AdminLayout";
@@ -56,6 +57,22 @@ function AppRoutes() {
       .catch(() => {
         document.documentElement.dataset.font = "default";
       });
+    // Apply the admin-configured default only if this visitor has never used
+    // the language toggle themselves. Uses the dedicated LANG_CHOSEN_KEY flag
+    // (set only inside setUserLanguage), not i18next's own language cache —
+    // that cache gets written on every init regardless of visitor intent, so
+    // it can't tell "chosen" apart from "defaulted."
+    if (!localStorage.getItem(LANG_CHOSEN_KEY)) {
+      getLanguageSettings()
+        .then((language) => {
+          if (!localStorage.getItem(LANG_CHOSEN_KEY)) {
+            i18n.changeLanguage(language.defaultLanguage);
+          }
+        })
+        .catch(() => {
+          // Fail open: i18n already resolved to fallbackLng ("ar").
+        });
+    }
   }, []);
 
   if (loading) {

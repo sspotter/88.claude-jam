@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { setUserLanguage } from '../i18n';
 import { X, Home, ShoppingCart, LogIn, List, Phone } from 'lucide-react';
 import CurrencySelector from './CurrencySelector';
 
@@ -166,7 +167,7 @@ export default function MobileMenu({ isOpen, onClose, cartCount }: MobileMenuPro
         >
           <button
             onClick={() => {
-              i18n.changeLanguage(i18n.language === 'ar' ? 'en' : 'ar');
+              setUserLanguage(i18n.language === 'ar' ? 'en' : 'ar');
               onClose();
             }}
             style={{
