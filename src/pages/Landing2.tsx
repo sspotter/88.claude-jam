@@ -185,7 +185,7 @@ export default function Landing2() {
           --an-radius:       0.25rem;
           --an-radius-lg:    0.5rem;
           --an-radius-full:  9999px;
-          font-family: "Maj", sans-serif;
+          font-family: var(--font-sans);
           background: var(--an-bg);
           color: var(--an-text);
         }
@@ -217,7 +217,7 @@ export default function Landing2() {
           border: 1px solid var(--an-gold);
           background: transparent;
           color: var(--an-gold);
-          font-family: "Maj", sans-serif;
+          font-family: var(--font-sans);
           font-size: 0.72rem; font-weight: 700;
           letter-spacing: 0.12em; text-transform: uppercase;
           text-decoration: none;
@@ -234,7 +234,7 @@ export default function Landing2() {
           border: 1px solid var(--an-outline);
           background: transparent;
           color: var(--an-text-muted);
-          font-family: "Maj", sans-serif;
+          font-family: var(--font-sans);
           font-size: 0.7rem; font-weight: 700;
           letter-spacing: 0.1em; text-transform: uppercase;
           cursor: pointer;
@@ -270,14 +270,14 @@ export default function Landing2() {
         .an-hero-video { will-change: filter; }
         .an-hero-vignette { will-change: opacity; }
         .an-label-caps {
-          font-family: "Maj", sans-serif;
+          font-family: var(--font-sans);
           font-size: 12px; font-weight: 700;
           letter-spacing: 0.1em; text-transform: uppercase;
           color: var(--an-gold-dim); margin-bottom: 1.5rem;
         }
         .an-hero-title {
           margin: 0;
-          font-family: "Maj", serif;
+          font-family: var(--font-serif);
           font-size: clamp(3.5rem, 8vw, 6rem);
           font-weight: 700; line-height: 1.05;
           letter-spacing: -0.02em;
@@ -299,7 +299,7 @@ export default function Landing2() {
           border-radius: var(--an-radius-full);
           background: var(--an-gold);
           color: #131313;
-          font-family: "Maj", sans-serif;
+          font-family: var(--font-sans);
           font-size: 0.78rem; font-weight: 700;
           letter-spacing: 0.1em; text-transform: uppercase;
           text-decoration: none;
@@ -318,7 +318,7 @@ export default function Landing2() {
           border: 1px solid var(--an-gold);
           background: transparent;
           color: var(--an-gold);
-          font-family: "Maj", sans-serif;
+          font-family: var(--font-sans);
           font-size: 0.78rem; font-weight: 700;
           letter-spacing: 0.1em; text-transform: uppercase;
           text-decoration: none;
@@ -401,14 +401,14 @@ export default function Landing2() {
         }
         .an-content-block { display: flex; flex-direction: column; gap: 1.5rem; }
         .an-section-kicker {
-          font-family: "Maj", sans-serif;
+          font-family: var(--font-sans);
           font-size: 12px; font-weight: 700;
           letter-spacing: 0.1em; text-transform: uppercase;
           color: var(--an-gold);
         }
         .an-headline-lg {
           margin: 0;
-          font-family: "Maj", serif;
+          font-family: var(--font-serif);
           font-size: clamp(2rem, 4vw, 2.5rem);
           font-weight: 600; line-height: 1.2;
           color: var(--an-text);
@@ -420,13 +420,13 @@ export default function Landing2() {
         .an-features { display: flex; flex-direction: column; gap: 2rem; margin-top: 1rem; }
         .an-feature-item { display: flex; gap: 1.5rem; align-items: flex-start; }
         .an-feature-num {
-          font-family: "Maj", serif;
+          font-family: var(--font-serif);
           font-size: 2rem; font-weight: 400;
           color: var(--an-gold); line-height: 1; flex-shrink: 0;
         }
         .an-feature-title {
           margin: 0 0 0.4rem;
-          font-family: "Maj", sans-serif;
+          font-family: var(--font-sans);
           font-size: 0.85rem; font-weight: 700;
           letter-spacing: 0.08em; text-transform: uppercase;
           color: var(--an-text);
@@ -462,7 +462,7 @@ export default function Landing2() {
         .an-card-badge-icon { filter: drop-shadow(0 2px 8px rgba(242,202,80,0.30)); }
         .an-card-title {
           margin: 0;
-          font-family: "Maj", serif;
+          font-family: var(--font-serif);
           font-size: 1.5rem; font-weight: 600;
           letter-spacing: 0.18em; color: var(--an-gold);
         }
@@ -484,7 +484,7 @@ export default function Landing2() {
           border-radius: var(--an-radius-full);
           border: 1px solid var(--an-gold);
           color: var(--an-gold);
-          font-family: "Maj", sans-serif;
+          font-family: var(--font-sans);
           font-size: 0.68rem; font-weight: 700;
           letter-spacing: 0.1em; text-transform: uppercase;
           background: transparent;
@@ -600,7 +600,7 @@ export default function Landing2() {
         }
         .an-cat-card__name {
           margin: 0;
-          font-family: "Maj", serif;
+          font-family: var(--font-serif);
           font-size: clamp(1.1rem, 2vw, 1.35rem);
           font-weight: 500; letter-spacing: 0.18em;
           color: var(--an-text);
@@ -620,7 +620,7 @@ export default function Landing2() {
           border-radius: var(--an-radius-full);
           background: transparent; color: var(--an-gold);
           text-decoration: none;
-          font-family: "Maj", sans-serif;
+          font-family: var(--font-sans);
           font-size: 0.68rem; font-weight: 700;
           letter-spacing: 0.14em; text-transform: uppercase;
           transition: all 200ms ease;
@@ -647,7 +647,7 @@ export default function Landing2() {
         .an-story-content { display: flex; flex-direction: column; gap: 1.2rem; }
         .an-story-title {
           margin: 0;
-          font-family: "Maj", serif;
+          font-family: var(--font-serif);
           font-size: clamp(2rem, 4vw, 3rem);
           font-weight: 600; line-height: 1.15;
           color: var(--an-text);
@@ -666,7 +666,7 @@ export default function Landing2() {
         }
         .an-newsletter-title {
           margin: 0;
-          font-family: "Maj", serif;
+          font-family: var(--font-serif);
           font-size: 1.6rem; font-weight: 500;
           color: var(--an-text);
         }
@@ -677,7 +677,7 @@ export default function Landing2() {
           border-radius: 0; /* bottom-only border style */
           border: none; border-bottom: 1px solid var(--an-outline);
           background: transparent;
-          font-family: "Maj", sans-serif;
+          font-family: var(--font-sans);
           font-size: 0.88rem; color: var(--an-text);
           outline: none;
           transition: border-color 200ms ease;
@@ -689,7 +689,7 @@ export default function Landing2() {
           border-radius: var(--an-radius-full);
           border: none; cursor: pointer;
           background: var(--an-gold); color: #131313;
-          font-family: "Maj", sans-serif;
+          font-family: var(--font-sans);
           font-size: 0.78rem; font-weight: 700;
           letter-spacing: 0.1em; text-transform: uppercase;
           transition: all 200ms ease;
@@ -707,19 +707,19 @@ export default function Landing2() {
           align-items: center; gap: 2rem;
         }
         .an-footer-brand {
-          font-family: "Maj", serif;
+          font-family: var(--font-serif);
           font-size: 2rem; font-weight: 700;
           letter-spacing: 0.3em; color: var(--an-gold);
         }
         .an-footer-links { display: flex; gap: 2.5rem; }
         .an-footer-links a {
-          font-family: "Maj", sans-serif; font-size: 0.78rem;
+          font-family: var(--font-sans); font-size: 0.78rem;
           color: var(--an-text-muted); text-decoration: none;
           letter-spacing: 0.05em; transition: color 200ms ease;
         }
         .an-footer-links a:hover { color: var(--an-gold); }
         .an-footer-copy {
-          font-family: "Maj", sans-serif; font-size: 0.72rem;
+          font-family: var(--font-sans); font-size: 0.72rem;
           color: #4d4635; letter-spacing: 0.04em;
         }
       `}</style>

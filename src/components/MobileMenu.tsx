@@ -69,7 +69,7 @@ export default function MobileMenu({ isOpen, onClose, cartCount }: MobileMenuPro
         >
           <span
             style={{
-              fontFamily: "'Maj', serif",
+              fontFamily: "var(--font-serif)",
               fontSize: '1.2rem', fontWeight: 700,
               letterSpacing: '0.2em', color: '#f2ca50',
             }}

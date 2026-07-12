@@ -65,7 +65,7 @@ export default function Cart() {
             color: rgba(212,175,55,0.4);
           }
           .cart-empty-title {
-            font-family: "Maj", serif;
+            font-family: var(--font-serif);
             font-size: 2rem; font-weight: 600; color: #e5e2e1; margin: 0;
           }
           .cart-empty-sub { color: #a0a0a0; font-size: 0.95rem; margin: 0; }
@@ -73,7 +73,7 @@ export default function Cart() {
             display: inline-flex; align-items: center; gap: 0.5rem;
             padding: 0.85rem 2rem; border-radius: 9999px;
             background: #f2ca50; color: #131313;
-            font-family: "Maj", sans-serif;
+            font-family: var(--font-sans);
             font-size: 0.78rem; font-weight: 700;
             letter-spacing: 0.1em; text-transform: uppercase;
             text-decoration: none;
@@ -117,7 +117,7 @@ export default function Cart() {
           --an-gold-deep:   #d4af37;
           --an-outline:     rgba(212,175,55,0.18);
           --an-radius-full: 9999px;
-          font-family: "Maj", sans-serif;
+          font-family: var(--font-sans);
           background: var(--an-bg);
           color: var(--an-text);
           margin: -1.5rem -1rem -2.5rem;
@@ -129,7 +129,7 @@ export default function Cart() {
         .cart-inner { max-width: 56rem; margin: 0 auto; }
 
         .cart-title {
-          font-family: "Maj", serif;
+          font-family: var(--font-serif);
           font-size: clamp(1.75rem,4vw,2.5rem);
           font-weight: 700; letter-spacing: -0.01em;
           color: var(--an-text); margin: 0 0 2.5rem;
@@ -186,7 +186,7 @@ export default function Cart() {
         /* name / price */
         .cart-item__info { flex: 1; min-width: 0; }
         .cart-item__name {
-          font-family: "Maj", serif;
+          font-family: var(--font-serif);
           font-size: 0.95rem; font-weight: 500;
           color: var(--an-text); margin: 0 0 0.3rem;
           white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
@@ -211,7 +211,7 @@ export default function Cart() {
         .cart-qty__btn:hover { color: var(--an-gold); background: rgba(242,202,80,0.06); }
         .cart-qty__val {
           width: 2rem; text-align: center;
-          font-family: "Maj", serif;
+          font-family: var(--font-serif);
           font-size: 0.95rem; font-weight: 600;
           color: var(--an-text);
         }
@@ -219,7 +219,7 @@ export default function Cart() {
         /* line total */
         .cart-item__total {
           width: 5.5rem; text-align: right; flex-shrink: 0;
-          font-family: "Maj", serif;
+          font-family: var(--font-serif);
           font-size: 1rem; font-weight: 700;
           color: var(--an-text);
         }
@@ -277,7 +277,7 @@ export default function Cart() {
           border-radius: 9999px;
           border: none; border-bottom: 1px solid var(--an-outline);
           background: transparent;
-          color: var(--an-text); font-family: "Maj", sans-serif;
+          color: var(--an-text); font-family: var(--font-sans);
           font-size: 0.82rem; outline: none;
           transition: border-color 200ms ease;
         }
@@ -288,7 +288,7 @@ export default function Cart() {
           border-radius: 9999px; border: 1px solid var(--an-outline);
           background: transparent; cursor: pointer;
           color: var(--an-variant);
-          font-family: "Maj", sans-serif;
+          font-family: var(--font-sans);
           font-size: 0.75rem; font-weight: 700;
           letter-spacing: 0.08em; text-transform: uppercase;
           transition: all 200ms ease; white-space: nowrap;
@@ -320,12 +320,12 @@ export default function Cart() {
           text-decoration: line-through;
         }
         .cart-summary__total {
-          font-family: "Maj", serif;
+          font-family: var(--font-serif);
           font-size: 1.75rem; font-weight: 700;
           color: var(--an-gold);
         }
         .cart-summary__currency {
-          font-family: "Maj", sans-serif;
+          font-family: var(--font-sans);
           font-size: 0.85rem; font-weight: 700;
           color: #e9c349; margin-left: 0.25rem;
         }
@@ -350,7 +350,7 @@ export default function Cart() {
           padding: 0.85rem 2.5rem;
           border-radius: 9999px; border: none; cursor: pointer;
           background: var(--an-gold); color: #131313;
-          font-family: "Maj", sans-serif;
+          font-family: var(--font-sans);
           font-size: 0.82rem; font-weight: 700;
           letter-spacing: 0.1em; text-transform: uppercase;
           transition: all 250ms ease;
