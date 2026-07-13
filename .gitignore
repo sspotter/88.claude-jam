@@ -22,5 +22,9 @@ releases/
 scratch/
 codes
 
+# Session transcripts often contain live secrets pasted from terminal output
+docs/sessions/
+*.zip
+
 server\dist/
 scripts/
