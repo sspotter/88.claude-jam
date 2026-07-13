@@ -121,7 +121,7 @@ export default function CategoryView() {
           --an-outline:     var(--th-outline, rgba(212,175,55,0.20));
           --an-radius:      0.25rem;
           --an-radius-full: 9999px;
-          font-family: "Maj", sans-serif;
+          font-family: var(--font-sans);
           background: var(--an-bg);
           color: var(--an-text);
           /* break out of Layout's padding */
@@ -141,7 +141,7 @@ export default function CategoryView() {
         }
         .anc-title {
           margin: 0;
-          font-family: "Maj", serif;
+          font-family: var(--font-serif);
           font-size: clamp(1.75rem, 4vw, 2.5rem);
           font-weight: 700; letter-spacing: -0.01em;
           color: var(--an-text);
@@ -156,7 +156,7 @@ export default function CategoryView() {
           border: 1px solid var(--an-outline);
           border-radius: var(--an-radius-full);
           color: var(--an-text);
-          font-family: "Maj", sans-serif;
+          font-family: var(--font-sans);
           font-size: 0.78rem; font-weight: 600;
           letter-spacing: 0.04em;
           outline: none; cursor: pointer;
@@ -226,7 +226,7 @@ export default function CategoryView() {
           display: flex; align-items: center; justify-content: center;
         }
         .anc-card__oos-badge {
-          font-family: "Maj", sans-serif;
+          font-family: var(--font-sans);
           font-size: 0.65rem; font-weight: 700;
           letter-spacing: 0.12em; text-transform: uppercase;
           color: var(--an-gold);
@@ -240,7 +240,7 @@ export default function CategoryView() {
         .anc-card__body { padding: 1rem; flex: 1; display: flex; flex-direction: column; gap: 0.4rem; }
         .anc-card__name {
           margin: 0;
-          font-family: "Maj", serif;
+          font-family: var(--font-serif);
           font-size: clamp(0.95rem, 1.5vw, 1.1rem);
           font-weight: 500; letter-spacing: 0.04em;
           color: var(--an-text); line-height: 1.3;
@@ -255,7 +255,7 @@ export default function CategoryView() {
           justify-content: space-between; margin-top: 0.25rem;
         }
         .anc-card__price {
-          font-family: "Maj", sans-serif;
+          font-family: var(--font-sans);
           font-size: 0.95rem; font-weight: 700;
           color: var(--an-gold);
         }
@@ -277,7 +277,7 @@ export default function CategoryView() {
           border-radius: var(--an-radius-full);
           border: none; cursor: pointer;
           background: var(--an-gold); color: #131313;
-          font-family: "Maj", sans-serif;
+          font-family: var(--font-sans);
           font-size: 0.72rem; font-weight: 700;
           letter-spacing: 0.1em; text-transform: uppercase;
           transition: all 250ms ease;
@@ -293,7 +293,7 @@ export default function CategoryView() {
           border-radius: var(--an-radius-full);
           border: 1px solid var(--an-outline);
           background: transparent; color: var(--an-muted);
-          font-family: "Maj", sans-serif;
+          font-family: var(--font-sans);
           font-size: 0.72rem; font-weight: 700;
           letter-spacing: 0.1em; text-transform: uppercase;
           cursor: not-allowed;
@@ -309,7 +309,7 @@ export default function CategoryView() {
           background: var(--an-surface);
         }
         .anc-empty-title {
-          font-family: "Maj", serif;
+          font-family: var(--font-serif);
           font-size: 1.5rem; font-weight: 500;
           color: var(--an-text); margin: 0 0 0.5rem;
         }
@@ -327,7 +327,7 @@ export default function CategoryView() {
           border-radius: var(--an-radius-full);
           border: 1px solid var(--an-outline);
           background: transparent; color: var(--an-gold);
-          font-family: "Maj", sans-serif;
+          font-family: var(--font-sans);
           font-size: 0.72rem; font-weight: 700;
           letter-spacing: 0.08em; text-transform: uppercase;
           text-decoration: none; cursor: pointer;

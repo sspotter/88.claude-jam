@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { setUserLanguage } from "../i18n";
 import { Link } from "react-router-dom";
 import { getCategories } from "../lib/api/catalog";
 import { handleApiError, OperationType } from "../lib/api/errors";
@@ -38,6 +40,7 @@ const fallbackBadge = (
 );
 
 export default function Landing2() {
+  const { t, i18n } = useTranslation();
   const videoRef        = useRef<HTMLVideoElement>(null);
   const headerRef       = useRef<HTMLElement>(null);
   const catStageRef     = useRef<HTMLElement>(null);
@@ -107,12 +110,20 @@ export default function Landing2() {
         const hp = Math.max(0, Math.min(1, lastY / heroH)); // 0 → 1 over hero
 
         if (heroContent) {
-          // finish the copy fade by ~75% of the scroll for a clean handoff
-          const cp = Math.min(1, hp / 0.75);
-          const ease = cp * (2 - cp); // easeOutQuad
-          heroContent.style.opacity = String(1 - ease);
-          heroContent.style.transform = `translateY(${-ease * 80}px)`;
-          heroContent.style.pointerEvents = ease >= 1 ? "none" : "auto";
+          if (window.innerWidth <= 640) {
+            // Mobile: copy sits below the video in normal flow — keep it fully
+            // visible; skip the desktop fade/drift so it doesn't vanish on scroll.
+            heroContent.style.opacity = "";
+            heroContent.style.transform = "";
+            heroContent.style.pointerEvents = "";
+          } else {
+            // finish the copy fade by ~75% of the scroll for a clean handoff
+            const cp = Math.min(1, hp / 0.75);
+            const ease = cp * (2 - cp); // easeOutQuad
+            heroContent.style.opacity = String(1 - ease);
+            heroContent.style.transform = `translateY(${-ease * 80}px)`;
+            heroContent.style.pointerEvents = ease >= 1 ? "none" : "auto";
+          }
         }
         // video: brightness 0.45 (dimmed) → 1 (full)
         if (video) video.style.filter = `brightness(${0.45 + 0.55 * hp}) contrast(1.1)`;
@@ -174,7 +185,7 @@ export default function Landing2() {
           --an-radius:       0.25rem;
           --an-radius-lg:    0.5rem;
           --an-radius-full:  9999px;
-          font-family: "Maj", sans-serif;
+          font-family: var(--font-sans);
           background: var(--an-bg);
           color: var(--an-text);
         }
@@ -193,18 +204,12 @@ export default function Landing2() {
           box-shadow: 0 1px 0 var(--an-outline);
         }
         .an-nav-brand {
-          display: flex; align-items: center; gap: 12px;
+          display: flex; align-items: center;
           text-decoration: none; white-space: nowrap;
         }
-        .an-nav-brand img {
-          width: 40px; height: 40px;
-          object-fit: cover; flex-shrink: 0;
-        }
-        .an-nav-brand span {
-          font-family: "Maj", serif;
-          font-size: 1.5rem; font-weight: 700;
-          letter-spacing: 0.3em; color: var(--an-gold);
-          line-height: 1;
+        .an-nav-brand-logo {
+          height: 52px; width: auto;
+          object-fit: contain; flex-shrink: 0;
         }
         .an-nav-cta {
           padding: 0.5rem 1.5rem;
@@ -212,7 +217,7 @@ export default function Landing2() {
           border: 1px solid var(--an-gold);
           background: transparent;
           color: var(--an-gold);
-          font-family: "Maj", sans-serif;
+          font-family: var(--font-sans);
           font-size: 0.72rem; font-weight: 700;
           letter-spacing: 0.12em; text-transform: uppercase;
           text-decoration: none;
@@ -222,6 +227,22 @@ export default function Landing2() {
           background: var(--an-gold);
           color: #131313;
           box-shadow: 0 0 16px rgba(242,202,80,0.35);
+        }
+        .an-lang-toggle {
+          padding: 0.4rem 1rem;
+          border-radius: var(--an-radius-full);
+          border: 1px solid var(--an-outline);
+          background: transparent;
+          color: var(--an-text-muted);
+          font-family: var(--font-sans);
+          font-size: 0.7rem; font-weight: 700;
+          letter-spacing: 0.1em; text-transform: uppercase;
+          cursor: pointer;
+          transition: all 200ms ease;
+        }
+        .an-lang-toggle:hover {
+          border-color: var(--an-gold);
+          color: var(--an-gold);
         }
 
         /* ── HERO ─────────────────────────────────────────────────────── */
@@ -249,14 +270,14 @@ export default function Landing2() {
         .an-hero-video { will-change: filter; }
         .an-hero-vignette { will-change: opacity; }
         .an-label-caps {
-          font-family: "Maj", sans-serif;
+          font-family: var(--font-sans);
           font-size: 12px; font-weight: 700;
           letter-spacing: 0.1em; text-transform: uppercase;
           color: var(--an-gold-dim); margin-bottom: 1.5rem;
         }
         .an-hero-title {
           margin: 0;
-          font-family: "Maj", serif;
+          font-family: var(--font-serif);
           font-size: clamp(3.5rem, 8vw, 6rem);
           font-weight: 700; line-height: 1.05;
           letter-spacing: -0.02em;
@@ -278,7 +299,7 @@ export default function Landing2() {
           border-radius: var(--an-radius-full);
           background: var(--an-gold);
           color: #131313;
-          font-family: "Maj", sans-serif;
+          font-family: var(--font-sans);
           font-size: 0.78rem; font-weight: 700;
           letter-spacing: 0.1em; text-transform: uppercase;
           text-decoration: none;
@@ -297,7 +318,7 @@ export default function Landing2() {
           border: 1px solid var(--an-gold);
           background: transparent;
           color: var(--an-gold);
-          font-family: "Maj", sans-serif;
+          font-family: var(--font-sans);
           font-size: 0.78rem; font-weight: 700;
           letter-spacing: 0.1em; text-transform: uppercase;
           text-decoration: none;
@@ -329,6 +350,29 @@ export default function Landing2() {
           80%,100% { transform: translateY(220%);  }
         }
 
+        /* MOBILE HERO — video on top (below the navbar), copy stacked underneath */
+        @media (max-width: 640px) {
+          .an-hero {
+            display: block;
+            height: auto;
+            overflow: visible;
+          }
+          /* Video + vignette: a fixed-height block pinned just below the navbar.
+             bottom:auto cancels inset:0 so the explicit height controls the box. */
+          .an-hero-video,
+          .an-hero-vignette {
+            top: calc(var(--an-nav-h) + 16px);
+            height: 45vh;
+            bottom: auto;
+          }
+          /* Hero copy flows in normal order, underneath the video block.
+             padding-top (not margin) avoids margin-collapse and clears the video. */
+          .an-hero-content {
+            padding-top: calc(var(--an-nav-h) + 16px + 45vh + 2rem);
+            padding-bottom: 3rem;
+          }
+        }
+
         /* ── DIVIDER ──────────────────────────────────────────────────── */
         .an-divider {
           width: 100%; height: 1px;
@@ -357,14 +401,14 @@ export default function Landing2() {
         }
         .an-content-block { display: flex; flex-direction: column; gap: 1.5rem; }
         .an-section-kicker {
-          font-family: "Maj", sans-serif;
+          font-family: var(--font-sans);
           font-size: 12px; font-weight: 700;
           letter-spacing: 0.1em; text-transform: uppercase;
           color: var(--an-gold);
         }
         .an-headline-lg {
           margin: 0;
-          font-family: "Maj", serif;
+          font-family: var(--font-serif);
           font-size: clamp(2rem, 4vw, 2.5rem);
           font-weight: 600; line-height: 1.2;
           color: var(--an-text);
@@ -376,13 +420,13 @@ export default function Landing2() {
         .an-features { display: flex; flex-direction: column; gap: 2rem; margin-top: 1rem; }
         .an-feature-item { display: flex; gap: 1.5rem; align-items: flex-start; }
         .an-feature-num {
-          font-family: "Maj", serif;
+          font-family: var(--font-serif);
           font-size: 2rem; font-weight: 400;
           color: var(--an-gold); line-height: 1; flex-shrink: 0;
         }
         .an-feature-title {
           margin: 0 0 0.4rem;
-          font-family: "Maj", sans-serif;
+          font-family: var(--font-sans);
           font-size: 0.85rem; font-weight: 700;
           letter-spacing: 0.08em; text-transform: uppercase;
           color: var(--an-text);
@@ -418,7 +462,7 @@ export default function Landing2() {
         .an-card-badge-icon { filter: drop-shadow(0 2px 8px rgba(242,202,80,0.30)); }
         .an-card-title {
           margin: 0;
-          font-family: "Maj", serif;
+          font-family: var(--font-serif);
           font-size: 1.5rem; font-weight: 600;
           letter-spacing: 0.18em; color: var(--an-gold);
         }
@@ -440,7 +484,7 @@ export default function Landing2() {
           border-radius: var(--an-radius-full);
           border: 1px solid var(--an-gold);
           color: var(--an-gold);
-          font-family: "Maj", sans-serif;
+          font-family: var(--font-sans);
           font-size: 0.68rem; font-weight: 700;
           letter-spacing: 0.1em; text-transform: uppercase;
           background: transparent;
@@ -556,7 +600,7 @@ export default function Landing2() {
         }
         .an-cat-card__name {
           margin: 0;
-          font-family: "Maj", serif;
+          font-family: var(--font-serif);
           font-size: clamp(1.1rem, 2vw, 1.35rem);
           font-weight: 500; letter-spacing: 0.18em;
           color: var(--an-text);
@@ -576,7 +620,7 @@ export default function Landing2() {
           border-radius: var(--an-radius-full);
           background: transparent; color: var(--an-gold);
           text-decoration: none;
-          font-family: "Maj", sans-serif;
+          font-family: var(--font-sans);
           font-size: 0.68rem; font-weight: 700;
           letter-spacing: 0.14em; text-transform: uppercase;
           transition: all 200ms ease;
@@ -603,7 +647,7 @@ export default function Landing2() {
         .an-story-content { display: flex; flex-direction: column; gap: 1.2rem; }
         .an-story-title {
           margin: 0;
-          font-family: "Maj", serif;
+          font-family: var(--font-serif);
           font-size: clamp(2rem, 4vw, 3rem);
           font-weight: 600; line-height: 1.15;
           color: var(--an-text);
@@ -622,7 +666,7 @@ export default function Landing2() {
         }
         .an-newsletter-title {
           margin: 0;
-          font-family: "Maj", serif;
+          font-family: var(--font-serif);
           font-size: 1.6rem; font-weight: 500;
           color: var(--an-text);
         }
@@ -633,7 +677,7 @@ export default function Landing2() {
           border-radius: 0; /* bottom-only border style */
           border: none; border-bottom: 1px solid var(--an-outline);
           background: transparent;
-          font-family: "Maj", sans-serif;
+          font-family: var(--font-sans);
           font-size: 0.88rem; color: var(--an-text);
           outline: none;
           transition: border-color 200ms ease;
@@ -645,7 +689,7 @@ export default function Landing2() {
           border-radius: var(--an-radius-full);
           border: none; cursor: pointer;
           background: var(--an-gold); color: #131313;
-          font-family: "Maj", sans-serif;
+          font-family: var(--font-sans);
           font-size: 0.78rem; font-weight: 700;
           letter-spacing: 0.1em; text-transform: uppercase;
           transition: all 200ms ease;
@@ -663,19 +707,19 @@ export default function Landing2() {
           align-items: center; gap: 2rem;
         }
         .an-footer-brand {
-          font-family: "Maj", serif;
+          font-family: var(--font-serif);
           font-size: 2rem; font-weight: 700;
           letter-spacing: 0.3em; color: var(--an-gold);
         }
         .an-footer-links { display: flex; gap: 2.5rem; }
         .an-footer-links a {
-          font-family: "Maj", sans-serif; font-size: 0.78rem;
+          font-family: var(--font-sans); font-size: 0.78rem;
           color: var(--an-text-muted); text-decoration: none;
           letter-spacing: 0.05em; transition: color 200ms ease;
         }
         .an-footer-links a:hover { color: var(--an-gold); }
         .an-footer-copy {
-          font-family: "Maj", sans-serif; font-size: 0.72rem;
+          font-family: var(--font-sans); font-size: 0.72rem;
           color: #4d4635; letter-spacing: 0.04em;
         }
       `}</style>
@@ -685,10 +729,22 @@ export default function Landing2() {
         {/* ── Navigation ───────────────────────────────────────────── */}
         <header className="an-nav" ref={headerRef}>
           <a className="an-nav-brand" href="/landing2">
-            <img src="logo-circle.png" className="w-10 h-10 rounded-full object-cover" alt="Jamhawi Logo" />
-            <span>JAMHAWI</span>
+            <img
+              src={i18n.language === "ar" ? "/nav-logo-ar.png" : "/nav-logo-eng.png"}
+              className="an-nav-brand-logo"
+              alt={t("jamhawi")}
+            />
           </a>
-          <Link to="/shop/products" className="an-nav-cta">Shop Now</Link>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+            <button
+              onClick={() => setUserLanguage(i18n.language === "ar" ? "en" : "ar")}
+              className="an-lang-toggle"
+              aria-label="Toggle language"
+            >
+              {i18n.language === "ar" ? "EN" : "عربي"}
+            </button>
+            <Link to="/shop/products" className="an-nav-cta">{t("shop_now")}</Link>
+          </div>
         </header>
 
         <main>
@@ -704,24 +760,24 @@ export default function Landing2() {
             <div className="an-hero-vignette" ref={heroVignetteRef} />
 
             <div className="an-hero-content" ref={heroContentRef}>
-              <span className="an-label-caps">The Art of Details</span>
+              <span className="an-label-caps">{t("the_art_of_details")}</span>
               <h1 className="an-hero-title">
-                Immersive<br /><em>Purity</em>
+                {t("immersive")}<br /><em>{t("purity")}</em>
               </h1>
               <p className="an-hero-sub">
-                Premium dates and artisanal confections, hand-selected from ancient oases and curated for the discerning few.
+                {t("hero_subtitle")}
               </p>
               <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", justifyContent: "center" }}>
                 <Link to="/shop/products" className="an-btn-primary">
-                  Shop Now
+                  {t("shop_now")}
                   <svg viewBox="0 0 20 20" fill="none" width="14" height="14" aria-hidden="true">
                     <path d="M4 10h12M11 5l5 5-5 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
                 </Link>
-                <a href="#collection" className="an-btn-ghost">Discover More</a>
+                <a href="#collection" className="an-btn-ghost">{t("discover_more")}</a>
               </div>
               <div className="an-scroll-hint" aria-hidden="true">
-                <span>Scroll</span>
+                <span>{t("scroll")}</span>
                 <div className="an-scroll-line" />
               </div>
             </div>
@@ -732,32 +788,29 @@ export default function Landing2() {
             <div className="an-container">
               <div className="an-grid-2">
                 <div className="an-content-block">
-                  <span className="an-section-kicker">Signature Harvest</span>
-                  <h2 className="an-headline-lg">A Symphony of<br />Texture &amp; Taste</h2>
+                  <span className="an-section-kicker">{t("signature_harvest")}</span>
+                  <h2 className="an-headline-lg">{t("a_symphony_of")}<br />{t("texture_and_taste")}</h2>
                   <p className="an-body-lg">
-                    Our dates are harvested at the peak of maturity under the warm golden sun.
-                    Every harvest captures the intricate crystallization of natural sugars forming
-                    a delicate, caramel-like skin — a sensory journey that begins with visual
-                    perfection and ends with exquisite luxury.
+                    {t("signature_body")}
                   </p>
                   <div className="an-chips">
-                    <span className="an-chip">100% Natural</span>
-                    <span className="an-chip">Hand-Selected</span>
-                    <span className="an-chip">Est. 1984</span>
+                    <span className="an-chip">{t("natural_100")}</span>
+                    <span className="an-chip">{t("hand_selected")}</span>
+                    <span className="an-chip">{t("est_1984_2")}</span>
                   </div>
                   <div className="an-features">
                     <div className="an-feature-item">
                       <span className="an-feature-num">01</span>
                       <div>
-                        <h3 className="an-feature-title">Pure Origin</h3>
-                        <p className="an-feature-desc">Cultivated in the world-renowned mineral-rich soil of ancient Saudi oases.</p>
+                        <h3 className="an-feature-title">{t("pure_origin")}</h3>
+                        <p className="an-feature-desc">{t("cultivated_in_the_world_renowned_mineral")}</p>
                       </div>
                     </div>
                     <div className="an-feature-item">
                       <span className="an-feature-num">02</span>
                       <div>
-                        <h3 className="an-feature-title">Hand-Selected</h3>
-                        <p className="an-feature-desc">Each date undergoes rigorous inspection to guarantee optimal texture, moisture, and sweetness.</p>
+                        <h3 className="an-feature-title">{t("hand_selected")}</h3>
+                        <p className="an-feature-desc">{t("each_date_undergoes_rigorous_inspection_")}</p>
                       </div>
                     </div>
                   </div>
@@ -772,10 +825,10 @@ export default function Landing2() {
                         <ellipse cx="30" cy="26" rx="9" ry="12" stroke="#f2ca50" strokeWidth="1.4"/>
                         <path d="M18 14 Q24 8 30 14" stroke="#f2ca50" strokeWidth="1.4" fill="none"/>
                       </svg>
-                      <h4 className="an-card-title">JAMHAWI GOLD</h4>
+                      <h4 className="an-card-title">{t("jamhawi_gold")}</h4>
                       <div className="an-card-rule" />
-                      <p className="an-card-sub">Limited Edition Harvest</p>
-                      <span className="an-card-year">EST. 1984</span>
+                      <p className="an-card-sub">{t("limited_edition_harvest_2")}</p>
+                      <span className="an-card-year">{t("est_1984")}</span>
                     </div>
                   </div>
                 </div>
@@ -790,8 +843,8 @@ export default function Landing2() {
             <div className="an-categories-sticky">
               <div className="an-container an-cat-container">
                 <div className="an-categories-header">
-                  <span className="an-section-kicker">Our Collection</span>
-                  <h2 className="an-headline-lg">Shop by Category</h2>
+                  <span className="an-section-kicker">{t("our_collection")}</span>
+                  <h2 className="an-headline-lg">{t("shop_by_category")}</h2>
                 </div>
 
                 <div className={`an-categories-grid ${loading ? "an-categories-grid--count-4" : `an-categories-grid--count-${categories.length}`}`}>
@@ -808,8 +861,15 @@ export default function Landing2() {
                     : categories.map((cat, i) => {
                         const nameKey = cat.name.toLowerCase();
                         const badge = badgeMapping[nameKey] || fallbackBadge;
-                        const sub = subMapping[nameKey] || "Premium Selection";
+                        const subKeyMap: Record<string, string> = {
+                          "dates": "cat_sub_dates",
+                          "gift boxes": "cat_sub_gift_boxes",
+                          "sweets": "cat_sub_sweets",
+                          "premium": "cat_sub_premium",
+                        };
+                        const sub = t(subKeyMap[nameKey] || "cat_sub_fallback");
                         const img = cat.image || imageMapping[nameKey] || "/assets/animations/frames/ezgif-frame-010.jpg";
+                        const displayName = i18n.language === "ar" ? cat.nameAr || cat.name : cat.name;
 
                         return (
                           <article key={cat.id} className="an-cat-card" style={{ transitionDelay: `${i * 80}ms` }}>
@@ -817,14 +877,14 @@ export default function Landing2() {
                               <svg viewBox="0 0 48 48" fill="none">{badge}</svg>
                             </div>
                             <div className="an-cat-card__img-wrap">
-                              <img src={img} alt={cat.name} />
+                              <img src={img} alt={displayName} />
                             </div>
                             <div className="an-cat-card__body">
-                              <h3 className="an-cat-card__name">{cat.name}</h3>
+                              <h3 className="an-cat-card__name">{displayName}</h3>
                               <div className="an-cat-card__rule" />
                               <p className="an-cat-card__sub">{sub}</p>
                               <Link to={`/category/${cat.id}`} className="an-cat-card__cta">
-                                Explore
+                                {t("explore")}
                                 <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
                                   <path d="M4 10h12M11 5l5 5-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                                 </svg>
@@ -843,16 +903,13 @@ export default function Landing2() {
             <div className="an-container">
               <div className="an-story-grid">
                 <div className="an-story-content">
-                  <span className="an-section-kicker">Our Heritage</span>
-                  <h2 className="an-story-title">A Legacy of Pure Taste</h2>
+                  <span className="an-section-kicker">{t("our_heritage")}</span>
+                  <h2 className="an-story-title">{t("a_legacy_of_pure_taste")}</h2>
                   <p className="an-story-text">
-                    For over four decades, Jamhawi has curated the finest agricultural treasures.
-                    From the sun-drenched palm groves yielding our signature dates to the organic
-                    farms producing rich preserves, every product represents our dedication to
-                    pristine quality and traditional craftsmanship.
+                    {t("story_body")}
                   </p>
                   <Link to="/shop/products" className="an-btn-primary">
-                    Browse the Store
+                    {t("browse_the_store")}
                     <svg viewBox="0 0 20 20" fill="none" width="14" height="14" aria-hidden="true">
                       <path d="M4 10h12M11 5l5 5-5 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
@@ -860,25 +917,25 @@ export default function Landing2() {
                 </div>
 
                 <div className="an-newsletter-card">
-                  <h3 className="an-newsletter-title">Subscribe to the Club</h3>
+                  <h3 className="an-newsletter-title">{t("subscribe_to_the_club")}</h3>
                   <p className="an-newsletter-text">
-                    Receive exclusive access to seasonal harvests and limited edition collections.
+                    {t("receive_exclusive_access_to_seasonal_har")}
                   </p>
                   <form className="an-newsletter-form" onSubmit={(e) => e.preventDefault()}>
-                    <input type="email" placeholder="Your Email Address" aria-label="Email Address" required />
-                    <button type="submit">Join</button>
+                    <input type="email" placeholder={t("your_email_address")} aria-label={t("your_email_address")} required />
+                    <button type="submit">{t("join")}</button>
                   </form>
                 </div>
               </div>
 
               <footer className="an-site-footer">
-                <div className="an-footer-brand">JAMHAWI</div>
+                <div className="an-footer-brand">{t("jamhawi")}</div>
                 <nav className="an-footer-links" aria-label="Footer navigation">
-                  <a href="#">Privacy Policy</a>
-                  <a href="#">Terms of Service</a>
-                  <Link to="/shop">Shop</Link>
+                  <a href="#">{t("privacy_policy")}</a>
+                  <a href="#">{t("terms_of_service")}</a>
+                  <Link to="/shop">{t("shop")}</Link>
                 </nav>
-                <div className="an-footer-copy">&copy; {new Date().getFullYear()} Jamhawi. All rights reserved.</div>
+                <div className="an-footer-copy">{t("footer_copyright", { year: new Date().getFullYear() })}</div>
               </footer>
             </div>
           </section>

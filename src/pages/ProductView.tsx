@@ -144,7 +144,7 @@ export default function ProductView() {
           --an-radius:      0.25rem;
           --an-radius-lg:   0.5rem;
           --an-radius-full: 9999px;
-          font-family: "Maj", sans-serif;
+          font-family: var(--font-sans);
           background: var(--an-bg);
           color: var(--an-text);
           margin: -1.5rem -1rem -2.5rem;
@@ -228,18 +228,18 @@ export default function ProductView() {
         }
         .anp-product-name {
           margin: 0 0 1rem;
-          font-family: "Maj", serif;
+          font-family: var(--font-serif);
           font-size: clamp(1.75rem, 3.5vw, 2.5rem);
           font-weight: 700; line-height: 1.1; letter-spacing: -0.01em;
           color: var(--an-text);
         }
         .anp-price {
-          font-family: "Maj", serif;
+          font-family: var(--font-serif);
           font-size: clamp(1.5rem, 3vw, 2rem);
           font-weight: 600; color: var(--an-gold);
           margin-bottom: 1.25rem; display: flex; align-items: baseline; gap: 0.4rem;
         }
-        .anp-price-currency { font-family: "Maj", sans-serif; font-size: 0.95rem; font-weight: 700; color: var(--an-gold-dim); }
+        .anp-price-currency { font-family: var(--font-sans); font-size: 0.95rem; font-weight: 700; color: var(--an-gold-dim); }
 
         .anp-description {
           font-size: 0.95rem; line-height: 1.75;
@@ -260,7 +260,7 @@ export default function ProductView() {
           border: 1px solid var(--an-outline);
           background: transparent;
           color: var(--an-muted);
-          font-family: "Maj", sans-serif;
+          font-family: var(--font-sans);
           font-size: 0.8rem; font-weight: 600;
           cursor: pointer; transition: all 200ms ease;
         }
@@ -291,7 +291,7 @@ export default function ProductView() {
         .anp-qty-btn:hover { color: var(--an-gold); background: rgba(242,202,80,0.06); }
         .anp-qty-val {
           width: 2.5rem; text-align: center;
-          font-family: "Maj", serif;
+          font-family: var(--font-serif);
           font-size: 1.1rem; font-weight: 600;
           color: var(--an-text);
         }
@@ -301,7 +301,7 @@ export default function ProductView() {
           border-radius: var(--an-radius-full);
           border: none; cursor: pointer;
           background: var(--an-gold); color: #131313;
-          font-family: "Maj", sans-serif;
+          font-family: var(--font-sans);
           font-size: 0.8rem; font-weight: 700;
           letter-spacing: 0.1em; text-transform: uppercase;
           transition: all 250ms ease;
@@ -317,7 +317,7 @@ export default function ProductView() {
           border-radius: var(--an-radius-full);
           border: 1px solid var(--an-outline);
           background: transparent; color: var(--an-muted);
-          font-family: "Maj", sans-serif;
+          font-family: var(--font-sans);
           font-size: 0.8rem; font-weight: 700;
           letter-spacing: 0.1em; text-transform: uppercase;
           cursor: not-allowed;
@@ -342,7 +342,7 @@ export default function ProductView() {
           width: 100%; display: flex; justify-content: space-between; align-items: center;
           padding: 1.1rem 0;
           background: transparent; border: none; cursor: pointer;
-          font-family: "Maj", serif;
+          font-family: var(--font-serif);
           font-size: 1rem; font-weight: 600;
           color: var(--an-text); text-align: left;
           transition: color 200ms ease;
@@ -393,7 +393,7 @@ export default function ProductView() {
           align-items: center; margin-bottom: 2rem;
         }
         .anp-similar-title {
-          font-family: "Maj", serif;
+          font-family: var(--font-serif);
           font-size: 1.75rem; font-weight: 600;
           color: var(--an-text); margin: 0;
         }
@@ -445,7 +445,7 @@ export default function ProductView() {
         .anp-sim-card:hover .anp-sim-card__img img { transform: scale(1.05); filter: brightness(1); }
         .anp-sim-card__body { padding: 0.9rem; }
         .anp-sim-card__name {
-          font-family: "Maj", serif;
+          font-family: var(--font-serif);
           font-size: 0.95rem; font-weight: 500;
           color: var(--an-text); white-space: nowrap;
           overflow: hidden; text-overflow: ellipsis;

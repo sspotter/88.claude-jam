@@ -1,5 +1,5 @@
 import { apiFetch } from "./client.js";
-import type { Category, Product, Offer } from "./catalog.js";
+import type { Category, Product, Offer, FontSettings } from "./catalog.js";
 import type { CurrencySettings } from "../../types/pricing";
 
 export interface OrderItem {
@@ -112,6 +112,12 @@ export const updateFont = (selectedFont: string) =>
     body: JSON.stringify({ selectedFont }),
   });
 
+export const updateLanguage = (defaultLanguage: string) =>
+  adminFetch<{ defaultLanguage: string }>("/api/admin/settings/language", {
+    method: "PUT",
+    body: JSON.stringify({ defaultLanguage }),
+  });
+
 export const updateCurrencySettings = (settings: CurrencySettings) =>
   adminFetch<CurrencySettings>("/api/admin/settings/currency", {
     method: "PUT",
@@ -139,4 +145,14 @@ export async function uploadImage(file: File): Promise<string> {
     body: form,
   });
   return res.url;
+}
+
+export async function uploadFont(file: File): Promise<FontSettings> {
+  const form = new FormData();
+  form.append("file", file);
+  return apiFetch<FontSettings>("/api/admin/settings/font/upload", {
+    method: "POST",
+    auth: true,
+    body: form,
+  });
 }

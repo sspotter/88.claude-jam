@@ -9,5 +9,11 @@ coverage/
 
 outputfolder/
 
+# Generated deploy archives (scripts/build-deploy-archive.mjs) — build artifacts, not source
+releases/
+
 # Contains Hostinger API token — keep out of git
 .mcp.json
+
+
+public/video1.mp4

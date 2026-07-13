@@ -5,6 +5,8 @@
   "main": "dist/index.js",
   "type": "module",
   "scripts": {
+    "db:init": "node scripts/init-db.mjs",
+    "predev": "node scripts/init-db.mjs",
     "dev": "tsx watch src/index.ts",
     "build": "prisma generate && tsc",
     "start": "node dist/index.js",

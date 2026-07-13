@@ -114,10 +114,29 @@ router.get("/settings/theme", async (_req: Request, res: Response) => {
 router.get("/settings/font", async (_req: Request, res: Response) => {
   try {
     const setting = await prisma.setting.findUnique({ where: { id: "font" } });
-    const value = (setting?.value as { selectedFont?: string } | null) ?? null;
-    return res.json({ selectedFont: value?.selectedFont ?? "default" });
+    const value =
+      (setting?.value as { selectedFont?: string; custom?: { name: string; url: string } | null } | null) ?? null;
+    return res.json({
+      selectedFont: value?.selectedFont ?? "default",
+      custom: value?.custom ?? null,
+    });
   } catch (error: any) {
     return res.status(500).json({ error: error.message || "Failed to fetch font." });
+  }
+});
+
+/**
+ * GET /api/settings/language
+ * Site-wide default language for first-time visitors (no cached preference).
+ * Individual visitors can still override via the client-side toggle.
+ */
+router.get("/settings/language", async (_req: Request, res: Response) => {
+  try {
+    const setting = await prisma.setting.findUnique({ where: { id: "language" } });
+    const value = (setting?.value as { defaultLanguage?: string } | null) ?? null;
+    return res.json({ defaultLanguage: value?.defaultLanguage ?? "ar" });
+  } catch (error: any) {
+    return res.status(500).json({ error: error.message || "Failed to fetch language." });
   }
 });
 

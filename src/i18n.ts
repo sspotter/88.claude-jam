@@ -360,7 +360,7 @@ export const resources = {
       no_image: "No Image",
       subtotal_3: "Subtotal",
       total_due_2: "Total Due",
-      our_collection: "Our Collection",
+      our_collection: "مجموعتنا",
       categories_2: "Categories",
       no_categories_yet: "No categories yet",
       check_back_soon_for_our_curated_collecti: "Check back soon for our curated collections.",
@@ -374,34 +374,34 @@ export const resources = {
       in_stock: "In Stock",
       out_of_stock_2: "Out of Stock",
       in_stock_only_3: "In Stock only",
-      jamhawi: "JAMHAWI",
-      shop_now: "Shop Now",
-      the_art_of_details: "The Art of Details",
-      immersive: "Immersive",
-      purity: "Purity",
-      signature_harvest: "Signature Harvest",
-      pure_origin: "Pure Origin",
-      cultivated_in_the_world_renowned_mineral: "Cultivated in the world-renowned mineral-rich soil of ancient Saudi oases.",
-      hand_selected: "Hand-Selected",
-      each_date_undergoes_rigorous_inspection_: "Each date undergoes rigorous inspection to guarantee optimal texture, moisture, and sweetness.",
-      jamhawi_gold: "JAMHAWI GOLD",
+      jamhawi: "جمهاوي",
+      shop_now: "تسوق الآن",
+      the_art_of_details: "فن التفاصيل",
+      immersive: "غامرة",
+      purity: "نقاء",
+      signature_harvest: "الحصاد المميز",
+      pure_origin: "أصل نقي",
+      cultivated_in_the_world_renowned_mineral: "يُزرع في تربة غنية بالمعادن، في واحات سعودية عريقة ذائعة الصيت.",
+      hand_selected: "مُنتقى يدويًا",
+      each_date_undergoes_rigorous_inspection_: "تخضع كل حبة تمر لفحص دقيق لضمان القوام والرطوبة والحلاوة المثالية.",
+      jamhawi_gold: "جمهاوي الذهبي",
       limited_edition_harvest: "LIMITED EDITION HARVEST",
-      est_1984: "EST. 1984",
-      shop_by_category: "Shop by Category",
-      our_heritage: "Our Heritage",
-      a_legacy_of_pure_taste: "A Legacy of Pure Taste",
-      browse_the_store: "Browse the Store",
-      subscribe_to_the_club: "Subscribe to the Club",
-      receive_exclusive_access_to_seasonal_har: "Receive exclusive access to seasonal harvests and limited edition collections.",
-      join: "Join",
-      privacy_policy: "Privacy Policy",
-      terms_of_service: "Terms of Service",
-      shop: "Shop",
-      discover_more: "Discover More",
-      scroll: "Scroll",
-      a_symphony_of: "A Symphony of",
-      est_1984_2: "Est. 1984",
-      limited_edition_harvest_2: "Limited Edition Harvest",
+      est_1984: "تأسست 1984",
+      shop_by_category: "تسوق حسب الفئة",
+      our_heritage: "إرثنا",
+      a_legacy_of_pure_taste: "إرث من النقاء والمذاق",
+      browse_the_store: "تصفح المتجر",
+      subscribe_to_the_club: "انضم إلى النادي",
+      receive_exclusive_access_to_seasonal_har: "احصل على وصول حصري للحصاد الموسمي والإصدارات المحدودة.",
+      join: "انضم",
+      privacy_policy: "سياسة الخصوصية",
+      terms_of_service: "شروط الخدمة",
+      shop: "المتجر",
+      discover_more: "اكتشف المزيد",
+      scroll: "مرر للأسفل",
+      a_symphony_of: "سيمفونية من",
+      est_1984_2: "تأسست 1984",
+      limited_edition_harvest_2: "حصاد إصدار محدود",
       try_adjusting_your_search_or_filters: "Try adjusting your search or filters.",
       home: "Home",
       products_3: "Products",
@@ -433,6 +433,19 @@ export const resources = {
       filter_by_category: "تصفية حسب الفئة",
       search_products: "بحث عن المنتجات",
       save_product_first: "احفظ المنتج أولاً لتعيين الأسعار لكل عملة.",
+      hero_subtitle: "تمور فاخرة وحلويات يدوية، مُنتقاة بعناية من الواحات القديمة ومُهيأة لأصحاب الذوق الرفيع.",
+      texture_and_taste: "قوام ومذاق",
+      signature_body: "يُحصد بلحنا في ذروة النضج تحت أشعة الشمس الذهبية الدافئة. يلتقط كل حصاد التبلور الدقيق للسكريات الطبيعية مكوّناً قشرة رقيقة أشبه بالكراميل — رحلة حسية تبدأ بالكمال البصري وتنتهي بفخامة استثنائية.",
+      natural_100: "100% طبيعي",
+      explore: "استكشف",
+      cat_sub_dates: "تمور مختارة فاخرة",
+      cat_sub_gift_boxes: "مجموعات منسقة",
+      cat_sub_sweets: "حلويات حرفية",
+      cat_sub_premium: "تشكيلة حصرية",
+      cat_sub_fallback: "تشكيلة فاخرة",
+      story_body: "منذ أكثر من أربعة عقود، تنتقي جمهاوي أرقى الكنوز الزراعية. من بساتين النخيل المشمسة التي تُنتج تمورنا المُميزة إلى المزارع العضوية التي تُنتج المربيات الغنية، يعكس كل منتج التزامنا بالجودة النقية والحرفية التقليدية.",
+      your_email_address: "بريدك الإلكتروني",
+      footer_copyright: "© {{year}} جمهاوي. جميع الحقوق محفوظة.",
     },
   },
   en: {
@@ -865,6 +878,19 @@ export const resources = {
       filter_by_category: "Filter by category",
       search_products: "Search products",
       save_product_first: "Save the product first to set per-currency prices.",
+      hero_subtitle: "Premium dates and artisanal confections, hand-selected from ancient oases and curated for the discerning few.",
+      texture_and_taste: "Texture & Taste",
+      signature_body: "Our dates are harvested at the peak of maturity under the warm golden sun. Every harvest captures the intricate crystallization of natural sugars forming a delicate, caramel-like skin — a sensory journey that begins with visual perfection and ends with exquisite luxury.",
+      natural_100: "100% Natural",
+      explore: "Explore",
+      cat_sub_dates: "Premium Selected Dates",
+      cat_sub_gift_boxes: "Curated Collections",
+      cat_sub_sweets: "Artisanal Treats",
+      cat_sub_premium: "Exclusive Selection",
+      cat_sub_fallback: "Premium Selection",
+      story_body: "For over four decades, Jamhawi has curated the finest agricultural treasures. From the sun-drenched palm groves yielding our signature dates to the organic farms producing rich preserves, every product represents our dedication to pristine quality and traditional craftsmanship.",
+      your_email_address: "Your Email Address",
+      footer_copyright: "© {{year}} Jamhawi. All rights reserved.",
     },
   },
 };
@@ -875,9 +901,32 @@ i18n
   .init({
     resources,
     fallbackLng: "ar",
+    detection: {
+      // Browser/OS locale is deliberately excluded: the site defaults to
+      // Arabic (or whatever the admin configures) for first-time visitors,
+      // not whatever language their OS happens to be set to. Only an
+      // explicit ?lng= param or a previously cached i18next language
+      // overrides that default.
+      order: ["querystring", "localStorage", "cookie"],
+      caches: ["localStorage"],
+    },
     interpolation: {
       escapeValue: false, // react already safes from xss
     },
   });
+
+// i18next caches its resolved language to localStorage on every init/change,
+// even when that language came purely from fallbackLng with no real visitor
+// choice behind it — so that cache can't be used to detect "has this visitor
+// ever chosen a language." LANG_CHOSEN_KEY is a separate flag, set only by
+// setUserLanguage() below (called from the toggle buttons), mirroring how
+// currencyStore.ts gates its own default on a dedicated storage key instead
+// of a detected value.
+export const LANG_CHOSEN_KEY = "jamhawi-lang-chosen";
+
+export function setUserLanguage(lang: string): void {
+  localStorage.setItem(LANG_CHOSEN_KEY, "1");
+  i18n.changeLanguage(lang);
+}
 
 export default i18n;

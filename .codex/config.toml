@@ -1,0 +1,49 @@
+[mcp_servers.hostinger-dns]
+command = "npx.cmd"
+args = [
+    "--package=hostinger-api-mcp@latest",
+    "hostinger-dns-mcp",
+]
+
+[mcp_servers.hostinger-dns.env]
+HOSTINGER_API_TOKEN = "E5jQHMjdL0DPAc24O76DQQaRQwPruZgGJJ7qGLlm10a90e03"
+
+[mcp_servers.hostinger-domains]
+command = "npx.cmd"
+args = [
+    "--package=hostinger-api-mcp@latest",
+    "hostinger-domains-mcp",
+]
+
+[mcp_servers.hostinger-domains.env]
+HOSTINGER_API_TOKEN = "E5jQHMjdL0DPAc24O76DQQaRQwPruZgGJJ7qGLlm10a90e03"
+
+[mcp_servers.hostinger-hosting]
+command = "npx.cmd"
+args = [
+    "--package=hostinger-api-mcp@latest",
+    "hostinger-hosting-mcp",
+]
+
+[mcp_servers.hostinger-hosting.env]
+HOSTINGER_API_TOKEN = "E5jQHMjdL0DPAc24O76DQQaRQwPruZgGJJ7qGLlm10a90e03"
+
+[mcp_servers.hostinger-reach]
+command = "npx.cmd"
+args = [
+    "--package=hostinger-api-mcp@latest",
+    "hostinger-reach-mcp",
+]
+
+[mcp_servers.hostinger-reach.env]
+HOSTINGER_API_TOKEN = "E5jQHMjdL0DPAc24O76DQQaRQwPruZgGJJ7qGLlm10a90e03"
+
+[mcp_servers.hostinger-vps]
+command = "npx.cmd"
+args = [
+    "--package=hostinger-api-mcp@latest",
+    "hostinger-vps-mcp",
+]
+
+[mcp_servers.hostinger-vps.env]
+HOSTINGER_API_TOKEN = "E5jQHMjdL0DPAc24O76DQQaRQwPruZgGJJ7qGLlm10a90e03"
