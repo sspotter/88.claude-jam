@@ -176,8 +176,21 @@ router.get("/:id/stream", async (req: Request, res: Response) => {
   // 3. Heartbeat to keep proxies from closing the idle connection.
   const heartbeat = setInterval(() => res.write(": ping\n\n"), 25000);
 
+  // 4. Hard cap on connection lifetime. Without this, an order that never
+  // reaches a terminal status (abandoned checkout, missed webhook) holds this
+  // connection — and the hosting process slot behind it — open indefinitely,
+  // which on a shared-hosting process cap eventually exhausts the account.
+  // Sending an explicit "timeout" event (rather than just closing the socket)
+  // lets the client stop treating this as a dropped connection to retry.
+  const maxLifetime = setTimeout(() => {
+    send({ orderId, status: "timeout" });
+    cleanup();
+    res.end();
+  }, 5 * 60 * 1000);
+
   const cleanup = () => {
     clearInterval(heartbeat);
+    clearTimeout(maxLifetime);
     unsubscribe();
   };
 

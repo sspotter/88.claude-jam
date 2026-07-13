@@ -58,6 +58,29 @@ export default function CheckoutSuccess() {
     // Live updates via SSE until a terminal status is reached.
     const es = new EventSource(`${API_BASE}/api/orders/${orderId}/stream`);
     esRef.current = es;
+    let pollTimer: ReturnType<typeof setInterval> | null = null;
+
+    // Fallback once the stream gives up on us: poll occasionally instead of
+    // holding a connection open, so a tab left open on a never-resolving
+    // order doesn't keep reconnecting forever.
+    const startPolling = () => {
+      if (pollTimer) return;
+      pollTimer = setInterval(() => {
+        getOrderStatus(orderId)
+          .then((order) => {
+            if (!active) return;
+            const next = toViewStatus(order.status);
+            setStatus((prev) => (prev === "paid" || prev === "failed" ? prev : next));
+            if ((next === "paid" || next === "failed") && pollTimer) {
+              clearInterval(pollTimer);
+              pollTimer = null;
+            }
+          })
+          .catch(() => {
+            /* keep polling; a transient failure isn't terminal */
+          });
+      }, 20000);
+    };
 
     es.onmessage = (event) => {
       if (!active) return;
@@ -69,6 +92,13 @@ export default function CheckoutSuccess() {
         if (data.error === "not_found") {
           setStatus("not_found");
           es.close();
+          return;
+        }
+        if (data.status === "timeout") {
+          // Server capped the stream's lifetime. Stop here rather than letting
+          // EventSource auto-reconnect — fall back to light polling instead.
+          es.close();
+          startPolling();
           return;
         }
         const next = toViewStatus(data.status);
@@ -88,6 +118,7 @@ export default function CheckoutSuccess() {
     return () => {
       active = false;
       es.close();
+      if (pollTimer) clearInterval(pollTimer);
     };
   }, [orderId]);
 

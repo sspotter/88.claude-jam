@@ -380,6 +380,23 @@ router.put("/settings/font", async (req: Request, res: Response) => {
   }
 });
 
+router.put("/settings/language", async (req: Request, res: Response) => {
+  try {
+    const defaultLanguage = String(req.body?.defaultLanguage ?? "");
+    if (defaultLanguage !== "ar" && defaultLanguage !== "en") {
+      return res.status(400).json({ error: "defaultLanguage must be 'ar' or 'en'." });
+    }
+    await prisma.setting.upsert({
+      where: { id: "language" },
+      update: { value: { defaultLanguage } },
+      create: { id: "language", value: { defaultLanguage } },
+    });
+    return res.json({ defaultLanguage });
+  } catch (error: any) {
+    return res.status(500).json({ error: error.message || "Failed to update language." });
+  }
+});
+
 
 router.put("/settings/currency", async (req: Request, res: Response) => {
   try {
@@ -802,8 +819,10 @@ router.post("/settings/font/upload", (req: Request, res: Response) => {
     if (err) return res.status(400).json({ error: (err as Error).message });
     if (!req.file) return res.status(400).json({ error: "No font file uploaded." });
     try {
-      const base = process.env.PUBLIC_BASE_URL || `${req.protocol}://${req.get("host")}`;
-      const url = `${base.replace(/\/$/, "")}/uploads/${req.file.filename}`;
+      // Relative, not absolute: an absolute URL bakes in whatever host/port
+      // served this request (e.g. a dev port), which then 404s once the app
+      // is reached through a different origin (another port, or prod domain).
+      const url = `/uploads/${req.file.filename}`;
       const name = path.parse(req.file.originalname).name;
 
       const existing = (await prisma.setting.findUnique({ where: { id: "font" } }))?.value as

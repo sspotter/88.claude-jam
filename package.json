@@ -1,7 +1,7 @@
 {
   "name": "react-example",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.7",
   "type": "module",
   "scripts": {
     "dev:server": "npm run dev --prefix server",
@@ -19,7 +19,8 @@
     "server-test": "npm run test-payment --prefix server",
     "seed-admin": "npm run seed-admin --prefix server",
     "db-migrate": "npm run prisma:migrate --prefix server",
-    "migrate-from-firestore": "npm run migrate-from-firestore --prefix server"
+    "migrate-from-firestore": "npm run migrate-from-firestore --prefix server",
+    "build:archive": "node scripts/build-deploy-archive.mjs"
   },
   "dependencies": {
     "@google/genai": "^1.29.0",
@@ -48,6 +49,7 @@
   "devDependencies": {
     "@types/express": "^4.17.21",
     "@types/node": "^22.14.0",
+    "archiver": "^8.0.0",
     "autoprefixer": "^10.4.21",
     "eslint": "^10.2.1",
     "tailwindcss": "^4.1.14",

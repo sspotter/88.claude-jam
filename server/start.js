@@ -1,8 +1,21 @@
 import { fileURLToPath } from "url";
 import path from "path";
 import http from "http";
+import dotenv from "dotenv";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+// Load the production env file uploaded alongside the app (see
+// scripts/deploy-hostinger-shared.{sh,cmd}). dotenv never overrides a var
+// already set in process.env, so Passenger's own PORT still wins over
+// whatever this file says.
+const envPath = path.resolve(__dirname, "..", ".env.hostinger");
+const { error: envError } = dotenv.config({ path: envPath });
+if (envError) {
+  console.warn(`[Startup] No .env.hostinger found at ${envPath} (${envError.code}) — relying on cPanel env vars.`);
+} else {
+  console.log(`[Startup] Loaded environment from ${envPath}`);
+}
 
 // Hostinger shared hosting: do NOT spawn any sub-processes (Prisma engines, tsc, etc.)
 // on startup — the process/thread limit causes EAGAIN immediately.
