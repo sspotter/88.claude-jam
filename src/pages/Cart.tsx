@@ -53,26 +53,26 @@ export default function Cart() {
             display: flex; flex-direction: column; align-items: center;
             justify-content: center; min-height: 60vh;
             gap: 1.5rem; text-align: center;
-            background: #131313; color: #e5e2e1;
+            background: var(--th-bg, #131313); color: var(--th-text, #e5e2e1);
             margin: -1.5rem -1rem -2.5rem;
             padding: 4rem clamp(1rem,4vw,3rem);
           }
           @media(min-width:640px){ .cart-empty-root { margin: -1.5rem -1.5rem -2.5rem; } }
           .cart-empty-icon {
             width: 5rem; height: 5rem; border-radius: 50%;
-            background: #1a1a1a; border: 1px solid rgba(212,175,55,0.2);
+            background: var(--th-surface, #1a1a1a); border: 1px solid var(--th-outline, rgba(212,175,55,0.2));
             display: flex; align-items: center; justify-content: center;
-            color: rgba(212,175,55,0.4);
+            color: var(--th-gold, rgba(212,175,55,0.4));
           }
           .cart-empty-title {
             font-family: var(--font-serif);
-            font-size: 2rem; font-weight: 600; color: #e5e2e1; margin: 0;
+            font-size: 2rem; font-weight: 600; color: var(--th-text, #e5e2e1); margin: 0;
           }
-          .cart-empty-sub { color: #a0a0a0; font-size: 0.95rem; margin: 0; }
+          .cart-empty-sub { color: var(--th-muted, #a0a0a0); font-size: 0.95rem; margin: 0; }
           .cart-empty-btn {
             display: inline-flex; align-items: center; gap: 0.5rem;
             padding: 0.85rem 2rem; border-radius: 9999px;
-            background: #f2ca50; color: #131313;
+            background: var(--th-gold, #f2ca50); color: #131313;
             font-family: var(--font-sans);
             font-size: 0.78rem; font-weight: 700;
             letter-spacing: 0.1em; text-transform: uppercase;
@@ -81,7 +81,7 @@ export default function Cart() {
             box-shadow: 0 8px 24px rgba(242,202,80,0.25);
           }
           .cart-empty-btn:hover {
-            background: #d4af37;
+            background: var(--th-gold-deep, #d4af37);
             box-shadow: 0 10px 32px rgba(242,202,80,0.4);
             transform: translateY(-2px);
           }
@@ -107,15 +107,18 @@ export default function Cart() {
       <style>{`
         /* ── Artisanal Noir — Cart ───────────────────────────────────── */
         .cart-root {
-          --an-bg:          #131313;
-          --an-surface:     #1a1a1a;
-          --an-surface-hi:  #2a2a2a;
-          --an-text:        #e5e2e1;
-          --an-muted:       #a0a0a0;
-          --an-variant:     #d0c5af;
-          --an-gold:        #f2ca50;
-          --an-gold-deep:   #d4af37;
-          --an-outline:     rgba(212,175,55,0.18);
+          /* Bridge to the global theme tokens set by Layout.tsx */
+          --an-bg:          var(--th-bg,          #131313);
+          --an-surface:     var(--th-surface,      #1a1a1a);
+          --an-surface-hi:  var(--th-surface-hi,   #2a2a2a);
+          --an-card-bg:     var(--th-card-img-bg,  #201f1f);
+          --an-text:        var(--th-text,         #e5e2e1);
+          --an-muted:       var(--th-muted,        #a0a0a0);
+          --an-variant:     var(--th-text-variant, #d0c5af);
+          --an-gold:        var(--th-gold,         #f2ca50);
+          --an-gold-dim:    var(--th-gold-dim,     #e9c349);
+          --an-gold-deep:   var(--th-gold-deep,    #d4af37);
+          --an-outline:     var(--th-outline,      rgba(212,175,55,0.18));
           --an-radius-full: 9999px;
           font-family: var(--font-sans);
           background: var(--an-bg);
@@ -148,7 +151,7 @@ export default function Cart() {
         .cart-panel::before {
           content: '';
           position: absolute; top: 0; left: 15%; right: 15%; height: 1px;
-          background: linear-gradient(90deg, transparent, #e9c349, transparent);
+          background: linear-gradient(90deg, transparent, var(--an-gold-dim), transparent);
         }
 
         /* items list */
@@ -158,7 +161,7 @@ export default function Cart() {
           display: flex; flex-direction: row;
           gap: 1rem; align-items: center;
           padding: 1.1rem;
-          background: #201f1f;
+          background: var(--an-card-bg);
           border: 1px solid var(--an-outline);
           border-radius: 12px;
           transition: border-color 250ms ease;
@@ -173,14 +176,14 @@ export default function Cart() {
         .cart-item__thumb {
           width: 4.5rem; height: 4.5rem; flex-shrink: 0;
           border-radius: 8px; overflow: hidden;
-          background: #2a2a2a;
+          background: var(--an-surface-hi);
           border: 1px solid var(--an-outline);
         }
         .cart-item__thumb img { width: 100%; height: 100%; object-fit: cover; }
         .cart-item__thumb-empty {
           width: 100%; height: 100%;
           display: flex; align-items: center; justify-content: center;
-          color: #4d4635; font-size: 0.65rem; text-align: center;
+          color: var(--an-muted); font-size: 0.65rem; text-align: center;
         }
 
         /* name / price */
@@ -301,7 +304,7 @@ export default function Cart() {
 
         /* summary */
         .cart-summary {
-          background: #201f1f; border: 1px solid var(--an-outline);
+          background: var(--an-card-bg); border: 1px solid var(--an-outline);
           border-radius: 12px; padding: 1.25rem 1.5rem;
           min-width: 16rem;
           display: flex; flex-direction: column; gap: 0.5rem;
@@ -327,7 +330,7 @@ export default function Cart() {
         .cart-summary__currency {
           font-family: var(--font-sans);
           font-size: 0.85rem; font-weight: 700;
-          color: #e9c349; margin-left: 0.25rem;
+          color: var(--an-gold-dim); margin-left: 0.25rem;
         }
 
         /* footer row */

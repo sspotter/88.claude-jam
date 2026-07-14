@@ -63,7 +63,7 @@ export default function Layout() {
       root.style.setProperty("--th-skel-bg",      "#E7E2D9");
       root.style.setProperty("--th-skel-line",    "#D5CDBF");
       root.style.setProperty("--th-empty-bg",     "#FFFFFF");
-      root.style.setProperty("--th-nav-bg",       "rgba(250,248,245,0.95)");
+      root.style.setProperty("--th-nav-bg",       "rgba(254, 254, 254, 0.95)");
       root.style.setProperty("--th-nav-border",   "rgba(158,123,40,0.15)");
       root.style.setProperty("--th-footer-bg",    "#EFECE6");
       root.style.setProperty("--th-search-bg",    "rgba(255,255,255,0.8)");
