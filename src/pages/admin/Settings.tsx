@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, type ChangeEvent } from "react";
+import { useTranslation } from "react-i18next";
 import { getTheme, getFont, getLanguageSettings } from "../../lib/api/catalog";
 import { updateTheme, updateFont, updateLanguage, getAnalytics, listOffers, importData, uploadFont } from "../../lib/api/admin";
 import { handleApiError, OperationType } from "../../lib/api/errors";
@@ -10,16 +11,17 @@ import * as XLSX from "xlsx";
 const themes = [
   {
     id: "default",
-    name: "Default (Stone)",
+    nameKey: "theme_default_name",
     primary: "#1C1C1C",
     accent: "#8C7A6B",
   },
-  { id: "ocean", name: "Ocean", primary: "#0F2C59", accent: "#DAC0A3" },
-  { id: "forest", name: "Forest", primary: "#1A3636", accent: "#D6BD98" },
-  { id: "sunset", name: "Sunset", primary: "#451952", accent: "#F39F5A" },
+  { id: "ocean", nameKey: "theme_ocean_name", primary: "#0F2C59", accent: "#DAC0A3" },
+  { id: "forest", nameKey: "theme_forest_name", primary: "#1A3636", accent: "#D6BD98" },
+  { id: "sunset", nameKey: "theme_sunset_name", primary: "#451952", accent: "#F39F5A" },
 ];
 
 export default function AdminSettings() {
+  const { t } = useTranslation();
   const [selected, setSelected] = useState("default");
   const [selectedFont, setSelectedFont] = useState("default");
   const [selectedLanguage, setSelectedLanguage] = useState("ar");
@@ -61,7 +63,7 @@ export default function AdminSettings() {
     setSaving(true);
     try {
       await updateTheme(themeId);
-      toast.success("Theme updated for all users");
+      toast.success(t("theme_updated"));
     } catch (e) {
       handleApiError(e, OperationType.WRITE, "settings/theme");
     } finally {
@@ -75,7 +77,7 @@ export default function AdminSettings() {
     try {
       await updateFont(fontId);
       document.documentElement.dataset.font = fontId;
-      toast.success("Font updated for all users");
+      toast.success(t("font_updated"));
     } catch (e) {
       handleApiError(e, OperationType.WRITE, "settings/font");
     } finally {
@@ -96,7 +98,7 @@ export default function AdminSettings() {
       const next = result.selectedFont ?? "custom";
       setSelectedFont(next);
       document.documentElement.dataset.font = next;
-      toast.success("Custom font uploaded and applied for all users");
+      toast.success(t("custom_font_uploaded"));
     } catch (err) {
       handleApiError(err, OperationType.WRITE, "settings/font/upload");
     } finally {
@@ -110,7 +112,7 @@ export default function AdminSettings() {
     setSavingLanguage(true);
     try {
       await updateLanguage(languageId);
-      toast.success("Default language updated");
+      toast.success(t("default_language_updated"));
     } catch (e) {
       handleApiError(e, OperationType.WRITE, "settings/language");
     } finally {
@@ -181,9 +183,9 @@ export default function AdminSettings() {
 
       XLSX.writeFile(wb, `Mega_Export_${new Date().toISOString().split("T")[0]}.xlsx`);
 
-      toast.success("Export successful!");
+      toast.success(t("export_successful"));
     } catch (e) {
-      toast.error("Failed to export data");
+      toast.error(t("failed_to_export_data"));
       handleApiError(e, OperationType.GET, "analytics export");
     } finally {
       setExporting(false);
@@ -196,7 +198,7 @@ export default function AdminSettings() {
 
     if (
       !window.confirm(
-        "This will overwrite existing records with matching IDs. Continue?",
+        t("confirm_overwrite_import"),
       )
     ) {
       if (importInputRef.current) importInputRef.current.value = "";
@@ -222,11 +224,15 @@ export default function AdminSettings() {
         });
 
         toast.success(
-          `Imported ${result.categories} categories, ${result.products} products, ` +
-            `${result.offers} offers, ${result.orders} orders.`,
+          t("import_summary", {
+            categories: result.categories,
+            products: result.products,
+            offers: result.offers,
+            orders: result.orders,
+          }),
         );
       } catch (err) {
-        toast.error("Failed to import data");
+        toast.error(t("failed_to_import_data"));
         handleApiError(err, OperationType.WRITE, "mega import");
       } finally {
         setImporting(false);
@@ -236,14 +242,14 @@ export default function AdminSettings() {
     reader.readAsBinaryString(file);
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <div>{t("loading")}</div>;
 
   return (
     <div className="max-w-4xl mx-auto space-y-8">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-serif text-[var(--color-primary)] flex items-center gap-3">
           <Palette className="w-8 h-8" />
-          Settings
+          {t("settings")}
         </h1>
       </div>
 
@@ -251,10 +257,10 @@ export default function AdminSettings() {
          <div className="flex justify-between items-start mb-6">
            <div>
              <h2 className="text-xl font-medium text-stone-800">
-               Data Management
+               {t("data_management")}
              </h2>
              <p className="text-stone-500 mt-2">
-               Download a complete dump of all your store data (Products, Categories, Orders, Offers, Customers).
+               {t("data_management_desc")}
              </p>
            </div>
            <div className="flex items-center gap-3">
@@ -264,7 +270,7 @@ export default function AdminSettings() {
                className="px-6 py-3 bg-stone-800 text-white rounded-xl font-medium hover:bg-stone-700 disabled:opacity-50 flex items-center gap-2"
              >
                <Download className="w-5 h-5" />
-               {exporting ? "Exporting..." : "Mega Export"}
+               {exporting ? t("exporting") : t("mega_export")}
              </button>
              <button
                onClick={() => importInputRef.current?.click()}
@@ -272,7 +278,7 @@ export default function AdminSettings() {
                className="px-6 py-3 bg-stone-100 text-stone-700 rounded-xl font-medium hover:bg-stone-200 disabled:opacity-50 flex items-center gap-2 border border-stone-200"
              >
                <Upload className="w-5 h-5" />
-               {importing ? "Importing..." : "Mega Import"}
+               {importing ? t("importing") : t("mega_import")}
              </button>
              <input
                type="file"
@@ -287,11 +293,10 @@ export default function AdminSettings() {
 
       <div className="bg-white p-8 rounded-2xl border border-stone-100 shadow-sm">
         <h2 className="text-xl font-medium text-stone-800 mb-6 font-serif">
-          Global Theme
+          {t("global_theme")}
         </h2>
         <p className="text-stone-500 mb-8">
-          Select a theme for your storefront and admin dashboard. This will be
-          applied to all your customers immediately.
+          {t("global_theme_desc")}
         </p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -312,7 +317,7 @@ export default function AdminSettings() {
                   <CheckCircle2 className="absolute top-4 right-4 w-6 h-6 text-[var(--color-accent)]" />
                 )}
                 <div className="font-medium text-lg text-stone-800 mb-4 font-serif">
-                  {theme.name}
+                  {t(theme.nameKey)}
                 </div>
                 <div className="flex gap-3">
                   <div className="flex items-center gap-2">
@@ -321,7 +326,7 @@ export default function AdminSettings() {
                       style={{ backgroundColor: theme.primary }}
                     />
                     <span className="text-xs text-stone-500 font-mono">
-                      Primary
+                      {t("theme_primary")}
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
@@ -330,7 +335,7 @@ export default function AdminSettings() {
                       style={{ backgroundColor: theme.accent }}
                     />
                     <span className="text-xs text-stone-500 font-mono">
-                      Accent
+                      {t("theme_accent")}
                     </span>
                   </div>
                 </div>
@@ -343,18 +348,16 @@ export default function AdminSettings() {
       <div className="bg-white p-8 rounded-2xl border border-stone-100 shadow-sm">
         <h2 className="text-xl font-medium text-stone-800 mb-6 flex items-center gap-3 font-serif">
           <Type className="w-6 h-6 text-stone-600" />
-          Global Font
+          {t("global_font")}
         </h2>
         <p className="text-stone-500 mb-8">
-          Select a font family for your storefront and admin dashboard, or upload
-          your own font file. This updates the typography across the entire
-          website immediately, for all visitors.
+          {t("global_font_desc")}
         </p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {[
-            { id: "default", name: "Maj (Default)", description: "Default font · supports English & Arabic", family: "Maj", sample: "جمحاوي - Jamhawi" },
-            { id: "majalla", name: "Majalla", description: "Elegant classic Arabic font · Sakkal Majalla", family: "'Sakkal Majalla', 'Majalla'", sample: "خط المجلة - Jamhawi" },
+            { id: "default", nameKey: "font_default_name", descKey: "font_default_desc", family: "Maj", sample: "جمحاوي - Jamhawi" },
+            { id: "majalla", nameKey: "font_majalla_name", descKey: "font_majalla_desc", family: "'Sakkal Majalla', 'Majalla'", sample: "خط المجلة - Jamhawi" },
           ].map((fontOption) => {
             const isActive = selectedFont === fontOption.id;
             return (
@@ -373,10 +376,10 @@ export default function AdminSettings() {
                   <CheckCircle2 className="absolute top-4 right-4 w-6 h-6 text-[var(--color-accent)]" />
                 )}
                 <div className="font-medium text-lg text-stone-800 mb-1 font-serif">
-                  {fontOption.name}
+                  {t(fontOption.nameKey)}
                 </div>
                 <div className="text-xs text-stone-500 mb-4">
-                  {fontOption.description}
+                  {t(fontOption.descKey)}
                 </div>
                 <div className="text-lg border border-dashed border-stone-200 p-3 rounded-lg bg-white text-stone-800 font-serif">
                   {fontOption.sample}
@@ -397,10 +400,10 @@ export default function AdminSettings() {
               <CheckCircle2 className="absolute top-4 right-4 w-6 h-6 text-[var(--color-accent)]" />
             )}
             <div className="font-medium text-lg text-stone-800 mb-1 font-serif">
-              Custom Font
+              {t("custom_font")}
             </div>
             <div className="text-xs text-stone-500 mb-4">
-              {customFont ? `Uploaded: ${customFont.name}` : "Upload a .ttf, .otf, .woff or .woff2 file"}
+              {customFont ? t("uploaded_font_name", { name: customFont.name }) : t("upload_font_file_types")}
             </div>
 
             {customFont && (
@@ -423,7 +426,7 @@ export default function AdminSettings() {
                 className="px-5 py-2.5 bg-stone-800 text-white rounded-xl font-medium hover:bg-stone-700 disabled:opacity-50 flex items-center gap-2"
               >
                 <Upload className="w-5 h-5" />
-                {uploadingFont ? "Uploading..." : customFont ? "Replace font" : "Upload font"}
+                {uploadingFont ? t("uploading") : customFont ? t("replace_font") : t("upload_font")}
               </button>
               <input
                 type="file"
@@ -440,17 +443,16 @@ export default function AdminSettings() {
       <div className="bg-white p-8 rounded-2xl border border-stone-100 shadow-sm">
         <h2 className="text-xl font-medium text-stone-800 mb-6 flex items-center gap-3 font-serif">
           <Languages className="w-6 h-6 text-stone-600" />
-          Default Language
+          {t("default_language")}
         </h2>
         <p className="text-stone-500 mb-8">
-          Sets the language first-time visitors see. Visitors who already
-          picked a language using the site's toggle keep their own choice.
+          {t("default_language_desc")}
         </p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {[
-            { id: "ar", name: "Arabic", sample: "جمحاوي" },
-            { id: "en", name: "English", sample: "Jamhawi" },
+            { id: "ar", nameKey: "language_arabic", sample: "جمحاوي" },
+            { id: "en", nameKey: "language_english", sample: "Jamhawi" },
           ].map((option) => {
             const isActive = selectedLanguage === option.id;
             return (
@@ -468,7 +470,7 @@ export default function AdminSettings() {
                   <CheckCircle2 className="absolute top-4 right-4 w-6 h-6 text-[var(--color-accent)]" />
                 )}
                 <div className="font-medium text-lg text-stone-800 mb-4 font-serif">
-                  {option.name}
+                  {t(option.nameKey)}
                 </div>
                 <div className="text-lg border border-dashed border-stone-200 p-3 rounded-lg bg-white text-stone-800 font-serif">
                   {option.sample}
