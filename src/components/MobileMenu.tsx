@@ -69,23 +69,28 @@ export default function MobileMenu({
         style={{
           position: 'absolute', [isArabic ? 'right' : 'left']: 0, top: 0,
           height: '100%', width: '18rem',
-          background: '#1a1a1a',
-          borderLeft: isArabic ? '1px solid rgba(212,175,55,0.18)' : 'none',
-          borderRight: isArabic ? 'none' : '1px solid rgba(212,175,55,0.18)',
+          background: 'var(--th-surface)',
+          borderLeft: isArabic ? '1px solid var(--th-nav-border)' : 'none',
+          borderRight: isArabic ? 'none' : '1px solid var(--th-nav-border)',
           display: 'flex', flexDirection: 'column',
-          boxShadow: isArabic ? '-24px 0 64px rgba(0,0,0,0.6)' : '24px 0 64px rgba(0,0,0,0.6)',
+          boxShadow: isArabic ? '-24px 0 64px rgba(0,0,0,0.4)' : '24px 0 64px rgba(0,0,0,0.4)',
         }}
       >
-        {/* Header */}
+        {/* Header: backdrop matches whichever logo variant is showing */}
         <div
           style={{
             padding: '1rem 1.25rem',
-            borderBottom: '1px solid rgba(212,175,55,0.12)',
+            background: isDark ? 'rgba(13,13,13,0.99)' : '#FFFFFF',
+            borderBottom: '1px solid var(--th-nav-border)',
             display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           }}
         >
           <img
-            src={isArabic ? '/nav-logo-ar.png' : '/nav-logo-eng.png'}
+            src={
+              isArabic
+                ? (isDark ? '/nav-logo-ar.png' : '/nav-logo-ar-light.png')
+                : (isDark ? '/nav-logo-eng.png' : '/nav-logo-eng-light.png')
+            }
             alt={t('jamhawi')}
             style={{ height: '2.25rem', width: 'auto', objectFit: 'contain' }}
           />
@@ -95,17 +100,17 @@ export default function MobileMenu({
             style={{
               width: '2.25rem', height: '2.25rem',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              borderRadius: '50%', border: '1px solid rgba(212,175,55,0.2)',
+              borderRadius: '50%', border: '1px solid var(--th-outline)',
               background: 'transparent', cursor: 'pointer',
-              color: '#a0a0a0', transition: 'all 200ms ease',
+              color: 'var(--th-muted)', transition: 'all 200ms ease',
             }}
             onMouseEnter={e => {
-              (e.currentTarget as HTMLButtonElement).style.color = '#f2ca50';
-              (e.currentTarget as HTMLButtonElement).style.borderColor = '#f2ca50';
+              (e.currentTarget as HTMLButtonElement).style.color = 'var(--th-gold)';
+              (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--th-gold)';
             }}
             onMouseLeave={e => {
-              (e.currentTarget as HTMLButtonElement).style.color = '#a0a0a0';
-              (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(212,175,55,0.2)';
+              (e.currentTarget as HTMLButtonElement).style.color = 'var(--th-muted)';
+              (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--th-outline)';
             }}
           >
             <X className="w-5 h-5" />
@@ -124,9 +129,9 @@ export default function MobileMenu({
                 width: '100%',
                 padding: '0.6rem 2.25rem 0.6rem 1rem',
                 borderRadius: '9999px',
-                border: '1px solid rgba(212,175,55,0.2)',
-                background: 'rgba(255,255,255,0.04)',
-                color: '#e5e2e1',
+                border: '1px solid var(--th-outline)',
+                background: 'var(--th-search-bg)',
+                color: 'var(--th-text)',
                 fontSize: '0.85rem', outline: 'none',
               }}
             />
@@ -134,7 +139,7 @@ export default function MobileMenu({
               style={{
                 position: 'absolute', right: '0.85rem', top: '50%',
                 transform: 'translateY(-50%)', width: '1rem', height: '1rem',
-                color: '#a0a0a0',
+                color: 'var(--th-muted)',
               }}
             />
           </form>
@@ -152,18 +157,18 @@ export default function MobileMenu({
                 borderRadius: '0.375rem',
                 border: 'none', background: 'transparent',
                 cursor: 'pointer', textAlign: 'left',
-                color: '#d0c5af',
+                color: 'var(--th-text-variant)',
                 fontSize: '0.88rem', fontWeight: 600,
                 letterSpacing: '0.03em',
                 transition: 'background 200ms ease, color 200ms ease',
               }}
               onMouseEnter={e => {
-                (e.currentTarget as HTMLButtonElement).style.background = 'rgba(242,202,80,0.07)';
-                (e.currentTarget as HTMLButtonElement).style.color = '#f2ca50';
+                (e.currentTarget as HTMLButtonElement).style.background = 'rgba(158,123,40,0.08)';
+                (e.currentTarget as HTMLButtonElement).style.color = 'var(--th-gold)';
               }}
               onMouseLeave={e => {
                 (e.currentTarget as HTMLButtonElement).style.background = 'transparent';
-                (e.currentTarget as HTMLButtonElement).style.color = '#d0c5af';
+                (e.currentTarget as HTMLButtonElement).style.color = 'var(--th-text-variant)';
               }}
             >
               <item.icon
@@ -192,7 +197,7 @@ export default function MobileMenu({
         <div
           style={{
             padding: '1rem 1.25rem 0.5rem',
-            borderTop: '1px solid rgba(212,175,55,0.12)',
+            borderTop: '1px solid var(--th-nav-border)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -206,11 +211,11 @@ export default function MobileMenu({
             style={{
               width: '2.4rem', height: '2.4rem',
               borderRadius: '50%',
-              border: '1px solid rgba(212,175,55,0.2)',
+              border: '1px solid var(--th-outline)',
               background: 'transparent',
               cursor: 'pointer',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              color: '#d0c5af',
+              color: 'var(--th-text-variant)',
               flexShrink: 0,
             }}
           >
@@ -231,21 +236,21 @@ export default function MobileMenu({
             style={{
               width: '100%', padding: '0.75rem 1rem',
               borderRadius: '9999px',
-              border: '1px solid rgba(212,175,55,0.2)',
+              border: '1px solid var(--th-outline)',
               background: 'transparent', cursor: 'pointer',
-              color: '#d0c5af',
+              color: 'var(--th-text-variant)',
               fontSize: '0.82rem', fontWeight: 700,
               letterSpacing: '0.06em',
               transition: 'all 200ms ease',
             }}
             onMouseEnter={e => {
-              (e.currentTarget as HTMLButtonElement).style.borderColor = '#f2ca50';
-              (e.currentTarget as HTMLButtonElement).style.color = '#f2ca50';
-              (e.currentTarget as HTMLButtonElement).style.background = 'rgba(242,202,80,0.06)';
+              (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--th-gold)';
+              (e.currentTarget as HTMLButtonElement).style.color = 'var(--th-gold)';
+              (e.currentTarget as HTMLButtonElement).style.background = 'rgba(158,123,40,0.06)';
             }}
             onMouseLeave={e => {
-              (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(212,175,55,0.2)';
-              (e.currentTarget as HTMLButtonElement).style.color = '#d0c5af';
+              (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--th-outline)';
+              (e.currentTarget as HTMLButtonElement).style.color = 'var(--th-text-variant)';
               (e.currentTarget as HTMLButtonElement).style.background = 'transparent';
             }}
           >

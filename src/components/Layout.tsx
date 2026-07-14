@@ -7,6 +7,8 @@ import { useSearchStore } from "../store/searchStore";
 import { motion } from "motion/react";
 import MobileMenu from "./MobileMenu";
 
+const THEME_STORAGE_KEY = "jamhawi-theme";
+
 export default function Layout() {
   const { t, i18n } = useTranslation();
   const cartItems = useCartStore((state) => state.items);
@@ -14,10 +16,14 @@ export default function Layout() {
   const { searchQuery, setSearchQuery } = useSearchStore();
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isDark, setIsDark] = useState(true);
+  const [isDark, setIsDark] = useState(() => {
+    const saved = localStorage.getItem(THEME_STORAGE_KEY);
+    return saved ? saved === "dark" : true;
+  });
 
   // Apply theme CSS variables to :root
   useEffect(() => {
+    localStorage.setItem(THEME_STORAGE_KEY, isDark ? "dark" : "light");
     const root = document.documentElement;
     if (isDark) {
       root.setAttribute("data-color-scheme", "dark");
@@ -102,7 +108,11 @@ export default function Layout() {
               className="flex items-center gap-2 hover:opacity-85 transition-opacity"
             >
               <img
-                src={i18n.language === "ar" ? "/nav-logo-ar.png" : "/nav-logo-eng.png"}
+                src={
+                  i18n.language === "ar"
+                    ? (isDark ? "/nav-logo-ar.png" : "/nav-logo-ar-light.png")
+                    : (isDark ? "/nav-logo-eng.png" : "/nav-logo-eng-light.png")
+                }
                 alt={t("jamhawi")}
                 style={{
                   height: "2.5rem",
