@@ -2,16 +2,30 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { setUserLanguage } from '../i18n';
-import { X, Home, ShoppingCart, LogIn, List, Phone } from 'lucide-react';
+import { X, Home, ShoppingCart, LogIn, List, Phone, Search, Sun, Moon } from 'lucide-react';
 import CurrencySelector from './CurrencySelector';
 
 interface MobileMenuProps {
   isOpen: boolean;
   onClose: () => void;
   cartCount: number;
+  isDark: boolean;
+  onToggleTheme: () => void;
+  searchQuery: string;
+  onSearchChange: (value: string) => void;
+  onSearchSubmit: (e: React.FormEvent) => void;
 }
 
-export default function MobileMenu({ isOpen, onClose, cartCount }: MobileMenuProps) {
+export default function MobileMenu({
+  isOpen,
+  onClose,
+  cartCount,
+  isDark,
+  onToggleTheme,
+  searchQuery,
+  onSearchChange,
+  onSearchSubmit,
+}: MobileMenuProps) {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
 
@@ -40,7 +54,7 @@ export default function MobileMenu({ isOpen, onClose, cartCount }: MobileMenuPro
   };
 
   return (
-    <div className="fixed inset-0 z-50 md:hidden">
+    <div className="fixed inset-0 z-50">
       {/* Backdrop */}
       <div
         style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(8px)' }}
@@ -99,6 +113,34 @@ export default function MobileMenu({ isOpen, onClose, cartCount }: MobileMenuPro
           </button>
         </div>
 
+        {/* Search */}
+        <div style={{ padding: '1rem 1.25rem 0' }}>
+          <form onSubmit={onSearchSubmit} style={{ position: 'relative' }}>
+            <input
+              type="text"
+              placeholder={i18n.language === 'ar' ? 'ابحث عن منتجات...' : 'Search products...'}
+              value={searchQuery}
+              onChange={(e) => onSearchChange(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '0.6rem 2.25rem 0.6rem 1rem',
+                borderRadius: '9999px',
+                border: '1px solid rgba(212,175,55,0.2)',
+                background: 'rgba(255,255,255,0.04)',
+                color: '#e5e2e1',
+                fontSize: '0.85rem', outline: 'none',
+              }}
+            />
+            <Search
+              style={{
+                position: 'absolute', right: '0.85rem', top: '50%',
+                transform: 'translateY(-50%)', width: '1rem', height: '1rem',
+                color: '#a0a0a0',
+              }}
+            />
+          </form>
+        </div>
+
         {/* Nav items */}
         <nav style={{ padding: '1rem', flex: 1, display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
           {menuItems.map((item) => (
@@ -153,10 +195,28 @@ export default function MobileMenu({ isOpen, onClose, cartCount }: MobileMenuPro
             padding: '1rem 1.25rem 0.5rem',
             borderTop: '1px solid rgba(212,175,55,0.12)',
             display: 'flex',
+            alignItems: 'center',
             justifyContent: 'center',
+            gap: '0.75rem',
           }}
         >
           <CurrencySelector compact />
+          <button
+            onClick={onToggleTheme}
+            title={isDark ? 'Switch to Light Theme' : 'Switch to Dark Theme'}
+            style={{
+              width: '2.4rem', height: '2.4rem',
+              borderRadius: '50%',
+              border: '1px solid rgba(212,175,55,0.2)',
+              background: 'transparent',
+              cursor: 'pointer',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              color: '#d0c5af',
+              flexShrink: 0,
+            }}
+          >
+            {isDark ? <Sun size={15} /> : <Moon size={15} />}
+          </button>
         </div>
 
         {/* Language toggle */}

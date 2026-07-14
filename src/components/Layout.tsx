@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Outlet, Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { setUserLanguage } from "../i18n";
-import { ShoppingCart, LogIn, Menu, Search, Sun, Moon } from "lucide-react";
+import { ShoppingCart, Menu } from "lucide-react";
 import { useCartStore } from "../store/cartStore";
 import { useSearchStore } from "../store/searchStore";
 import { motion } from "motion/react";
 import MobileMenu from "./MobileMenu";
-import JamhawiLogo from "./JamhawiLogo";
-import CurrencySelector from "./CurrencySelector";
 
 export default function Layout() {
   const { t, i18n } = useTranslation();
@@ -73,10 +70,6 @@ export default function Layout() {
     document.documentElement.dir = "ltr";
   }, [i18n.language]);
 
-  const toggleLanguage = () => {
-    setUserLanguage(i18n.language === "ar" ? "en" : "ar");
-  };
-
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
@@ -103,155 +96,25 @@ export default function Layout() {
         <div className="w-full px-4 sm:px-6">
           <div className="flex justify-between items-center h-16 md:h-20">
 
-            {/* Left: hamburger + logo + search */}
-            <div className="flex items-center gap-4 md:gap-8">
-              <button
-                onClick={toggleMobileMenu}
-                className="md:hidden p-2 rounded-full transition-colors"
-                style={{ color: "var(--th-text)" }}
-                onMouseEnter={e => (e.currentTarget.style.background = "rgba(158,123,40,0.08)")}
-                onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
-                aria-label="Open menu"
-              >
-                <Menu className="w-6 h-6" />
-              </button>
+            {/* Left: logo */}
+            <Link
+              to="/landing2"
+              className="flex items-center gap-2 hover:opacity-85 transition-opacity"
+            >
+              <img
+                src={i18n.language === "ar" ? "/nav-logo-ar.png" : "/nav-logo-eng.png"}
+                alt={t("jamhawi")}
+                style={{
+                  height: "2.5rem",
+                  width: "auto",
+                  objectFit: "contain",
+                }}
+                className="md:h-12"
+              />
+            </Link>
 
-              <Link
-                to="/landing2"
-                className="flex items-center gap-2 hover:opacity-85 transition-opacity"
-              >
-                <img
-                  src={i18n.language === "ar" ? "/nav-logo-ar.png" : "/nav-logo-eng.png"}
-                  alt={t("jamhawi")}
-                  style={{
-                    height: "2.5rem",
-                    width: "auto",
-                    objectFit: "contain",
-                  }}
-                  className="md:h-12"
-                />
-              </Link>
-
-              {/* Desktop search */}
-              <div className="hidden md:block flex-1 max-w-sm mx-4">
-                <form onSubmit={handleSearchSubmit} className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Search className="h-4 w-4" style={{ color: "#99907c" }} />
-                  </div>
-                  <input
-                    type="text"
-                    placeholder="Search products..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    style={{
-                      width: "100%",
-                      paddingLeft: "2.25rem", paddingRight: "1rem",
-                      paddingTop: "0.5rem", paddingBottom: "0.5rem",
-                      borderRadius: "9999px",
-                      border: "1px solid var(--th-outline)",
-                      background: "var(--th-search-bg)",
-                      color: "var(--th-text)",
-                      fontSize: "0.875rem", outline: "none",
-                      transition: "border-color 200ms ease",
-                    }}
-                    onFocus={e => (e.target.style.borderColor = "var(--th-gold)")}
-                    onBlur={e => (e.target.style.borderColor = "var(--th-outline)")}
-                  />
-                </form>
-              </div>
-            </div>
-
-            {/* Right: mobile search + lang + cart + admin */}
+            {/* Right: cart + hamburger */}
             <div className="flex items-center gap-3 md:gap-5">
-
-              {/* Mobile search */}
-              <div className="md:hidden flex-1 max-w-xs">
-                <form onSubmit={handleSearchSubmit} className="relative">
-                  <input
-                    type="text"
-                    placeholder="Search..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    style={{
-                      width: "100%",
-                      padding: "0.5rem 2.25rem 0.5rem 1rem",
-                      borderRadius: "9999px",
-                      border: "1px solid var(--th-outline)",
-                      background: "var(--th-search-bg)",
-                      color: "var(--th-text)",
-                      fontSize: "0.875rem", outline: "none",
-                    }}
-                    onFocus={e => (e.target.style.borderColor = "var(--th-gold)")}
-                    onBlur={e => (e.target.style.borderColor = "var(--th-outline)")}
-                  />
-                  <Search
-                    className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4"
-                    style={{ color: "#99907c" }}
-                  />
-                </form>
-              </div>
-
-              {/* Theme toggle */}
-              <button
-                onClick={() => setIsDark(!isDark)}
-                title={isDark ? "Switch to Light Theme" : "Switch to Dark Theme"}
-                style={{
-                  width: "2.4rem", height: "2.4rem",
-                  borderRadius: "50%",
-                  border: `1px solid ${isDark ? "rgba(212,175,55,0.2)" : "rgba(168,122,51,0.25)"}`,
-                  background: "transparent",
-                  cursor: "pointer",
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  color: isDark ? "#d0c5af" : "#8C7A6B",
-                  transition: "all 200ms ease",
-                  flexShrink: 0,
-                }}
-                onMouseEnter={e => {
-                  (e.currentTarget as HTMLButtonElement).style.color = "#f2ca50";
-                  (e.currentTarget as HTMLButtonElement).style.borderColor = "#f2ca50";
-                  (e.currentTarget as HTMLButtonElement).style.background = "rgba(242,202,80,0.08)";
-                }}
-                onMouseLeave={e => {
-                  (e.currentTarget as HTMLButtonElement).style.color = isDark ? "#d0c5af" : "#8C7A6B";
-                  (e.currentTarget as HTMLButtonElement).style.borderColor = isDark ? "rgba(212,175,55,0.2)" : "rgba(168,122,51,0.25)";
-                  (e.currentTarget as HTMLButtonElement).style.background = "transparent";
-                }}
-              >
-                {isDark
-                  ? <Sun size={15} />
-                  : <Moon size={15} />
-                }
-              </button>
-
-              <CurrencySelector />
-
-              {/* Language toggle */}
-              <button
-                onClick={toggleLanguage}
-                title="Toggle Language"
-                style={{
-                  fontSize: "0.8rem", fontWeight: 700,
-                  letterSpacing: "0.06em",
-                  color: "var(--th-text-variant)",
-                  background: "transparent",
-                  border: "1px solid var(--th-outline)",
-                  borderRadius: "9999px",
-                  padding: "0.3rem 0.85rem",
-                  minWidth: "44px", minHeight: "44px",
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  cursor: "pointer", transition: "color 200ms ease, border-color 200ms ease",
-                }}
-                onMouseEnter={e => {
-                  (e.currentTarget as HTMLButtonElement).style.color = "var(--th-gold)";
-                  (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--th-gold)";
-                }}
-                onMouseLeave={e => {
-                  (e.currentTarget as HTMLButtonElement).style.color = "var(--th-text-variant)";
-                  (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--th-outline)";
-                }}
-              >
-                {i18n.language === "ar" ? "EN" : "عربي"}
-              </button>
 
               {/* Cart */}
               <Link
@@ -283,58 +146,17 @@ export default function Layout() {
                 )}
               </Link>
 
-              {/* Contact Us */}
-              <Link
-                to="/shop/contact"
-                className="hidden sm:flex items-center gap-1.5 transition-all text-sm font-medium"
-                style={{
-                  padding: "0.35rem 1rem", borderRadius: "9999px",
-                  border: "1px solid var(--th-outline)",
-                  color: "var(--th-text-variant)",
-                  fontSize: "0.78rem", fontWeight: 600,
-                  letterSpacing: "0.04em", textDecoration: "none",
-                  transition: "all 200ms ease",
-                }}
-                onMouseEnter={e => {
-                  (e.currentTarget as HTMLElement).style.color = "var(--th-gold)";
-                  (e.currentTarget as HTMLElement).style.borderColor = "var(--th-gold)";
-                  (e.currentTarget as HTMLElement).style.background = "rgba(158,123,40,0.06)";
-                }}
-                onMouseLeave={e => {
-                  (e.currentTarget as HTMLElement).style.color = "var(--th-text-variant)";
-                  (e.currentTarget as HTMLElement).style.borderColor = "var(--th-outline)";
-                  (e.currentTarget as HTMLElement).style.background = "transparent";
-                }}
+              {/* Hamburger */}
+              <button
+                onClick={toggleMobileMenu}
+                className="p-2 rounded-full transition-colors"
+                style={{ color: "var(--th-text)" }}
+                onMouseEnter={e => (e.currentTarget.style.background = "rgba(158,123,40,0.08)")}
+                onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
+                aria-label="Open menu"
               >
-                {i18n.language === "ar" ? "تواصل معنا" : "Contact"}
-              </Link>
-
-              {/* Admin */}
-              <Link
-                to="/admin/login"
-                className="hidden sm:flex items-center gap-1.5 transition-all text-sm font-medium"
-                style={{
-                  padding: "0.35rem 1rem", borderRadius: "9999px",
-                  border: "1px solid var(--th-outline)",
-                  color: "var(--th-text-variant)",
-                  fontSize: "0.78rem", fontWeight: 600,
-                  letterSpacing: "0.04em", textDecoration: "none",
-                  transition: "all 200ms ease",
-                }}
-                onMouseEnter={e => {
-                  (e.currentTarget as HTMLElement).style.color = "var(--th-gold)";
-                  (e.currentTarget as HTMLElement).style.borderColor = "var(--th-gold)";
-                  (e.currentTarget as HTMLElement).style.background = "rgba(158,123,40,0.06)";
-                }}
-                onMouseLeave={e => {
-                  (e.currentTarget as HTMLElement).style.color = "var(--th-text-variant)";
-                  (e.currentTarget as HTMLElement).style.borderColor = "var(--th-outline)";
-                  (e.currentTarget as HTMLElement).style.background = "transparent";
-                }}
-              >
-                <LogIn className="w-4 h-4" />
-                <span>Admin</span>
-              </Link>
+                <Menu className="w-6 h-6" />
+              </button>
             </div>
 
           </div>
@@ -345,6 +167,11 @@ export default function Layout() {
         isOpen={isMobileMenuOpen}
         onClose={() => setIsMobileMenuOpen(false)}
         cartCount={cartCount}
+        isDark={isDark}
+        onToggleTheme={() => setIsDark(!isDark)}
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        onSearchSubmit={handleSearchSubmit}
       />
 
       <main className="flex-grow w-full px-4 sm:px-6 py-6 md:py-10">

@@ -1,0 +1,40 @@
+- generic [ref=f2e2]:
+  - region "Notifications alt+T"
+  - generic [ref=f2e3]:
+    - banner [ref=f2e4]:
+      - generic [ref=f2e6]:
+        - link [ref=f2e7] [cursor=pointer]:
+          - /url: /landing2
+          - img "جمحاوي" [ref=f2e8]
+        - generic [ref=f2e9]:
+          - link [ref=f2e10] [cursor=pointer]:
+            - /url: /cart
+          - button "Open menu" [ref=f2e15]
+    - main [ref=f2e17]:
+      - generic [ref=f2e18]:
+        - generic [ref=f2e19]:
+          - heading "المنتجات" [level=1] [ref=f2e20]
+          - link "تصفح المتجر" [ref=f2e21] [cursor=pointer]:
+            - /url: /shop/categories
+        - searchbox "بحث عن المنتجات" [ref=f2e25]
+        - group "Filter by category" [ref=f2e26]:
+          - button "كل الأقسام" [ref=f2e27] [cursor=pointer]
+        - generic [ref=f2e28]:
+          - combobox "Filter by availability" [ref=f2e29] [cursor=pointer]:
+            - option "كل المنتجات" [selected]
+            - option "المتاح فقط"
+          - combobox "Sort products" [ref=f2e30] [cursor=pointer]:
+            - option "الترتيب الافتراضي" [selected]
+            - 'option "السعر: من الأقل للأعلى"'
+            - 'option "السعر: من الأعلى للأقل"'
+          - generic [ref=f2e31]: 0 المنتجات
+        - generic [ref=f2e32]:
+          - paragraph [ref=f2e33]: No products found
+          - paragraph [ref=f2e34]: Try adjusting your search or filters.
+    - contentinfo [ref=f2e35]:
+      - generic [ref=f2e36]:
+        - paragraph [ref=f2e37]: جمحاوي
+        - paragraph [ref=f2e38]:
+          - link "تواصل معنا" [ref=f2e39] [cursor=pointer]:
+            - /url: /shop/contact
+        - paragraph [ref=f2e40]: © 2026 جمحاوي. All rights reserved.
