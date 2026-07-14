@@ -643,7 +643,7 @@ Replace the entire "Global Font" white-card `<div>` (the block starting `<div cl
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {[
-            { id: "default", name: "Maj (Default)", description: "Default font · supports English & Arabic", family: "Maj", sample: "جمهاوي - Jamhawi" },
+            { id: "default", name: "Maj (Default)", description: "Default font · supports English & Arabic", family: "Maj", sample: "جمحاوي - Jamhawi" },
             { id: "majalla", name: "Majalla", description: "Elegant classic Arabic font · Sakkal Majalla", family: "'Sakkal Majalla', 'Majalla'", sample: "خط المجلة - Jamhawi" },
           ].map((fontOption) => {
             const isActive = selectedFont === fontOption.id;

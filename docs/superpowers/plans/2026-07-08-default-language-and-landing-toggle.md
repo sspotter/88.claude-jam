@@ -511,7 +511,7 @@ Insert a new card after the "Global Font" card's closing `</div>` (after line 34
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {[
-            { id: "ar", name: "Arabic", sample: "جمهاوي" },
+            { id: "ar", name: "Arabic", sample: "جمحاوي" },
             { id: "en", name: "English", sample: "Jamhawi" },
           ].map((option) => {
             const isActive = selectedLanguage === option.id;
@@ -578,9 +578,9 @@ Insert immediately before the closing `},` at line 436 (right after `save_produc
       cat_sub_sweets: "حلويات حرفية",
       cat_sub_premium: "تشكيلة حصرية",
       cat_sub_fallback: "تشكيلة فاخرة",
-      story_body: "منذ أكثر من أربعة عقود، تنتقي جمهاوي أرقى الكنوز الزراعية. من بساتين النخيل المشمسة التي تُنتج تمورنا المُميزة إلى المزارع العضوية التي تُنتج المربيات الغنية، يعكس كل منتج التزامنا بالجودة النقية والحرفية التقليدية.",
+      story_body: "منذ أكثر من أربعة عقود، تنتقي جمحاوي أرقى الكنوز الزراعية. من بساتين النخيل المشمسة التي تُنتج تمورنا المُميزة إلى المزارع العضوية التي تُنتج المربيات الغنية، يعكس كل منتج التزامنا بالجودة النقية والحرفية التقليدية.",
       your_email_address: "بريدك الإلكتروني",
-      footer_copyright: "© {{year}} جمهاوي. جميع الحقوق محفوظة.",
+      footer_copyright: "© {{year}} جمحاوي. جميع الحقوق محفوظة.",
 ```
 
 - [ ] **Step 2: Add to the `en` resources block**

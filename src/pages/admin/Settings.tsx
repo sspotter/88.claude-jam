@@ -353,7 +353,7 @@ export default function AdminSettings() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {[
-            { id: "default", name: "Maj (Default)", description: "Default font · supports English & Arabic", family: "Maj", sample: "جمهاوي - Jamhawi" },
+            { id: "default", name: "Maj (Default)", description: "Default font · supports English & Arabic", family: "Maj", sample: "جمحاوي - Jamhawi" },
             { id: "majalla", name: "Majalla", description: "Elegant classic Arabic font · Sakkal Majalla", family: "'Sakkal Majalla', 'Majalla'", sample: "خط المجلة - Jamhawi" },
           ].map((fontOption) => {
             const isActive = selectedFont === fontOption.id;
@@ -449,7 +449,7 @@ export default function AdminSettings() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {[
-            { id: "ar", name: "Arabic", sample: "جمهاوي" },
+            { id: "ar", name: "Arabic", sample: "جمحاوي" },
             { id: "en", name: "English", sample: "Jamhawi" },
           ].map((option) => {
             const isActive = selectedLanguage === option.id;
