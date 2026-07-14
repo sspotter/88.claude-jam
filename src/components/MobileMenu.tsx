@@ -31,6 +31,8 @@ export default function MobileMenu({
 
   if (!isOpen) return null;
 
+  const isArabic = i18n.language === 'ar';
+
   const menuItems = [
     { label: t('home'),       icon: Home,         path: '/landing2' },
     { label: t('categories'), icon: List,         path: '/shop' },
@@ -62,15 +64,16 @@ export default function MobileMenu({
         aria-hidden="true"
       />
 
-      {/* Panel */}
+      {/* Panel: right side for Arabic, left side for English */}
       <div
         style={{
-          position: 'absolute', right: 0, top: 0,
+          position: 'absolute', [isArabic ? 'right' : 'left']: 0, top: 0,
           height: '100%', width: '18rem',
           background: '#1a1a1a',
-          borderLeft: '1px solid rgba(212,175,55,0.18)',
+          borderLeft: isArabic ? '1px solid rgba(212,175,55,0.18)' : 'none',
+          borderRight: isArabic ? 'none' : '1px solid rgba(212,175,55,0.18)',
           display: 'flex', flexDirection: 'column',
-          boxShadow: '-24px 0 64px rgba(0,0,0,0.6)',
+          boxShadow: isArabic ? '-24px 0 64px rgba(0,0,0,0.6)' : '24px 0 64px rgba(0,0,0,0.6)',
         }}
       >
         {/* Header */}
@@ -81,15 +84,11 @@ export default function MobileMenu({
             display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           }}
         >
-          <span
-            style={{
-              fontFamily: "var(--font-serif)",
-              fontSize: '1.2rem', fontWeight: 700,
-              letterSpacing: '0.2em', color: '#f2ca50',
-            }}
-          >
-            JAMHAWI
-          </span>
+          <img
+            src={isArabic ? '/nav-logo-ar.png' : '/nav-logo-eng.png'}
+            alt={t('jamhawi')}
+            style={{ height: '2.25rem', width: 'auto', objectFit: 'contain' }}
+          />
           <button
             onClick={onClose}
             aria-label="Close menu"
@@ -228,7 +227,6 @@ export default function MobileMenu({
           <button
             onClick={() => {
               setUserLanguage(i18n.language === 'ar' ? 'en' : 'ar');
-              onClose();
             }}
             style={{
               width: '100%', padding: '0.75rem 1rem',
