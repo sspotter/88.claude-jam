@@ -116,21 +116,21 @@ export default function Layout() {
                 <Menu className="w-6 h-6" />
               </button>
 
-<Link
-  to="/landing2"
-  className="flex items-center gap-2 hover:opacity-85 transition-opacity"
->
-  <img
-    src="/logo-circle.png"
-    alt="Jamhawi"
-    style={{
-      height: "2.5rem",
-      width: "auto",
-      objectFit: "contain",
-    }}
-    className="md:h-12 rounded-full ring-2 ring-yellow-400 ring-offset-2 ring-offset-white"
-  />
-</Link>
+              <Link
+                to="/landing2"
+                className="flex items-center gap-2 hover:opacity-85 transition-opacity"
+              >
+                <img
+                  src={i18n.language === "ar" ? "/nav-logo-ar.png" : "/nav-logo-eng.png"}
+                  alt={t("jamhawi")}
+                  style={{
+                    height: "2.5rem",
+                    width: "auto",
+                    objectFit: "contain",
+                  }}
+                  className="md:h-12"
+                />
+              </Link>
 
               {/* Desktop search */}
               <div className="hidden md:block flex-1 max-w-sm mx-4">
