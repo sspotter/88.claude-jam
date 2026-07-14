@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { getAnalytics } from "../../lib/api/admin";
 import { handleApiError, OperationType } from "../../lib/api/errors";
 import {
@@ -20,6 +21,7 @@ import {
 } from "recharts";
 
 export default function Analytics() {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(true);
   const [salesByCategory, setSalesByCategory] = useState<any[]>([]);
   const [revenueOrdersTrend, setRevenueOrdersTrend] = useState<any[]>([]);
@@ -115,7 +117,7 @@ export default function Analytics() {
               if (product) {
                 const catName =
                   categories.find((c) => c.id === product.categoryId)?.name ||
-                  "Unknown";
+                  t("unknown");
                 catSales[catName] =
                   (catSales[catName] || 0) + item.price * item.quantity;
               }
@@ -203,13 +205,13 @@ export default function Analytics() {
 
         // 4. Sales by Day of Week
         const dayNames = [
-          "Sunday",
-          "Monday",
-          "Tuesday",
-          "Wednesday",
-          "Thursday",
-          "Friday",
-          "Saturday",
+          t("day_sunday"),
+          t("day_monday"),
+          t("day_tuesday"),
+          t("day_wednesday"),
+          t("day_thursday"),
+          t("day_friday"),
+          t("day_saturday"),
         ];
         const daySales = [0, 0, 0, 0, 0, 0, 0];
         filteredOrders.forEach((order) => {
@@ -232,9 +234,9 @@ export default function Analytics() {
           else inStock++;
         });
         setInventoryHealth([
-          { name: "In Stock", value: inStock, color: "#34C759" },
-          { name: "Low Stock", value: lowStock, color: "#F5A623" },
-          { name: "Out of Stock", value: outOfStock, color: "#F54242" },
+          { name: t("in_stock"), value: inStock, color: "#34C759" },
+          { name: t("low_stock"), value: lowStock, color: "#F5A623" },
+          { name: t("out_of_stock"), value: outOfStock, color: "#F54242" },
         ]);
       } catch (error) {
         handleApiError(error, OperationType.GET, "analytics");
@@ -248,7 +250,7 @@ export default function Analytics() {
   if (loading)
     return (
       <div className="text-stone-500 text-center py-20">
-        Loading Analytics...
+        {t("loading")}
       </div>
     );
 
@@ -256,7 +258,7 @@ export default function Analytics() {
     <div className="space-y-8">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <h1 className="text-3xl font-serif text-[var(--color-primary)]">
-          Analytics
+          {t("analytics")}
         </h1>
         <div className="flex flex-wrap gap-4 items-center">
           <select
@@ -264,7 +266,7 @@ export default function Analytics() {
             onChange={(e) => setCategoryFilter(e.target.value)}
             className="px-4 py-2 border border-stone-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] text-sm font-medium text-stone-600"
           >
-            <option value="all">All Categories</option>
+            <option value="all">{t("all_categories")}</option>
             {allCategories.map((c) => (
               <option key={c.id} value={c.id}>
                 {c.name}
@@ -277,7 +279,7 @@ export default function Analytics() {
             onChange={(e) => setProductFilter(e.target.value)}
             className="px-4 py-2 border border-stone-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] text-sm font-medium text-stone-600"
           >
-            <option value="all">All Products</option>
+            <option value="all">{t("all_products")}</option>
             {allProductsList.map((p) => (
               <option key={p.id} value={p.id}>
                 {p.name}
@@ -290,10 +292,10 @@ export default function Analytics() {
             onChange={(e) => setDateFilter(e.target.value as any)}
             className="px-4 py-2 border border-stone-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] text-sm font-medium text-stone-600"
           >
-            <option value="week">Past Week</option>
-            <option value="month">Past Month</option>
-            <option value="year">Past Year</option>
-            <option value="all">All Time</option>
+            <option value="week">{t("past_week")}</option>
+            <option value="month">{t("past_month")}</option>
+            <option value="year">{t("past_year")}</option>
+            <option value="all">{t("all_time")}</option>
           </select>
         </div>
       </div>
@@ -301,7 +303,7 @@ export default function Analytics() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div className="bg-white p-6 rounded-2xl border border-stone-100 shadow-sm col-span-1 lg:col-span-2">
           <h3 className="text-lg font-medium text-stone-800 mb-6">
-            Sales Over Time
+            {t("sales_over_time")}
           </h3>
           <div className="h-80">
             {revenueOrdersTrend.length > 0 ? (
@@ -336,7 +338,7 @@ export default function Analytics() {
                   />
                   <Line
                     type="monotone"
-                    name="Sales"
+                    name={t("label_sales")}
                     dataKey="revenue"
                     stroke="var(--color-primary)"
                     strokeWidth={3}
@@ -347,7 +349,7 @@ export default function Analytics() {
               </ResponsiveContainer>
             ) : (
               <div className="h-full flex items-center justify-center text-stone-500">
-                No data available
+                {t("no_data")}
               </div>
             )}
           </div>
@@ -356,7 +358,7 @@ export default function Analytics() {
         {/* Orders Volume */}
         <div className="bg-white p-6 rounded-2xl border border-stone-100 shadow-sm col-span-1 lg:col-span-2">
           <h3 className="text-lg font-medium text-stone-800 mb-6">
-            Orders Volume
+            {t("orders_volume")}
           </h3>
           <div className="h-80">
             {revenueOrdersTrend.length > 0 ? (
@@ -398,7 +400,7 @@ export default function Analytics() {
               </ResponsiveContainer>
             ) : (
               <div className="h-full flex items-center justify-center text-stone-500">
-                No data available
+                {t("no_data")}
               </div>
             )}
           </div>
@@ -407,7 +409,7 @@ export default function Analytics() {
         {/* Revenue vs Orders Trend */}
         <div className="bg-white p-6 rounded-2xl border border-stone-100 shadow-sm">
           <h3 className="text-lg font-medium text-stone-800 mb-6">
-            Revenue vs Orders Trend
+            {t("revenue_vs_orders_trend")}
           </h3>
           <div className="h-80">
             {revenueOrdersTrend.length > 0 ? (
@@ -466,7 +468,7 @@ export default function Analytics() {
                   <Area
                     yAxisId="left"
                     type="monotone"
-                    name="Revenue"
+                    name={t("revenue")}
                     dataKey="revenue"
                     stroke="var(--color-primary)"
                     strokeWidth={2}
@@ -476,7 +478,7 @@ export default function Analytics() {
                   <Area
                     yAxisId="right"
                     type="monotone"
-                    name="Orders"
+                    name={t("manage_orders")}
                     dataKey="orders"
                     stroke="var(--color-accent)"
                     strokeWidth={2}
@@ -486,7 +488,7 @@ export default function Analytics() {
               </ResponsiveContainer>
             ) : (
               <div className="h-full flex items-center justify-center text-stone-500">
-                No data available
+                {t("no_data")}
               </div>
             )}
           </div>
@@ -495,7 +497,7 @@ export default function Analytics() {
         {/* Sales by Category */}
         <div className="bg-white p-6 rounded-2xl border border-stone-100 shadow-sm">
           <h3 className="text-lg font-medium text-stone-800 mb-6">
-            Sales by Category
+            {t("sales_by_category")}
           </h3>
           <div className="h-80 flex items-center justify-center">
             {salesByCategory.length > 0 ? (
@@ -525,7 +527,7 @@ export default function Analytics() {
                 </PieChart>
               </ResponsiveContainer>
             ) : (
-              <div className="text-stone-500">No category sales data</div>
+              <div className="text-stone-500">{t("no_category_sales_data")}</div>
             )}
           </div>
         </div>
@@ -533,7 +535,7 @@ export default function Analytics() {
         {/* Top Products */}
         <div className="bg-white p-6 rounded-2xl border border-stone-100 shadow-sm">
           <h3 className="text-lg font-medium text-stone-800 mb-6">
-            Top Products (Revenue)
+            {t("top_products_revenue")}
           </h3>
           <div className="space-y-4">
             {topProducts.map((p, i) => (
@@ -548,7 +550,7 @@ export default function Analytics() {
                       {p.name}
                     </h4>
                     <p className="text-xs text-stone-500">
-                      {p.sold} units sold
+                      {t("units_sold", { count: p.sold })}
                     </p>
                   </div>
                 </div>
@@ -558,7 +560,7 @@ export default function Analytics() {
               </div>
             ))}
             {topProducts.length === 0 && (
-              <p className="text-stone-500">No products sold.</p>
+              <p className="text-stone-500">{t("no_products_sold")}</p>
             )}
           </div>
         </div>
@@ -566,7 +568,7 @@ export default function Analytics() {
         {/* Low Performing Products */}
         <div className="bg-white p-6 rounded-2xl border border-stone-100 shadow-sm">
           <h3 className="text-lg font-medium text-stone-800 mb-6">
-            Low Performing / At Risk
+            {t("low_performing_at_risk")}
           </h3>
           <div className="space-y-4">
             {lowPerformingProducts.map((p) => (
@@ -579,18 +581,18 @@ export default function Analytics() {
                     {p.name}
                   </h4>
                   <p className="text-xs text-red-500 font-medium">
-                    {p.sold === 0 ? "0 units sold" : `${p.sold} units sold`}
+                    {t("units_sold", { count: p.sold })}
                   </p>
                 </div>
                 <div className="text-right text-xs text-stone-500">
                   {p.daysSinceSale === null
-                    ? "Never sold"
-                    : `${p.daysSinceSale} days since last sale`}
+                    ? t("never_sold")
+                    : t("days_since_last_sale", { count: p.daysSinceSale })}
                 </div>
               </div>
             ))}
             {lowPerformingProducts.length === 0 && (
-              <p className="text-stone-500">All products performing well.</p>
+              <p className="text-stone-500">{t("all_products_performing_well")}</p>
             )}
           </div>
         </div>
@@ -598,7 +600,7 @@ export default function Analytics() {
         {/* Sales by Day of Week */}
         <div className="bg-white p-6 rounded-2xl border border-stone-100 shadow-sm">
           <h3 className="text-lg font-medium text-stone-800 mb-6">
-            Sales by Day of Week
+            {t("sales_by_day_of_week")}
           </h3>
           <div className="h-80">
             {salesByDayOfWeek.length > 0 ? (
@@ -640,7 +642,7 @@ export default function Analytics() {
               </ResponsiveContainer>
             ) : (
               <div className="h-full flex items-center justify-center text-stone-500">
-                No data available
+                {t("no_data")}
               </div>
             )}
           </div>
@@ -649,7 +651,7 @@ export default function Analytics() {
         {/* Inventory Health */}
         <div className="bg-white p-6 rounded-2xl border border-stone-100 shadow-sm">
           <h3 className="text-lg font-medium text-stone-800 mb-6">
-            Inventory Health
+            {t("inventory_health")}
           </h3>
           <div className="h-80 flex items-center justify-center">
             {inventoryHealth.length > 0 ? (
@@ -676,7 +678,7 @@ export default function Analytics() {
                 </PieChart>
               </ResponsiveContainer>
             ) : (
-              <div className="text-stone-500">No inventory data</div>
+              <div className="text-stone-500">{t("no_inventory_data")}</div>
             )}
           </div>
         </div>

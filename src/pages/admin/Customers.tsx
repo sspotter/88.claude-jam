@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { listCustomers, listOrders } from "../../lib/api/admin";
 import type { Order as ApiOrder } from "../../lib/api/admin";
 import { handleApiError, OperationType } from "../../lib/api/errors";
@@ -16,6 +17,7 @@ interface CustomerStat {
 }
 
 export default function Customers() {
+  const { t } = useTranslation();
   const { format: formatAmount } = useAmountFormatter();
   const [customers, setCustomers] = useState<CustomerStat[]>([]);
   const [loading, setLoading] = useState(true);
@@ -63,6 +65,9 @@ export default function Customers() {
     fetchCustomers();
   }, []);
 
+  const statusLabel = (s: string) =>
+    t(`order_status_${s}`, { defaultValue: s });
+
   const filteredCustomers = customers.filter(
     (c) =>
       (c.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -72,13 +77,13 @@ export default function Customers() {
   );
 
   if (loading)
-    return <div className="text-stone-500 py-10">Loading customers...</div>;
+    return <div className="text-stone-500 py-10">{t("loading_customers")}</div>;
 
   return (
     <div className="space-y-8">
       <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
         <h1 className="text-3xl font-serif text-[var(--color-primary)]">
-          Customers
+          {t("customers")}
         </h1>
         <div className="flex gap-4 w-full sm:w-auto">
           <select
@@ -86,9 +91,9 @@ export default function Customers() {
             onChange={(e) => setStatusFilter(e.target.value)}
             className="px-4 py-2 border border-stone-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] text-sm font-medium text-stone-600"
           >
-            <option value="all">All Statuses</option>
-            <option value="pending">Has Pending</option>
-            <option value="shipped">Has Shipped</option>
+            <option value="all">{t("all_statuses")}</option>
+            <option value="pending">{t("has_pending")}</option>
+            <option value="shipped">{t("has_shipped")}</option>
           </select>
           <div className="relative flex-1 sm:w-64">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -96,7 +101,7 @@ export default function Customers() {
             </div>
             <input
               type="text"
-              placeholder="Search name or phone..."
+              placeholder={t("search_name_or_phone")}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full pl-10 pr-4 py-2 border border-stone-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] text-sm"
@@ -111,11 +116,11 @@ export default function Customers() {
             <thead>
               <tr className="bg-stone-50 border-b border-stone-100 text-sm">
                 <th className="p-4 font-medium text-stone-600">
-                  Customer Info
+                  {t("customer_info")}
                 </th>
-                <th className="p-4 font-medium text-stone-600">Total Orders</th>
-                <th className="p-4 font-medium text-stone-600">Total Spent</th>
-                <th className="p-4 font-medium text-stone-600">Last Order</th>
+                <th className="p-4 font-medium text-stone-600">{t("total_orders")}</th>
+                <th className="p-4 font-medium text-stone-600">{t("total_spent")}</th>
+                <th className="p-4 font-medium text-stone-600">{t("last_order")}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-stone-100">
@@ -145,14 +150,14 @@ export default function Customers() {
                   <td className="p-4 text-sm text-stone-500">
                     {customer.lastOrderDate > 0
                       ? new Date(customer.lastOrderDate).toLocaleDateString()
-                      : "N/A"}
+                      : t("not_available")}
                   </td>
                 </tr>
               ))}
               {filteredCustomers.length === 0 && (
                 <tr>
                   <td colSpan={4} className="p-8 text-center text-stone-500">
-                    No customers found matching your search.
+                    {t("no_customers_found")}
                   </td>
                 </tr>
               )}
@@ -168,7 +173,7 @@ export default function Customers() {
             <div className="flex justify-between items-center p-6 border-b border-stone-100 shrink-0">
               <div>
                 <h2 className="text-xl font-serif text-[var(--color-primary)]">
-                  {selectedCustomer.name}'s Orders
+                  {t("customer_orders_title", { name: selectedCustomer.name })}
                 </h2>
                 <p className="text-sm text-stone-500">
                   {selectedCustomer.phone}
@@ -192,13 +197,13 @@ export default function Customers() {
                   >
                     <div>
                       <div className="font-medium text-stone-800 text-sm">
-                        Order ID: {order.id}
+                        {t("order_id_label", { id: order.id })}
                       </div>
                       <div className="text-xs text-stone-500 mb-2">
                         {new Date(order.createdAt).toLocaleString()}
                       </div>
                       <div className="text-sm text-stone-600">
-                        {order.items?.length || 0} items
+                        {t("items_count", { count: order.items?.length || 0 })}
                       </div>
                     </div>
                     <div className="flex flex-col items-end justify-between">
@@ -213,7 +218,7 @@ export default function Customers() {
                                 : "bg-red-100 text-red-800"
                         }`}
                       >
-                        {order.status}
+                        {statusLabel(order.status)}
                       </span>
                       <span className="font-serif font-bold text-lg text-[var(--color-primary)]">
                         {formatAmount(order.totalPrice ?? 0)}

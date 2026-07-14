@@ -194,7 +194,7 @@ export default function Categories() {
           {/* Image section */}
           <div>
             <label className="block text-sm font-medium text-stone-700 mb-2">
-              Category Image
+              {t("category_image")}
             </label>
             {/* Tab toggle */}
             <div className="flex rounded-xl border border-stone-200 overflow-hidden mb-3">
@@ -204,7 +204,7 @@ export default function Categories() {
                 className={`flex-1 py-2 text-sm font-medium transition-colors flex items-center justify-center gap-2 ${imageInputMode === "upload" ? "bg-[var(--color-primary)] text-white" : "bg-white text-stone-600 hover:bg-stone-50"}`}
               >
                 <ImageIcon className="w-4 h-4" />
-                Upload File
+                {t("upload_file")}
               </button>
               <button
                 type="button"
@@ -212,7 +212,7 @@ export default function Categories() {
                 className={`flex-1 py-2 text-sm font-medium transition-colors flex items-center justify-center gap-2 ${imageInputMode === "url" ? "bg-[var(--color-primary)] text-white" : "bg-white text-stone-600 hover:bg-stone-50"}`}
               >
                 <LinkIcon className="w-4 h-4" />
-                URL Link
+                {t("url_link")}
               </button>
             </div>
 
@@ -230,7 +230,7 @@ export default function Categories() {
                   className="flex-1 flex items-center justify-center gap-2 px-4 py-3 border-2 border-dashed border-stone-300 rounded-xl text-stone-600 hover:bg-stone-50 hover:border-[var(--color-accent)] transition-colors"
                 >
                   <ImageIcon className="w-5 h-5" />
-                  <span>{loading ? "Uploading..." : "Choose Image"}</span>
+                  <span>{loading ? t("uploading") : t("choose_image")}</span>
                 </button>
               ) : (
                 <input

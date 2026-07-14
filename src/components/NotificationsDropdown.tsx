@@ -43,8 +43,11 @@ export default function NotificationsDropdown() {
         newNotifications.push({
           id: `low_stock_${product.id}`,
           type: "low_stock",
-          title: "Low Stock Alert",
-          description: `${product.name} has ${product.stockCount} units remaining`,
+          title: t("low_stock_alert_title"),
+          description: t("low_stock_notification_desc", {
+            name: product.name,
+            count: product.stockCount,
+          }),
           timestamp: Date.now(),
           link: `/admin/products`,
           priority: product.stockCount <= 2 ? "high" : "medium",
@@ -65,10 +68,12 @@ export default function NotificationsDropdown() {
         newNotifications.push({
           id: `pending_${order.id}`,
           type: "pending_order",
-          title: "Order Pending",
-          description: `Order #${order.id.slice(0, 8)} from ${
-            order.customerName || "Customer"
-          } pending for ${ageHours}h`,
+          title: t("order_pending_title"),
+          description: t("order_pending_notification_desc", {
+            id: order.id.slice(0, 8),
+            customer: order.customerName || "Customer",
+            hours: ageHours,
+          }),
           timestamp: order.createdAt,
           link: `/admin/orders`,
           priority: ageHours > 3 ? "high" : "medium",
@@ -84,10 +89,12 @@ export default function NotificationsDropdown() {
         newNotifications.push({
           id: `high_value_${order.id}`,
           type: "pending_order",
-          title: "High Value Order",
-          description: `Order #${order.id.slice(0, 8)} worth ${order.totalPrice.toFixed(
-            2,
-          )} ${t("currency")} pending`,
+          title: t("high_value_order_title"),
+          description: t("high_value_order_notification_desc", {
+            id: order.id.slice(0, 8),
+            amount: order.totalPrice.toFixed(2),
+            currency: t("currency"),
+          }),
           timestamp: order.createdAt,
           link: `/admin/orders`,
           priority: "high",
@@ -100,8 +107,10 @@ export default function NotificationsDropdown() {
         newNotifications.push({
           id: `bulk_pending`,
           type: "insight",
-          title: "Multiple Pending Orders",
-          description: `${pendingOrders.length} orders awaiting fulfillment`,
+          title: t("multiple_pending_orders_title"),
+          description: t("orders_awaiting_fulfillment", {
+            count: pendingOrders.length,
+          }),
           timestamp: now,
           link: `/admin/orders`,
           priority: "medium",
@@ -170,7 +179,7 @@ export default function NotificationsDropdown() {
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="relative p-2 text-stone-400 hover:text-[var(--color-primary)] transition-colors"
-        aria-label="Notifications"
+        aria-label={t("notifications")}
       >
         <Bell className="w-6 h-6" />
         {unreadCount > 0 && (
@@ -196,9 +205,9 @@ export default function NotificationsDropdown() {
             <div className="p-4 border-b border-stone-100 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Bell className="w-5 mr-2" />
-                <h3 className="font-semibold text-stone-800">Notifications</h3>
+                <h3 className="font-semibold text-stone-800">{t("notifications")}</h3>
                 <span className="text-sm bg-stone-100 text-stone-600 px-2 py-1 rounded-full">
-                  {unreadCount} unread
+                  {t("unread_count", { count: unreadCount })}
                 </span>
               </div>
               {unreadCount > 0 && (
@@ -206,7 +215,7 @@ export default function NotificationsDropdown() {
                   onClick={markAllAsRead}
                   className="text-sm text-[var(--color-accent)] hover:text-[var(--color-primary)] font-medium"
                 >
-                  Mark all read
+                  {t("mark_all_read")}
                 </button>
               )}
             </div>
@@ -215,13 +224,13 @@ export default function NotificationsDropdown() {
               {loading ? (
                 <div className="p-8 text-center">
                   <div className="inline-block h-6 w-6 animate-spin rounded-full border-2 border-stone-300 border-t-[var(--color-accent)]"></div>
-                  <p className="mt-2 text-sm text-stone-500">Loading notifications...</p>
+                  <p className="mt-2 text-sm text-stone-500">{t("loading_notifications")}</p>
                 </div>
               ) : notifications.length === 0 ? (
                 <div className="p-8 text-center">
                   <Bell className="w-12 h-12 text-stone-300 mx-auto mb-4" />
-                  <p className="text-stone-600 font-medium">All caught up!</p>
-                  <p className="text-sm text-stone-500 mt-1">No new notifications</p>
+                  <p className="text-stone-600 font-medium">{t("all_caught_up")}</p>
+                  <p className="text-sm text-stone-500 mt-1">{t("no_new_notifications")}</p>
                 </div>
               ) : (
                 <div className="divide-y divide-stone-50">
@@ -267,7 +276,7 @@ export default function NotificationsDropdown() {
                               notification.priority,
                             )}`}
                           >
-                            {notification.priority.toUpperCase()}
+                            {t(`priority_${notification.priority}`)}
                           </span>
                         </div>
                       </div>
@@ -278,7 +287,7 @@ export default function NotificationsDropdown() {
                           markAsRead(notification.id);
                         }}
                         className="p-1 text-stone-400 hover:text-stone-600"
-                        aria-label="Mark as read"
+                        aria-label={t("mark_as_read")}
                       >
                         <X className="w-4 h-4" />
                       </button>
@@ -294,7 +303,7 @@ export default function NotificationsDropdown() {
                 className="text-sm font-medium text-[var(--color-accent)] hover:text-[var(--color-primary)]"
                 onClick={() => setIsOpen(false)}
               >
-                View full dashboard →
+                {t("view_full_dashboard")}
               </Link>
             </div>
           </div>

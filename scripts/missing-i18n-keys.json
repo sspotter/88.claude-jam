@@ -1,20 +1,15 @@
 {
-  "summary": "2 missing keys detected",
+  "summary": "1 missing keys detected",
   "en": {
-    "promise": "Promise",
-    "converted": "Converted"
+    "promise": "Promise"
   },
   "ar": {
-    "promise": "",
-    "converted": ""
+    "promise": ""
   },
   "locations": {
     "promise": [
       "context\\AuthContext.tsx:9",
       "store\\currencySettingsStore.ts:14"
-    ],
-    "converted": [
-      "pages\\admin\\Orders.tsx:389"
     ]
   }
 }

@@ -19,6 +19,22 @@ const ENTITY_OPTIONS = [
 
 const ACTION_OPTIONS = ["create", "update", "delete"];
 
+const ENTITY_LABEL_KEYS: Record<string, string> = {
+  product: "audit_entity_product",
+  category: "audit_entity_category",
+  offer: "audit_entity_offer",
+  base_currency: "audit_entity_base_currency",
+  currency_settings: "audit_entity_currency_settings",
+  currency_rates: "audit_entity_currency_rates",
+  product_prices: "audit_entity_product_prices",
+};
+
+const ACTION_LABEL_KEYS: Record<string, string> = {
+  create: "audit_action_create",
+  update: "audit_action_update",
+  delete: "delete",
+};
+
 export default function AuditLog() {
   const { t } = useTranslation();
 
@@ -91,7 +107,7 @@ export default function AuditLog() {
             <option value="">{t("audit_entity")}: {t("audit_filter_all")}</option>
             {ENTITY_OPTIONS.map((e) => (
               <option key={e} value={e}>
-                {e}
+                {t(ENTITY_LABEL_KEYS[e] ?? e)}
               </option>
             ))}
           </select>
@@ -105,7 +121,7 @@ export default function AuditLog() {
             <option value="">{t("audit_action")}: {t("audit_filter_all")}</option>
             {ACTION_OPTIONS.map((a) => (
               <option key={a} value={a}>
-                {a}
+                {t(ACTION_LABEL_KEYS[a] ?? a)}
               </option>
             ))}
           </select>
@@ -169,11 +185,11 @@ export default function AuditLog() {
                                 : "bg-blue-100 text-blue-800"
                           }`}
                         >
-                          {row.action}
+                          {t(ACTION_LABEL_KEYS[row.action] ?? row.action)}
                         </span>
                       </td>
                       <td className="p-4 text-sm text-stone-600">
-                        {row.entity}
+                        {t(ENTITY_LABEL_KEYS[row.entity] ?? row.entity)}
                       </td>
                       <td className="p-4 text-sm text-stone-500 font-mono">
                         {row.entityId ?? "—"}

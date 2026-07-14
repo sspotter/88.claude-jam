@@ -578,7 +578,7 @@ export default function Products() {
                     className={`flex-1 py-2 text-sm font-medium transition-colors flex items-center justify-center gap-2 ${imageInputMode === "upload" ? "bg-[var(--color-primary)] text-white" : "bg-white text-stone-600 hover:bg-stone-50"}`}
                   >
                     <ImageIcon className="w-4 h-4" />
-                    Upload File
+                    {t("upload_file")}
                   </button>
                   <button
                     type="button"
@@ -586,7 +586,7 @@ export default function Products() {
                     className={`flex-1 py-2 text-sm font-medium transition-colors flex items-center justify-center gap-2 ${imageInputMode === "url" ? "bg-[var(--color-primary)] text-white" : "bg-white text-stone-600 hover:bg-stone-50"}`}
                   >
                     <LinkIcon className="w-4 h-4" />
-                    URL Link
+                    {t("url_link")}
                   </button>
                 </div>
 
@@ -604,7 +604,7 @@ export default function Products() {
                       className="flex-1 flex items-center justify-center gap-2 px-4 py-3 border-2 border-dashed border-stone-300 rounded-xl text-stone-600 hover:bg-stone-50 hover:border-[var(--color-accent)] transition-colors"
                     >
                       <ImageIcon className="w-5 h-5" />
-                      <span>{loading ? "Uploading..." : "Choose Image"}</span>
+                      <span>{loading ? t("uploading") : t("choose_image")}</span>
                     </button>
                   ) : (
                     <input

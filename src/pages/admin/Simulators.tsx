@@ -29,8 +29,10 @@ import {
 } from "recharts";
 import { UploadCloud, Download, ChevronDown, ChevronRight, TrendingUp, Users, ShoppingCart, Package, MapPin, Clock, DollarSign, AlertTriangle, BarChart2, Target } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 export default function Simulators() {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(true);
   const [salesByCategory, setSalesByCategory] = useState<any[]>([]);
   const [revenueOrdersTrend, setRevenueOrdersTrend] = useState<any[]>([]);
@@ -178,7 +180,7 @@ export default function Simulators() {
       a.download = `simulator-export-${Date.now()}.json`;
       a.click();
       URL.revokeObjectURL(url);
-      toast.success("Exported as JSON");
+      toast.success(t("exported_as_json"));
     } else {
       // Flatten into sheets
       const wb = XLSX.utils.book_new();
@@ -215,7 +217,7 @@ export default function Simulators() {
       addSheet("LowStockForecast", lowStockForecast);
       addSheet("ForecastVsActual", forecastVsActual);
       XLSX.writeFile(wb, `simulator-export-${Date.now()}.xlsx`);
-      toast.success("Exported as XLSX");
+      toast.success(t("exported_as_xlsx"));
     }
   };
 
@@ -292,7 +294,7 @@ export default function Simulators() {
         if (product) {
           const catName =
             categories.find((c) => c.id === product.categoryId)?.name ||
-            "Unknown";
+            t("unknown");
           catSales[catName] =
             (catSales[catName] || 0) + item.price * item.quantity;
         }
@@ -413,7 +415,7 @@ export default function Simulators() {
 
     // 4. Sales by Day of Week
     const dayNames = [
-      "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday",
+      t("day_sunday"), t("day_monday"), t("day_tuesday"), t("day_wednesday"), t("day_thursday"), t("day_friday"), t("day_saturday"),
     ];
     const daySales = [0, 0, 0, 0, 0, 0, 0];
     filteredOrders.forEach((order) => {
@@ -432,9 +434,9 @@ export default function Simulators() {
       else inStock++;
     });
     setInventoryHealth([
-      { name: "In Stock", value: inStock, color: "#34C759" },
-      { name: "Low Stock", value: lowStock, color: "#F5A623" },
-      { name: "Out of Stock", value: outOfStock, color: "#F54242" },
+      { name: t("in_stock"), value: inStock, color: "#34C759" },
+      { name: t("low_stock"), value: lowStock, color: "#F5A623" },
+      { name: t("out_of_stock"), value: outOfStock, color: "#F54242" },
     ]);
 
     // ─── CONVERSION FUNNEL ───────────────────────────────────────────────
@@ -444,11 +446,11 @@ export default function Simulators() {
     const checkout = Math.round(addToCart * simulateMetric(0.65, 0.2));
     const purchases = filteredOrders.length;
     setFunnelData([
-      { name: "Visitors", value: visitors, fill: "#6366F1" },
-      { name: "Product Views", value: productViews, fill: "#8B5CF6" },
-      { name: "Add to Cart", value: addToCart, fill: "#A78BFA" },
-      { name: "Checkout", value: checkout, fill: "#C4B5FD" },
-      { name: "Purchase", value: purchases, fill: "#34C759" },
+      { name: t("funnel_visitors"), value: visitors, fill: "#6366F1" },
+      { name: t("funnel_product_views"), value: productViews, fill: "#8B5CF6" },
+      { name: t("funnel_add_to_cart"), value: addToCart, fill: "#A78BFA" },
+      { name: t("checkout"), value: checkout, fill: "#C4B5FD" },
+      { name: t("funnel_purchase"), value: purchases, fill: "#34C759" },
     ]);
 
     // Cart abandonment
@@ -525,7 +527,7 @@ export default function Simulators() {
     // Inventory Turnover
     setInventoryTurnover(
       categories.slice(0, 6).map((c) => ({
-        category: c.name || "Unknown",
+        category: c.name || t("unknown"),
         turnover: parseFloat(simulateMetric(4, 3).toFixed(1)),
         stock: products.filter((p: any) => p.categoryId === c.id).reduce((s: number, p: any) => s + (p.stockCount || 0), 0),
       }))
@@ -638,7 +640,7 @@ export default function Simulators() {
         const dailySales = filteredOrders.length / 30;
         const daysLeft = p.stockCount / Math.max(1, dailySales);
         return {
-          name: p.name?.slice(0, 12) || "Product",
+          name: p.name?.slice(0, 12) || t("product"),
           stock: p.stockCount || 0,
           forecast: Array.from({ length: 14 }, (_, i) => Math.max(0, (p.stockCount || 0) - dailySales * (i + 1))),
           daysLeft: Math.round(daysLeft),
@@ -656,7 +658,7 @@ export default function Simulators() {
       }))
     );
 
-  }, [dateFilter, productFilter, categoryFilter, uploadedOrders, loading, allCategories, allProductsList]);
+  }, [dateFilter, productFilter, categoryFilter, uploadedOrders, loading, allCategories, allProductsList, t]);
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -677,7 +679,7 @@ export default function Simulators() {
            try {
              const jsonOrders = JSON.parse(bstr as string);
              setUploadedOrders(Array.isArray(jsonOrders) ? jsonOrders : []);
-             toast.success("JSON imported successfully");
+             toast.success(t("json_imported_successfully"));
              return;
            } catch(e){}
         }
@@ -691,9 +693,9 @@ export default function Simulators() {
         }));
 
         setUploadedOrders(validOrders);
-        toast.success("Report imported successfully to simulator");
+        toast.success(t("report_imported_successfully"));
       } catch (err) {
-        toast.error("Failed to parse file. Make sure it's valid.");
+        toast.error(t("failed_to_parse_file"));
       }
     };
     if (file.name.endsWith('.json')) {
@@ -706,7 +708,7 @@ export default function Simulators() {
   const handleSimulateRandomData = () => {
     // Generate some random orders based on current products array
     if (allProductsList.length === 0) {
-      toast.error("No products available to simulate.");
+      toast.error(t("no_products_available_to_simulate"));
       return;
     }
     const fakeOrders = Array.from({ length: 50 }).map((_, i) => {
@@ -724,13 +726,13 @@ export default function Simulators() {
       }
     });
     setUploadedOrders(fakeOrders);
-    toast.success("Generated random simulated orders");
+    toast.success(t("generated_random_simulated_orders"));
   };
 
   if (loading)
     return (
       <div className="text-stone-500 text-center py-20">
-        Loading Simulator...
+        {t("loading")}
       </div>
     );
 
@@ -738,21 +740,21 @@ export default function Simulators() {
     <div className="space-y-8">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <h1 className="text-3xl font-serif text-[var(--color-primary)]">
-          Analytics Simulator
+          {t("simulator_title")}
         </h1>
         <div className="flex flex-wrap gap-4 items-center">
            <button
              onClick={handleSimulateRandomData}
              className="px-4 py-2 border border-stone-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] text-sm font-medium text-stone-600 hover:bg-stone-50"
            >
-             Generate Random
+             {t("generate_random")}
            </button>
            <button
              onClick={() => fileInputRef.current?.click()}
              className="px-4 py-2 border border-stone-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] text-sm font-medium text-stone-600 flex items-center gap-2 hover:bg-stone-50"
            >
              <UploadCloud className="w-4 h-4"/>
-             Import Report (JSON/XLSX)
+             {t("import_report_format")}
            </button>
            <input type="file" ref={fileInputRef} className="hidden" accept=".xlsx,.xls,.json" onChange={handleFileUpload} />
            <div className="flex gap-2">
@@ -761,14 +763,14 @@ export default function Simulators() {
                disabled={uploadedOrders.length === 0}
                className="px-4 py-2 bg-green-600 text-white rounded-xl text-sm font-medium flex items-center gap-2 hover:bg-green-700 disabled:opacity-40 disabled:cursor-not-allowed"
              >
-               <Download className="w-4 h-4"/> Export XLSX
+               <Download className="w-4 h-4"/> {t("export_xlsx")}
              </button>
              <button
                onClick={() => handleExportData("json")}
                disabled={uploadedOrders.length === 0}
                className="px-4 py-2 bg-stone-700 text-white rounded-xl text-sm font-medium flex items-center gap-2 hover:bg-stone-800 disabled:opacity-40 disabled:cursor-not-allowed"
              >
-               <Download className="w-4 h-4"/> Export JSON
+               <Download className="w-4 h-4"/> {t("export_json")}
              </button>
            </div>
         </div>
@@ -779,13 +781,13 @@ export default function Simulators() {
            <div className="w-16 h-16 mx-auto bg-stone-100 rounded-full flex items-center justify-center text-stone-400 mb-4">
              <UploadCloud className="w-8 h-8"/>
            </div>
-           <h2 className="text-xl font-medium text-stone-800 mb-2">Simulate Data</h2>
-           <p className="text-stone-500 mb-6">Import a report or generate random data to view how analytics would change.</p>
+           <h2 className="text-xl font-medium text-stone-800 mb-2">{t("simulate_data")}</h2>
+           <p className="text-stone-500 mb-6">{t("import_a_report_or_generate_random_data_")}</p>
            <button
              onClick={() => fileInputRef.current?.click()}
              className="px-8 py-3 bg-[var(--color-primary)] text-white font-medium rounded-xl hover:bg-[var(--color-accent)] transition-colors"
            >
-             Import Report
+             {t("import_report")}
            </button>
         </div>
       )}
@@ -798,7 +800,7 @@ export default function Simulators() {
               onChange={(e) => setCategoryFilter(e.target.value)}
               className="px-4 py-2 border border-stone-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] text-sm font-medium text-stone-600"
             >
-              <option value="all">All Categories</option>
+              <option value="all">{t("all_categories")}</option>
               {allCategories.map((c) => (
                 <option key={c.id} value={c.id}>
                   {c.name}
@@ -811,7 +813,7 @@ export default function Simulators() {
               onChange={(e) => setProductFilter(e.target.value)}
               className="px-4 py-2 border border-stone-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] text-sm font-medium text-stone-600"
             >
-              <option value="all">All Products</option>
+              <option value="all">{t("all_products")}</option>
               {allProductsList.map((p) => (
                 <option key={p.id} value={p.id}>
                   {p.name}
@@ -824,33 +826,33 @@ export default function Simulators() {
               onChange={(e) => setDateFilter(e.target.value as any)}
               className="px-4 py-2 border border-stone-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] text-sm font-medium text-stone-600"
             >
-              <option value="week">Past Week</option>
-              <option value="month">Past Month</option>
-              <option value="year">Past Year</option>
-              <option value="all">All Time</option>
+              <option value="week">{t("past_week")}</option>
+              <option value="month">{t("past_month")}</option>
+              <option value="year">{t("past_year")}</option>
+              <option value="all">{t("all_time")}</option>
             </select>
           </div>
 
           {/* ─── CORE METRICS ─────────────────────────────────────────── */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             <div className="bg-white p-4 rounded-2xl border border-stone-100 shadow-sm text-center">
-              <p className="text-xs text-stone-500 uppercase tracking-wide mb-1">Total Orders</p>
+              <p className="text-xs text-stone-500 uppercase tracking-wide mb-1">{t("total_orders")}</p>
               <p className="text-2xl font-bold text-[var(--color-primary)]">{uploadedOrders.length}</p>
             </div>
             <div className="bg-white p-4 rounded-2xl border border-stone-100 shadow-sm text-center">
-              <p className="text-xs text-stone-500 uppercase tracking-wide mb-1">Total Revenue</p>
+              <p className="text-xs text-stone-500 uppercase tracking-wide mb-1">{t("total_revenue")}</p>
               <p className="text-2xl font-bold text-[var(--color-primary)]">
                 {uploadedOrders.reduce((s: number, o: any) => s + (o.totalPrice || 0), 0).toFixed(0)}
               </p>
             </div>
             <div className="bg-white p-4 rounded-2xl border border-stone-100 shadow-sm text-center">
-              <p className="text-xs text-stone-500 uppercase tracking-wide mb-1">Avg Order Value</p>
+              <p className="text-xs text-stone-500 uppercase tracking-wide mb-1">{t("avg_order_value_2")}</p>
               <p className="text-2xl font-bold text-[var(--color-primary)]">
                 {uploadedOrders.length > 0 ? (uploadedOrders.reduce((s: number, o: any) => s + (o.totalPrice || 0), 0) / uploadedOrders.length).toFixed(2) : 0}
               </p>
             </div>
             <div className="bg-white p-4 rounded-2xl border border-stone-100 shadow-sm text-center">
-              <p className="text-xs text-stone-500 uppercase tracking-wide mb-1">Cart Abandonment</p>
+              <p className="text-xs text-stone-500 uppercase tracking-wide mb-1">{t("cart_abandonment")}</p>
               <p className={`text-2xl font-bold ${cartAbandonmentRate > 60 ? "text-red-500" : "text-amber-500"}`}>
                 {cartAbandonmentRate.toFixed(1)}%
               </p>
@@ -864,15 +866,15 @@ export default function Simulators() {
               className="flex items-center gap-3 w-full text-left mb-4 group"
             >
               <TrendingUp className="w-5 h-5 text-[var(--color-primary)]" />
-              <h2 className="text-xl font-serif font-bold text-[var(--color-primary)]">Revenue & Growth Insights</h2>
+              <h2 className="text-xl font-serif font-bold text-[var(--color-primary)]">{t("revenue_growth_insights")}</h2>
               {expandedSections.has("revenue") ? <ChevronDown className="w-4 h-4 ml-auto opacity-50 group-hover:opacity-100" /> : <ChevronRight className="w-4 h-4 ml-auto opacity-50 group-hover:opacity-100" />}
             </button>
             {expandedSections.has("revenue") && (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* AOV Trend */}
                 <div className="bg-white p-6 rounded-2xl border border-stone-100 shadow-sm">
-                  <h3 className="text-base font-medium text-stone-700 mb-1">Average Order Value (AOV) Trend</h3>
-                  <p className="text-xs text-stone-400 mb-4">Reveals pricing effectiveness and upsell success</p>
+                  <h3 className="text-base font-medium text-stone-700 mb-1">{t("average_order_value_aov_trend")}</h3>
+                  <p className="text-xs text-stone-400 mb-4">{t("reveals_pricing_effectiveness_and_upsell")}</p>
                   <div className="h-64">
                     {aovTrend.length > 0 ? (
                       <ResponsiveContainer width="100%" height="100%">
@@ -884,14 +886,14 @@ export default function Simulators() {
                           <Line type="monotone" name="AOV" dataKey="aov" stroke="var(--color-primary)" strokeWidth={2} dot={{ r: 3 }} />
                         </LineChart>
                       </ResponsiveContainer>
-                    ) : <div className="h-full flex items-center justify-center text-stone-400 text-sm">No data</div>}
+                    ) : <div className="h-full flex items-center justify-center text-stone-400 text-sm">{t("no_data_2")}</div>}
                   </div>
                 </div>
 
                 {/* Revenue by Channel */}
                 <div className="bg-white p-6 rounded-2xl border border-stone-100 shadow-sm">
-                  <h3 className="text-base font-medium text-stone-700 mb-1">Revenue by Channel</h3>
-                  <p className="text-xs text-stone-400 mb-4">Helps double down on what's driving sales</p>
+                  <h3 className="text-base font-medium text-stone-700 mb-1">{t("revenue_by_channel")}</h3>
+                  <p className="text-xs text-stone-400 mb-4">{t("revenue_by_channel_subtitle")}</p>
                   <div className="h-64">
                     {revenueByChannel.length > 0 ? (
                       <ResponsiveContainer width="100%" height="100%">
@@ -903,14 +905,14 @@ export default function Simulators() {
                           <Bar dataKey="revenue" fill="var(--color-primary)" radius={[4, 4, 0, 0]} />
                         </BarChart>
                       </ResponsiveContainer>
-                    ) : <div className="h-full flex items-center justify-center text-stone-400 text-sm">No data</div>}
+                    ) : <div className="h-full flex items-center justify-center text-stone-400 text-sm">{t("no_data_2")}</div>}
                   </div>
                 </div>
 
                 {/* New vs Returning */}
                 <div className="bg-white p-6 rounded-2xl border border-stone-100 shadow-sm col-span-1 lg:col-span-2">
-                  <h3 className="text-base font-medium text-stone-700 mb-1">New vs Returning Customers Revenue</h3>
-                  <p className="text-xs text-stone-400 mb-4">Shows whether growth is from acquisition or retention</p>
+                  <h3 className="text-base font-medium text-stone-700 mb-1">{t("new_vs_returning_customers_revenue")}</h3>
+                  <p className="text-xs text-stone-400 mb-4">{t("shows_whether_growth_is_from_acquisition")}</p>
                   <div className="h-64">
                     {newVsReturning.length > 0 ? (
                       <ResponsiveContainer width="100%" height="100%">
@@ -934,13 +936,13 @@ export default function Simulators() {
                           <Area type="monotone" name="Returning" dataKey="returning" stroke="#34C759" strokeWidth={2} fill="url(#colorRet)" />
                         </AreaChart>
                       </ResponsiveContainer>
-                    ) : <div className="h-full flex items-center justify-center text-stone-400 text-sm">No data</div>}
+                    ) : <div className="h-full flex items-center justify-center text-stone-400 text-sm">{t("no_data_2")}</div>}
                   </div>
                 </div>
 
                 {/* Sales Over Time */}
                 <div className="bg-white p-6 rounded-2xl border border-stone-100 shadow-sm col-span-1 lg:col-span-2">
-                  <h3 className="text-base font-medium text-stone-700 mb-1">Sales Over Time</h3>
+                  <h3 className="text-base font-medium text-stone-700 mb-1">{t("sales_over_time")}</h3>
                   <div className="h-64">
                     {revenueOrdersTrend.length > 0 ? (
                       <ResponsiveContainer width="100%" height="100%">
@@ -949,16 +951,16 @@ export default function Simulators() {
                           <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fontSize: 10 }} />
                           <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10 }} />
                           <RechartsTooltip contentStyle={{ borderRadius: "8px", border: "none", boxShadow: "0 2px 4px rgb(0 0 0 / 0.1)" }} />
-                          <Line type="monotone" name="Sales" dataKey="revenue" stroke="var(--color-primary)" strokeWidth={2} dot={{ r: 3 }} />
+                          <Line type="monotone" name={t("label_sales")} dataKey="revenue" stroke="var(--color-primary)" strokeWidth={2} dot={{ r: 3 }} />
                         </LineChart>
                       </ResponsiveContainer>
-                    ) : <div className="h-full flex items-center justify-center text-stone-400 text-sm">No data</div>}
+                    ) : <div className="h-full flex items-center justify-center text-stone-400 text-sm">{t("no_data_2")}</div>}
                   </div>
                 </div>
 
                 {/* Revenue vs Orders Trend */}
                 <div className="bg-white p-6 rounded-2xl border border-stone-100 shadow-sm col-span-1 lg:col-span-2">
-                  <h3 className="text-base font-medium text-stone-700 mb-1">Revenue vs Orders Trend</h3>
+                  <h3 className="text-base font-medium text-stone-700 mb-1">{t("revenue_vs_orders_trend")}</h3>
                   <div className="h-64">
                     {revenueOrdersTrend.length > 0 ? (
                       <ResponsiveContainer width="100%" height="100%">
@@ -968,11 +970,11 @@ export default function Simulators() {
                           <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10 }} />
                           <RechartsTooltip contentStyle={{ borderRadius: "8px", border: "none", boxShadow: "0 2px 4px rgb(0 0 0 / 0.1)" }} />
                           <Legend />
-                          <Bar yAxisId="left" name="Orders" dataKey="orders" fill="var(--color-accent)" opacity={0.4} radius={[4, 4, 0, 0]} />
-                          <Line yAxisId="right" type="monotone" name="Revenue" dataKey="revenue" stroke="var(--color-primary)" strokeWidth={2} />
+                          <Bar yAxisId="left" name={t("manage_orders")} dataKey="orders" fill="var(--color-accent)" opacity={0.4} radius={[4, 4, 0, 0]} />
+                          <Line yAxisId="right" type="monotone" name={t("revenue")} dataKey="revenue" stroke="var(--color-primary)" strokeWidth={2} />
                         </ComposedChart>
                       </ResponsiveContainer>
-                    ) : <div className="h-full flex items-center justify-center text-stone-400 text-sm">No data</div>}
+                    ) : <div className="h-full flex items-center justify-center text-stone-400 text-sm">{t("no_data_2")}</div>}
                   </div>
                 </div>
               </div>
@@ -986,15 +988,15 @@ export default function Simulators() {
               className="flex items-center gap-3 w-full text-left mb-4 group"
             >
               <Target className="w-5 h-5 text-[var(--color-primary)]" />
-              <h2 className="text-xl font-serif font-bold text-[var(--color-primary)]">Conversion Funnel</h2>
+              <h2 className="text-xl font-serif font-bold text-[var(--color-primary)]">{t("conversion_funnel")}</h2>
               {expandedSections.has("conversion") ? <ChevronDown className="w-4 h-4 ml-auto opacity-50 group-hover:opacity-100" /> : <ChevronRight className="w-4 h-4 ml-auto opacity-50 group-hover:opacity-100" />}
             </button>
             {expandedSections.has("conversion") && (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Funnel Chart */}
                 <div className="bg-white p-6 rounded-2xl border border-stone-100 shadow-sm">
-                  <h3 className="text-base font-medium text-stone-700 mb-1">Conversion Funnel</h3>
-                  <p className="text-xs text-stone-400 mb-4">Pinpoints exactly where you're losing customers</p>
+                  <h3 className="text-base font-medium text-stone-700 mb-1">{t("conversion_funnel")}</h3>
+                  <p className="text-xs text-stone-400 mb-4">{t("conversion_funnel_subtitle")}</p>
                   <div className="h-80">
                     {funnelData.length > 0 ? (
                       <ResponsiveContainer width="100%" height="100%">
@@ -1013,22 +1015,22 @@ export default function Simulators() {
                           </Funnel>
                         </FunnelChart>
                       </ResponsiveContainer>
-                    ) : <div className="h-full flex items-center justify-center text-stone-400 text-sm">No data</div>}
+                    ) : <div className="h-full flex items-center justify-center text-stone-400 text-sm">{t("no_data_2")}</div>}
                   </div>
                 </div>
 
                 {/* Cart Abandonment Rate */}
                 <div className="bg-white p-6 rounded-2xl border border-stone-100 shadow-sm">
-                  <h3 className="text-base font-medium text-stone-700 mb-1">Cart Abandonment Rate</h3>
-                  <p className="text-xs text-stone-400 mb-4">One of the biggest hidden revenue leaks</p>
+                  <h3 className="text-base font-medium text-stone-700 mb-1">{t("cart_abandonment_rate")}</h3>
+                  <p className="text-xs text-stone-400 mb-4">{t("one_of_the_biggest_hidden_revenue_leaks")}</p>
                   <div className="flex items-center gap-4 mb-4">
                     <div className={`text-5xl font-bold ${cartAbandonmentRate > 60 ? "text-red-500" : cartAbandonmentRate > 40 ? "text-amber-500" : "text-green-500"}`}>
                       {cartAbandonmentRate.toFixed(1)}%
                     </div>
                     <div className="text-xs text-stone-500">
-                      {cartAbandonmentRate > 60 ? "⚠️ High abandonment — urgent action needed" :
-                       cartAbandonmentRate > 40 ? "⚡ Moderate — room for improvement" :
-                       "✅ Healthy — below industry average"}
+                      {cartAbandonmentRate > 60 ? t("cart_abandonment_status_high") :
+                       cartAbandonmentRate > 40 ? t("cart_abandonment_status_moderate") :
+                       t("cart_abandonment_status_healthy")}
                     </div>
                   </div>
                   <div className="h-52">
@@ -1042,7 +1044,7 @@ export default function Simulators() {
                           <Line type="monotone" name="Abandonment %" dataKey="rate" stroke="#F54242" strokeWidth={2} dot={{ r: 3 }} />
                         </LineChart>
                       </ResponsiveContainer>
-                    ) : <div className="h-full flex items-center justify-center text-stone-400 text-sm">No data</div>}
+                    ) : <div className="h-full flex items-center justify-center text-stone-400 text-sm">{t("no_data_2")}</div>}
                   </div>
                 </div>
               </div>
@@ -1056,15 +1058,15 @@ export default function Simulators() {
               className="flex items-center gap-3 w-full text-left mb-4 group"
             >
               <Users className="w-5 h-5 text-[var(--color-primary)]" />
-              <h2 className="text-xl font-serif font-bold text-[var(--color-primary)]">Customer Behavior</h2>
+              <h2 className="text-xl font-serif font-bold text-[var(--color-primary)]">{t("customer_behavior")}</h2>
               {expandedSections.has("customer") ? <ChevronDown className="w-4 h-4 ml-auto opacity-50 group-hover:opacity-100" /> : <ChevronRight className="w-4 h-4 ml-auto opacity-50 group-hover:opacity-100" />}
             </button>
             {expandedSections.has("customer") && (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* CLV Distribution */}
                 <div className="bg-white p-6 rounded-2xl border border-stone-100 shadow-sm">
-                  <h3 className="text-base font-medium text-stone-700 mb-1">Customer Lifetime Value (CLV) Distribution</h3>
-                  <p className="text-xs text-stone-400 mb-4">Identifies your most valuable customer segments</p>
+                  <h3 className="text-base font-medium text-stone-700 mb-1">{t("customer_lifetime_value_clv_distribution")}</h3>
+                  <p className="text-xs text-stone-400 mb-4">{t("identifies_your_most_valuable_customer_s")}</p>
                   <div className="h-64">
                     {clvDistribution.length > 0 ? (
                       <ResponsiveContainer width="100%" height="100%">
@@ -1073,22 +1075,22 @@ export default function Simulators() {
                           <XAxis dataKey="bucket" axisLine={false} tickLine={false} tick={{ fontSize: 9 }} />
                           <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10 }} />
                           <RechartsTooltip contentStyle={{ borderRadius: "8px", border: "none", boxShadow: "0 2px 4px rgb(0 0 0 / 0.1)" }} />
-                          <Bar dataKey="count" name="Customers" fill="var(--color-primary)" radius={[4, 4, 0, 0]} />
+                          <Bar dataKey="count" name={t("customers")} fill="var(--color-primary)" radius={[4, 4, 0, 0]} />
                         </BarChart>
                       </ResponsiveContainer>
-                    ) : <div className="h-full flex items-center justify-center text-stone-400 text-sm">No data</div>}
+                    ) : <div className="h-full flex items-center justify-center text-stone-400 text-sm">{t("no_data_2")}</div>}
                   </div>
                 </div>
 
                 {/* Repeat Purchase Rate */}
                 <div className="bg-white p-6 rounded-2xl border border-stone-100 shadow-sm">
-                  <h3 className="text-base font-medium text-stone-700 mb-1">Repeat Purchase Rate</h3>
-                  <p className="text-xs text-stone-400 mb-2">Core signal of brand loyalty</p>
+                  <h3 className="text-base font-medium text-stone-700 mb-1">{t("repeat_purchase_rate")}</h3>
+                  <p className="text-xs text-stone-400 mb-2">{t("core_signal_of_brand_loyalty")}</p>
                   <div className="flex items-center gap-3 mb-4">
                     <span className={`text-4xl font-bold ${repeatRateKPI > 40 ? "text-green-500" : repeatRateKPI > 20 ? "text-amber-500" : "text-red-500"}`}>
                       {repeatRateKPI.toFixed(1)}%
                     </span>
-                    <span className="text-xs text-stone-500">of customers made repeat purchases</span>
+                    <span className="text-xs text-stone-500">{t("of_customers_made_repeat_purchases")}</span>
                   </div>
                   <div className="h-48">
                     {repeatPurchaseRate.length > 0 ? (
@@ -1101,14 +1103,14 @@ export default function Simulators() {
                           <Line type="monotone" name="Repeat Rate %" dataKey="rate" stroke="#34C759" strokeWidth={2} dot={{ r: 3 }} />
                         </LineChart>
                       </ResponsiveContainer>
-                    ) : <div className="h-full flex items-center justify-center text-stone-400 text-sm">No data</div>}
+                    ) : <div className="h-full flex items-center justify-center text-stone-400 text-sm">{t("no_data_2")}</div>}
                   </div>
                 </div>
 
                 {/* Cohort Retention */}
                 <div className="bg-white p-6 rounded-2xl border border-stone-100 shadow-sm col-span-1 lg:col-span-2">
-                  <h3 className="text-base font-medium text-stone-700 mb-1">Cohort Retention Chart</h3>
-                  <p className="text-xs text-stone-400 mb-4">Shows how long customers stick around (simulated)</p>
+                  <h3 className="text-base font-medium text-stone-700 mb-1">{t("cohort_retention_chart")}</h3>
+                  <p className="text-xs text-stone-400 mb-4">{t("shows_how_long_customers_stick_around_si")}</p>
                   <div className="overflow-x-auto">
                     {cohortRetention.length > 0 ? (
                       <ResponsiveContainer width="100%" height={200}>
@@ -1124,7 +1126,7 @@ export default function Simulators() {
                           <Bar name="Week 3" dataKey="week3" fill="#C4B5FD" />
                         </BarChart>
                       </ResponsiveContainer>
-                    ) : <div className="h-48 flex items-center justify-center text-stone-400 text-sm">No data</div>}
+                    ) : <div className="h-48 flex items-center justify-center text-stone-400 text-sm">{t("no_data_2")}</div>}
                   </div>
                 </div>
               </div>
@@ -1138,15 +1140,15 @@ export default function Simulators() {
               className="flex items-center gap-3 w-full text-left mb-4 group"
             >
               <Package className="w-5 h-5 text-[var(--color-primary)]" />
-              <h2 className="text-xl font-serif font-bold text-[var(--color-primary)]">Product Performance Deep Dive</h2>
+              <h2 className="text-xl font-serif font-bold text-[var(--color-primary)]">{t("product_performance_deep_dive")}</h2>
               {expandedSections.has("product") ? <ChevronDown className="w-4 h-4 ml-auto opacity-50 group-hover:opacity-100" /> : <ChevronRight className="w-4 h-4 ml-auto opacity-50 group-hover:opacity-100" />}
             </button>
             {expandedSections.has("product") && (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Product Conversion Rate */}
                 <div className="bg-white p-6 rounded-2xl border border-stone-100 shadow-sm">
-                  <h3 className="text-base font-medium text-stone-700 mb-1">Product Conversion Rate</h3>
-                  <p className="text-xs text-stone-400 mb-4">Finds products that attract interest but don't convert</p>
+                  <h3 className="text-base font-medium text-stone-700 mb-1">{t("product_conversion_rate")}</h3>
+                  <p className="text-xs text-stone-400 mb-4">{t("product_conversion_rate_subtitle")}</p>
                   <div className="space-y-2 max-h-72 overflow-y-auto">
                     {productConversionRate.map((p, i) => (
                       <div key={i} className="flex items-center gap-3 bg-stone-50 rounded-lg px-3 py-2">
@@ -1163,14 +1165,14 @@ export default function Simulators() {
                         </div>
                       </div>
                     ))}
-                    {productConversionRate.length === 0 && <p className="text-stone-400 text-sm text-center py-4">No data</p>}
+                    {productConversionRate.length === 0 && <p className="text-stone-400 text-sm text-center py-4">{t("no_data_2")}</p>}
                   </div>
                 </div>
 
                 {/* Inventory Turnover */}
                 <div className="bg-white p-6 rounded-2xl border border-stone-100 shadow-sm">
-                  <h3 className="text-base font-medium text-stone-700 mb-1">Inventory Turnover Rate</h3>
-                  <p className="text-xs text-stone-400 mb-4">Helps avoid overstocking or dead inventory</p>
+                  <h3 className="text-base font-medium text-stone-700 mb-1">{t("inventory_turnover_rate")}</h3>
+                  <p className="text-xs text-stone-400 mb-4">{t("helps_avoid_overstocking_or_dead_invento")}</p>
                   <div className="h-72">
                     {inventoryTurnover.length > 0 ? (
                       <ResponsiveContainer width="100%" height="100%">
@@ -1179,17 +1181,17 @@ export default function Simulators() {
                           <XAxis dataKey="category" axisLine={false} tickLine={false} tick={{ fontSize: 9 }} />
                           <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10 }} />
                           <RechartsTooltip contentStyle={{ borderRadius: "8px", border: "none", boxShadow: "0 2px 4px rgb(0 0 0 / 0.1)" }} />
-                          <Bar dataKey="turnover" name="Turnover" fill="var(--color-accent)" radius={[4, 4, 0, 0]} />
+                          <Bar dataKey="turnover" name={t("inventory_turnover_rate")} fill="var(--color-accent)" radius={[4, 4, 0, 0]} />
                         </BarChart>
                       </ResponsiveContainer>
-                    ) : <div className="h-full flex items-center justify-center text-stone-400 text-sm">No data</div>}
+                    ) : <div className="h-full flex items-center justify-center text-stone-400 text-sm">{t("no_data_2")}</div>}
                   </div>
                 </div>
 
                 {/* Profit Margin by Product */}
                 <div className="bg-white p-6 rounded-2xl border border-stone-100 shadow-sm">
-                  <h3 className="text-base font-medium text-stone-700 mb-1">Profit Margin by Product</h3>
-                  <p className="text-xs text-stone-400 mb-4">Revenue alone can be misleading — this shows what actually makes money</p>
+                  <h3 className="text-base font-medium text-stone-700 mb-1">{t("profit_margin_by_product")}</h3>
+                  <p className="text-xs text-stone-400 mb-4">{t("profit_margin_by_product_subtitle")}</p>
                   <div className="h-72">
                     {profitMarginByProduct.length > 0 ? (
                       <ResponsiveContainer width="100%" height="100%">
@@ -1201,13 +1203,13 @@ export default function Simulators() {
                           <Bar dataKey="margin" name="Margin %" fill="#34C759" radius={[0, 4, 4, 0]} />
                         </BarChart>
                       </ResponsiveContainer>
-                    ) : <div className="h-full flex items-center justify-center text-stone-400 text-sm">No data</div>}
+                    ) : <div className="h-full flex items-center justify-center text-stone-400 text-sm">{t("no_data_2")}</div>}
                   </div>
                 </div>
 
                 {/* Top Products */}
                 <div className="bg-white p-6 rounded-2xl border border-stone-100 shadow-sm">
-                  <h3 className="text-base font-medium text-stone-700 mb-1">Top Products (Revenue)</h3>
+                  <h3 className="text-base font-medium text-stone-700 mb-1">{t("top_products_revenue")}</h3>
                   <div className="space-y-3 max-h-72 overflow-y-auto">
                     {topProducts.map((p, i) => (
                       <div key={p.id} className="flex justify-between items-center bg-stone-50 p-3 rounded-xl">
@@ -1215,32 +1217,32 @@ export default function Simulators() {
                           <span className="font-bold text-stone-400 w-4">{i + 1}</span>
                           <div>
                             <h4 className="font-medium text-[var(--color-primary)] text-sm">{p.name}</h4>
-                            <p className="text-xs text-stone-500">{p.sold} units sold</p>
+                            <p className="text-xs text-stone-500">{t("units_sold", { count: p.sold })}</p>
                           </div>
                         </div>
                         <span className="font-bold text-[var(--color-primary)]">{p.revenue.toFixed(2)}</span>
                       </div>
                     ))}
-                    {topProducts.length === 0 && <p className="text-stone-400 text-sm text-center py-4">No products sold</p>}
+                    {topProducts.length === 0 && <p className="text-stone-400 text-sm text-center py-4">{t("no_products_sold_2")}</p>}
                   </div>
                 </div>
 
                 {/* Low Performing */}
                 <div className="bg-white p-6 rounded-2xl border border-stone-100 shadow-sm col-span-1 lg:col-span-2">
-                  <h3 className="text-base font-medium text-stone-700 mb-1">Low Performing / At Risk Products</h3>
+                  <h3 className="text-base font-medium text-stone-700 mb-1">{t("low_performing_at_risk_products")}</h3>
                   <div className="space-y-3">
                     {lowPerformingProducts.map((p) => (
                       <div key={p.id} className="flex justify-between items-center bg-red-50/50 border border-red-100 p-3 rounded-xl">
                         <div>
                           <h4 className="font-medium text-[var(--color-primary)] text-sm">{p.name}</h4>
-                          <p className="text-xs text-red-500 font-medium">{p.sold === 0 ? "0 units sold" : `${p.sold} units sold`}</p>
+                          <p className="text-xs text-red-500 font-medium">{t("units_sold", { count: p.sold })}</p>
                         </div>
                         <div className="text-right text-xs text-stone-500">
-                          {p.daysSinceSale === null ? "Never sold" : `${p.daysSinceSale} days since last sale`}
+                          {p.daysSinceSale === null ? t("never_sold") : t("days_since_last_sale", { count: p.daysSinceSale })}
                         </div>
                       </div>
                     ))}
-                    {lowPerformingProducts.length === 0 && <p className="text-stone-400 text-sm text-center py-4">All products performing well</p>}
+                    {lowPerformingProducts.length === 0 && <p className="text-stone-400 text-sm text-center py-4">{t("all_products_performing_well")}</p>}
                   </div>
                 </div>
               </div>
@@ -1254,15 +1256,15 @@ export default function Simulators() {
               className="flex items-center gap-3 w-full text-left mb-4 group"
             >
               <Clock className="w-5 h-5 text-[var(--color-primary)]" />
-              <h2 className="text-xl font-serif font-bold text-[var(--color-primary)]">Operations & Fulfillment</h2>
+              <h2 className="text-xl font-serif font-bold text-[var(--color-primary)]">{t("operations_fulfillment")}</h2>
               {expandedSections.has("operations") ? <ChevronDown className="w-4 h-4 ml-auto opacity-50 group-hover:opacity-100" /> : <ChevronRight className="w-4 h-4 ml-auto opacity-50 group-hover:opacity-100" />}
             </button>
             {expandedSections.has("operations") && (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Fulfillment Time */}
                 <div className="bg-white p-6 rounded-2xl border border-stone-100 shadow-sm">
-                  <h3 className="text-base font-medium text-stone-700 mb-1">Order Fulfillment Time</h3>
-                  <p className="text-xs text-stone-400 mb-4">Impacts customer satisfaction directly (days)</p>
+                  <h3 className="text-base font-medium text-stone-700 mb-1">{t("order_fulfillment_time")}</h3>
+                  <p className="text-xs text-stone-400 mb-4">{t("impacts_customer_satisfaction_directly_d")}</p>
                   <div className="h-72">
                     {fulfillmentTime.length > 0 ? (
                       <ResponsiveContainer width="100%" height="100%">
@@ -1277,14 +1279,14 @@ export default function Simulators() {
                           <Line type="monotone" name="Delivered" dataKey="delivered" stroke="#34C759" strokeWidth={2} dot={{ r: 2 }} />
                         </LineChart>
                       </ResponsiveContainer>
-                    ) : <div className="h-full flex items-center justify-center text-stone-400 text-sm">No data</div>}
+                    ) : <div className="h-full flex items-center justify-center text-stone-400 text-sm">{t("no_data_2")}</div>}
                   </div>
                 </div>
 
                 {/* Return Rate by Product */}
                 <div className="bg-white p-6 rounded-2xl border border-stone-100 shadow-sm">
-                  <h3 className="text-base font-medium text-stone-700 mb-1">Return Rate by Product</h3>
-                  <p className="text-xs text-stone-400 mb-4">Flags quality or expectation issues</p>
+                  <h3 className="text-base font-medium text-stone-700 mb-1">{t("return_rate_by_product")}</h3>
+                  <p className="text-xs text-stone-400 mb-4">{t("flags_quality_or_expectation_issues")}</p>
                   <div className="h-72">
                     {returnRateByProduct.length > 0 ? (
                       <ResponsiveContainer width="100%" height="100%">
@@ -1296,7 +1298,7 @@ export default function Simulators() {
                           <Bar dataKey="returnRate" name="Return Rate %" fill="#F54242" radius={[4, 4, 0, 0]} />
                         </BarChart>
                       </ResponsiveContainer>
-                    ) : <div className="h-full flex items-center justify-center text-stone-400 text-sm">No data</div>}
+                    ) : <div className="h-full flex items-center justify-center text-stone-400 text-sm">{t("no_data_2")}</div>}
                   </div>
                 </div>
               </div>
@@ -1310,13 +1312,13 @@ export default function Simulators() {
               className="flex items-center gap-3 w-full text-left mb-4 group"
             >
               <MapPin className="w-5 h-5 text-[var(--color-primary)]" />
-              <h2 className="text-xl font-serif font-bold text-[var(--color-primary)]">Geographic Insights</h2>
+              <h2 className="text-xl font-serif font-bold text-[var(--color-primary)]">{t("geographic_insights")}</h2>
               {expandedSections.has("geo") ? <ChevronDown className="w-4 h-4 ml-auto opacity-50 group-hover:opacity-100" /> : <ChevronRight className="w-4 h-4 ml-auto opacity-50 group-hover:opacity-100" />}
             </button>
             {expandedSections.has("geo") && (
               <div className="bg-white p-6 rounded-2xl border border-stone-100 shadow-sm">
-                <h3 className="text-base font-medium text-stone-700 mb-1">Sales by Location</h3>
-                <p className="text-xs text-stone-400 mb-4">Useful for targeting ads, shipping strategies, and expansion</p>
+                <h3 className="text-base font-medium text-stone-700 mb-1">{t("sales_by_location")}</h3>
+                <p className="text-xs text-stone-400 mb-4">{t("useful_for_targeting_ads_shipping_strate")}</p>
                 <div className="space-y-2 max-h-80 overflow-y-auto">
                   {salesByLocation.map((loc, i) => (
                     <div key={i} className="flex items-center gap-3">
@@ -1335,7 +1337,7 @@ export default function Simulators() {
                       </span>
                     </div>
                   ))}
-                  {salesByLocation.length === 0 && <p className="text-stone-400 text-sm text-center py-4">No location data</p>}
+                  {salesByLocation.length === 0 && <p className="text-stone-400 text-sm text-center py-4">{t("no_location_data")}</p>}
                 </div>
               </div>
             )}
@@ -1348,15 +1350,15 @@ export default function Simulators() {
               className="flex items-center gap-3 w-full text-left mb-4 group"
             >
               <BarChart2 className="w-5 h-5 text-[var(--color-primary)]" />
-              <h2 className="text-xl font-serif font-bold text-[var(--color-primary)]">Time-Based Patterns</h2>
+              <h2 className="text-xl font-serif font-bold text-[var(--color-primary)]">{t("time_based_patterns")}</h2>
               {expandedSections.has("time") ? <ChevronDown className="w-4 h-4 ml-auto opacity-50 group-hover:opacity-100" /> : <ChevronRight className="w-4 h-4 ml-auto opacity-50 group-hover:opacity-100" />}
             </button>
             {expandedSections.has("time") && (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Hourly Sales Heatmap */}
                 <div className="bg-white p-6 rounded-2xl border border-stone-100 shadow-sm">
-                  <h3 className="text-base font-medium text-stone-700 mb-1">Hourly Sales Heatmap</h3>
-                  <p className="text-xs text-stone-400 mb-4">Helps optimize ad timing and promotions</p>
+                  <h3 className="text-base font-medium text-stone-700 mb-1">{t("hourly_sales_heatmap")}</h3>
+                  <p className="text-xs text-stone-400 mb-4">{t("helps_optimize_ad_timing_and_promotions")}</p>
                   <div className="overflow-x-auto">
                     {hourlySalesHeatmap.length > 0 ? (
                       <div className="min-w-[600px]">
@@ -1389,14 +1391,14 @@ export default function Simulators() {
                           </div>
                         ))}
                       </div>
-                    ) : <div className="h-48 flex items-center justify-center text-stone-400 text-sm">No data</div>}
+                    ) : <div className="h-48 flex items-center justify-center text-stone-400 text-sm">{t("no_data_2")}</div>}
                   </div>
                 </div>
 
                 {/* Seasonality */}
                 <div className="bg-white p-6 rounded-2xl border border-stone-100 shadow-sm">
-                  <h3 className="text-base font-medium text-stone-700 mb-1">Seasonality Trends</h3>
-                  <p className="text-xs text-stone-400 mb-4">Critical for forecasting and inventory planning</p>
+                  <h3 className="text-base font-medium text-stone-700 mb-1">{t("seasonality_trends")}</h3>
+                  <p className="text-xs text-stone-400 mb-4">{t("critical_for_forecasting_and_inventory_p")}</p>
                   <div className="h-72">
                     {seasonalityTrend.length > 0 ? (
                       <ResponsiveContainer width="100%" height="100%">
@@ -1410,7 +1412,7 @@ export default function Simulators() {
                           <Line type="monotone" name="Last Year" dataKey="lastYear" stroke="#DCD3CB" strokeWidth={2} strokeDasharray="5 5" dot={{ r: 2 }} />
                         </LineChart>
                       </ResponsiveContainer>
-                    ) : <div className="h-full flex items-center justify-center text-stone-400 text-sm">No data</div>}
+                    ) : <div className="h-full flex items-center justify-center text-stone-400 text-sm">{t("no_data_2")}</div>}
                   </div>
                 </div>
               </div>
@@ -1424,15 +1426,15 @@ export default function Simulators() {
               className="flex items-center gap-3 w-full text-left mb-4 group"
             >
               <DollarSign className="w-5 h-5 text-[var(--color-primary)]" />
-              <h2 className="text-xl font-serif font-bold text-[var(--color-primary)]">Marketing Performance</h2>
+              <h2 className="text-xl font-serif font-bold text-[var(--color-primary)]">{t("marketing_performance")}</h2>
               {expandedSections.has("marketing") ? <ChevronDown className="w-4 h-4 ml-auto opacity-50 group-hover:opacity-100" /> : <ChevronRight className="w-4 h-4 ml-auto opacity-50 group-hover:opacity-100" />}
             </button>
             {expandedSections.has("marketing") && (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* CAC Trend */}
                 <div className="bg-white p-6 rounded-2xl border border-stone-100 shadow-sm">
-                  <h3 className="text-base font-medium text-stone-700 mb-1">Customer Acquisition Cost (CAC)</h3>
-                  <p className="text-xs text-stone-400 mb-4">Keeps ad spend sustainable</p>
+                  <h3 className="text-base font-medium text-stone-700 mb-1">{t("customer_acquisition_cost_cac")}</h3>
+                  <p className="text-xs text-stone-400 mb-4">{t("keeps_ad_spend_sustainable")}</p>
                   <div className="h-64">
                     {cacTrend.length > 0 ? (
                       <ResponsiveContainer width="100%" height="100%">
@@ -1444,14 +1446,14 @@ export default function Simulators() {
                           <Line type="monotone" name="CAC" dataKey="cac" stroke="#F5A623" strokeWidth={2} dot={{ r: 3 }} />
                         </LineChart>
                       </ResponsiveContainer>
-                    ) : <div className="h-full flex items-center justify-center text-stone-400 text-sm">No data</div>}
+                    ) : <div className="h-full flex items-center justify-center text-stone-400 text-sm">{t("no_data_2")}</div>}
                   </div>
                 </div>
 
                 {/* ROAS by Campaign */}
                 <div className="bg-white p-6 rounded-2xl border border-stone-100 shadow-sm">
-                  <h3 className="text-base font-medium text-stone-700 mb-1">ROAS by Campaign</h3>
-                  <p className="text-xs text-stone-400 mb-4">Tells you which campaigns are actually profitable</p>
+                  <h3 className="text-base font-medium text-stone-700 mb-1">{t("roas_by_campaign")}</h3>
+                  <p className="text-xs text-stone-400 mb-4">{t("tells_you_which_campaigns_are_actually_p")}</p>
                   <div className="h-64">
                     {roasByCampaign.length > 0 ? (
                       <ResponsiveContainer width="100%" height="100%">
@@ -1463,7 +1465,7 @@ export default function Simulators() {
                           <Bar dataKey="roas" name="ROAS" fill="#6366F1" radius={[4, 4, 0, 0]} />
                         </BarChart>
                       </ResponsiveContainer>
-                    ) : <div className="h-full flex items-center justify-center text-stone-400 text-sm">No data</div>}
+                    ) : <div className="h-full flex items-center justify-center text-stone-400 text-sm">{t("no_data_2")}</div>}
                   </div>
                 </div>
               </div>
@@ -1477,26 +1479,26 @@ export default function Simulators() {
               className="flex items-center gap-3 w-full text-left mb-4 group"
             >
               <AlertTriangle className="w-5 h-5 text-[var(--color-primary)]" />
-              <h2 className="text-xl font-serif font-bold text-[var(--color-primary)]">Alerts & Predictive</h2>
+              <h2 className="text-xl font-serif font-bold text-[var(--color-primary)]">{t("alerts_predictive")}</h2>
               {expandedSections.has("alerts") ? <ChevronDown className="w-4 h-4 ml-auto opacity-50 group-hover:opacity-100" /> : <ChevronRight className="w-4 h-4 ml-auto opacity-50 group-hover:opacity-100" />}
             </button>
             {expandedSections.has("alerts") && (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Low Stock Forecast */}
                 <div className="bg-white p-6 rounded-2xl border border-stone-100 shadow-sm">
-                  <h3 className="text-base font-medium text-stone-700 mb-1">Low Stock Forecast</h3>
-                  <p className="text-xs text-stone-400 mb-4">Prevents stockouts before they happen</p>
+                  <h3 className="text-base font-medium text-stone-700 mb-1">{t("low_stock_forecast")}</h3>
+                  <p className="text-xs text-stone-400 mb-4">{t("prevents_stockouts_before_they_happen")}</p>
                   <div className="space-y-3 max-h-72 overflow-y-auto">
                     {lowStockForecast.map((p: any, i: number) => (
                       <div key={i} className={`p-3 rounded-xl border ${p.critical ? "bg-red-50 border-red-200" : "bg-amber-50 border-amber-200"}`}>
                         <div className="flex justify-between items-start mb-2">
                           <span className="font-medium text-sm text-stone-800">{p.name}</span>
                           <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${p.critical ? "bg-red-100 text-red-600" : "bg-amber-100 text-amber-600"}`}>
-                            {p.daysLeft}d left
+                            {t("days_left_badge", { count: p.daysLeft })}
                           </span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <span className="text-xs text-stone-500">Stock: {p.stock}</span>
+                          <span className="text-xs text-stone-500">{t("stock")}: {p.stock}</span>
                           <div className="flex-1 h-2 bg-stone-200 rounded-full overflow-hidden">
                             <div
                               className={`h-full rounded-full ${p.critical ? "bg-red-400" : "bg-amber-400"}`}
@@ -1506,14 +1508,14 @@ export default function Simulators() {
                         </div>
                       </div>
                     ))}
-                    {lowStockForecast.length === 0 && <p className="text-stone-400 text-sm text-center py-4">No products with low stock</p>}
+                    {lowStockForecast.length === 0 && <p className="text-stone-400 text-sm text-center py-4">{t("no_products_with_low_stock")}</p>}
                   </div>
                 </div>
 
                 {/* Sales Forecast vs Actual */}
                 <div className="bg-white p-6 rounded-2xl border border-stone-100 shadow-sm">
-                  <h3 className="text-base font-medium text-stone-700 mb-1">Sales Forecast vs Actual</h3>
-                  <p className="text-xs text-stone-400 mb-4">Helps planning and goal tracking</p>
+                  <h3 className="text-base font-medium text-stone-700 mb-1">{t("sales_forecast_vs_actual")}</h3>
+                  <p className="text-xs text-stone-400 mb-4">{t("helps_planning_and_goal_tracking")}</p>
                   <div className="h-72">
                     {forecastVsActual.length > 0 ? (
                       <ResponsiveContainer width="100%" height="100%">
@@ -1527,7 +1529,7 @@ export default function Simulators() {
                           <Line type="monotone" name="Actual" dataKey="actual" stroke="#34C759" strokeWidth={2} dot={{ r: 2 }} />
                         </LineChart>
                       </ResponsiveContainer>
-                    ) : <div className="h-full flex items-center justify-center text-stone-400 text-sm">No data</div>}
+                    ) : <div className="h-full flex items-center justify-center text-stone-400 text-sm">{t("no_data_2")}</div>}
                   </div>
                 </div>
               </div>
@@ -1541,14 +1543,14 @@ export default function Simulators() {
               className="flex items-center gap-3 w-full text-left mb-4 group"
             >
               <BarChart2 className="w-5 h-5 text-[var(--color-primary)]" />
-              <h2 className="text-xl font-serif font-bold text-[var(--color-primary)]">Sales by Category & Inventory</h2>
+              <h2 className="text-xl font-serif font-bold text-[var(--color-primary)]">{t("sales_by_category_inventory")}</h2>
               {expandedSections.has("legacy") ? <ChevronDown className="w-4 h-4 ml-auto opacity-50 group-hover:opacity-100" /> : <ChevronRight className="w-4 h-4 ml-auto opacity-50 group-hover:opacity-100" />}
             </button>
             {expandedSections.has("legacy") && (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Sales by Day of Week */}
                 <div className="bg-white p-6 rounded-2xl border border-stone-100 shadow-sm">
-                  <h3 className="text-base font-medium text-stone-700 mb-1">Sales by Day of Week</h3>
+                  <h3 className="text-base font-medium text-stone-700 mb-1">{t("sales_by_day_of_week")}</h3>
                   <div className="h-72">
                     {salesByDayOfWeek.length > 0 ? (
                       <ResponsiveContainer width="100%" height="100%">
@@ -1560,13 +1562,13 @@ export default function Simulators() {
                           <Bar dataKey="sales" fill="var(--color-accent)" radius={[4, 4, 0, 0]} />
                         </BarChart>
                       </ResponsiveContainer>
-                    ) : <div className="h-full flex items-center justify-center text-stone-400 text-sm">No data</div>}
+                    ) : <div className="h-full flex items-center justify-center text-stone-400 text-sm">{t("no_data_2")}</div>}
                   </div>
                 </div>
 
                 {/* Inventory Health */}
                 <div className="bg-white p-6 rounded-2xl border border-stone-100 shadow-sm">
-                  <h3 className="text-base font-medium text-stone-700 mb-1">Inventory Health</h3>
+                  <h3 className="text-base font-medium text-stone-700 mb-1">{t("inventory_health")}</h3>
                   <div className="h-72 flex items-center justify-center">
                     {inventoryHealth.length > 0 ? (
                       <ResponsiveContainer width="100%" height="100%">
@@ -1580,13 +1582,13 @@ export default function Simulators() {
                           <RechartsTooltip />
                         </PieChart>
                       </ResponsiveContainer>
-                    ) : <div className="text-stone-400 text-sm">No inventory data</div>}
+                    ) : <div className="text-stone-400 text-sm">{t("no_inventory_data")}</div>}
                   </div>
                 </div>
 
                 {/* Sales by Category */}
                 <div className="bg-white p-6 rounded-2xl border border-stone-100 shadow-sm">
-                  <h3 className="text-base font-medium text-stone-700 mb-1">Sales by Category</h3>
+                  <h3 className="text-base font-medium text-stone-700 mb-1">{t("sales_by_category")}</h3>
                   <div className="h-72 flex items-center justify-center">
                     {salesByCategory.length > 0 ? (
                       <ResponsiveContainer width="100%" height="100%">
@@ -1600,7 +1602,7 @@ export default function Simulators() {
                           <RechartsTooltip />
                         </PieChart>
                       </ResponsiveContainer>
-                    ) : <div className="text-stone-400 text-sm">No category data</div>}
+                    ) : <div className="text-stone-400 text-sm">{t("no_category_data")}</div>}
                   </div>
                 </div>
               </div>

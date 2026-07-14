@@ -381,17 +381,17 @@ export default function Orders() {
                       {order.currency && order.currency !== "AED" && order.currency !== "EGP" && (
                         <span 
                           className="inline-flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded-full bg-white border border-stone-200 text-stone-500 font-mono shadow-sm" 
-                          title={item.priceSource === "converted" ? "Auto-converted via exchange rates" : "Fixed manual price for this currency"}
+                          title={item.priceSource === "converted" ? t("auto_converted_tooltip") : t("fixed_price_tooltip")}
                         >
                           {item.priceSource === "converted" ? (
                             <>
                               <Globe className="w-3 h-3 text-sky-500" />
-                              <span>Converted</span>
+                              <span>{t("converted_badge")}</span>
                             </>
                           ) : (
                             <>
                               <Tag className="w-3 h-3 text-emerald-500" />
-                              <span>Fixed Price</span>
+                              <span>{t("fixed_price_badge")}</span>
                             </>
                           )}
                         </span>
