@@ -21,6 +21,7 @@ export interface Product {
   image?: string;
   pricingType?: string;
   description?: string;
+  descriptionAr?: string;
   createdAt: number;
 }
 

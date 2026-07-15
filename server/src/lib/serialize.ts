@@ -17,6 +17,7 @@ type ProductRow = {
   image: string | null;
   pricingType: string | null;
   description: string | null;
+  descriptionAr: string | null;
   createdAt: Date;
 };
 
@@ -32,6 +33,7 @@ export function serializeProduct(p: ProductRow) {
     image: p.image ?? undefined,
     pricingType: p.pricingType ?? undefined,
     description: p.description ?? undefined,
+    descriptionAr: p.descriptionAr ?? undefined,
     createdAt: p.createdAt.getTime(),
   };
 }

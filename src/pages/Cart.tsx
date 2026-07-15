@@ -13,7 +13,7 @@ import { useRepriceCartOnCurrencyChange } from "../hooks/usePricing";
 import { useCurrencyStore } from "../store/currencyStore";
 
 export default function Cart() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { items, updateQuantity, removeItem, getTotalPrice, coupon, applyCoupon, removeCoupon } =
     useCartStore();
@@ -31,14 +31,14 @@ export default function Cart() {
     try {
       const result = await validateCoupon(couponInput.trim());
       if (!result.valid || result.discountPercentage == null) {
-        toast.error(result.error || "Invalid or inactive coupon code.");
+        toast.error(result.error || t("invalid_coupon_code"));
       } else {
         applyCoupon(result.code ?? couponInput.trim(), result.discountPercentage);
-        toast.success(`Coupon applied! ${result.discountPercentage}% OFF`);
+        toast.success(t("coupon_applied_pct", { pct: result.discountPercentage }));
         setCouponInput("");
       }
     } catch {
-      toast.error("Failed to apply coupon.");
+      toast.error(t("failed_to_apply_coupon"));
     } finally {
       setApplying(false);
     }
@@ -91,7 +91,7 @@ export default function Cart() {
             <ShoppingCart size={28} />
           </div>
           <h2 className="cart-empty-title">{t("empty_cart")}</h2>
-          <p className="cart-empty-sub">Your cart is waiting to be filled with something extraordinary.</p>
+          <p className="cart-empty-sub">{t("your_cart_is_waiting_to_be_filled_with_s")}</p>
           <Link to="/shop" className="cart-empty-btn">
             <ArrowLeft size={14} />
             {t("categories")}
@@ -221,7 +221,7 @@ export default function Cart() {
 
         /* line total */
         .cart-item__total {
-          width: 5.5rem; text-align: right; flex-shrink: 0;
+          width: 5.5rem; text-align: end; flex-shrink: 0;
           font-family: var(--font-serif);
           font-size: 1rem; font-weight: 700;
           color: var(--an-text);
@@ -268,7 +268,7 @@ export default function Cart() {
           font-size: 0.8rem; font-weight: 700;
         }
         .cart-coupon-remove {
-          margin-left: auto; background: transparent; border: none;
+          margin-inline-start: auto; background: transparent; border: none;
           cursor: pointer; color: inherit; opacity: 0.7;
           display: flex; align-items: center;
           transition: opacity 200ms ease;
@@ -330,7 +330,7 @@ export default function Cart() {
         .cart-summary__currency {
           font-family: var(--font-sans);
           font-size: 0.85rem; font-weight: 700;
-          color: var(--an-gold-dim); margin-left: 0.25rem;
+          color: var(--an-gold-dim); margin-inline-start: 0.25rem;
         }
 
         /* footer row */
@@ -369,7 +369,9 @@ export default function Cart() {
       <div className="cart-root">
         <div className="cart-inner">
           <h1 className="cart-title">
-            Your <span>Cart</span>
+            {i18n.language === "ar"
+              ? <span>{t("cart")}</span>
+              : <>Your <span>{t("cart")}</span></>}
           </h1>
 
           <div className="cart-panel">
@@ -390,7 +392,7 @@ export default function Cart() {
                     {item.image ? (
                       <img src={item.image} alt={item.name} />
                     ) : (
-                      <div className="cart-item__thumb-empty">No Image</div>
+                      <div className="cart-item__thumb-empty">{t("no_image")}</div>
                     )}
                   </div>
 
@@ -410,7 +412,7 @@ export default function Cart() {
                     <button
                       className="cart-qty__btn"
                       onClick={() => updateQuantity(item.cartLineId, item.quantity - 1)}
-                      aria-label="Decrease"
+                      aria-label={t("decrease_quantity")}
                     >
                       <Minus size={12} />
                     </button>
@@ -418,7 +420,7 @@ export default function Cart() {
                     <button
                       className="cart-qty__btn"
                       onClick={() => updateQuantity(item.cartLineId, item.quantity + 1)}
-                      aria-label="Increase"
+                      aria-label={t("increase_quantity")}
                     >
                       <Plus size={12} />
                     </button>
@@ -452,7 +454,7 @@ export default function Cart() {
                     <Tag size={14} />
                     <span>{coupon.code}</span>
                     <span style={{ opacity: 0.7 }}>— {coupon.discountPercentage}% OFF</span>
-                    <button className="cart-coupon-remove" onClick={removeCoupon} aria-label="Remove coupon">
+                    <button className="cart-coupon-remove" onClick={removeCoupon} aria-label={t("remove_coupon")}>
                       <X size={14} />
                     </button>
                   </div>
@@ -460,7 +462,7 @@ export default function Cart() {
                   <div className="cart-coupon-form">
                     <input
                       type="text"
-                      placeholder="Coupon code"
+                      placeholder={t("coupon_code_placeholder")}
                       value={couponInput}
                       onChange={(e) => setCouponInput(e.target.value)}
                       className="cart-coupon-input"
@@ -470,7 +472,7 @@ export default function Cart() {
                       disabled={applying || !couponInput.trim()}
                       className="cart-coupon-btn"
                     >
-                      {applying ? "Applying…" : "Apply"}
+                      {applying ? t("applying") : t("apply")}
                     </button>
                   </div>
                 )}
@@ -484,14 +486,14 @@ export default function Cart() {
                 </div>
                 {coupon && (
                   <div className="cart-summary__row">
-                    <span className="cart-summary__label">Subtotal</span>
+                    <span className="cart-summary__label">{t("subtotal")}</span>
                     <span className="cart-summary__striked">
                       {formatPrice(subtotal, displayCurrency)}
                     </span>
                   </div>
                 )}
                 <div className="cart-summary__row">
-                  <span className="cart-summary__label">Total Due</span>
+                  <span className="cart-summary__label">{t("total_due")}</span>
                   <span className="cart-summary__total">
                     {formatPrice(getTotalPrice(), displayCurrency)}
                   </span>
@@ -505,7 +507,7 @@ export default function Cart() {
             <div className="cart-footer">
               <Link to="/shop" className="cart-continue">
                 <ArrowLeft size={14} />
-                Continue Shopping
+                {t("continue_shopping")}
               </Link>
               <motion.button
                 whileTap={{ scale: 0.97 }}

@@ -401,7 +401,7 @@ export default function Landing2() {
         .an-content-block { display: flex; flex-direction: column; gap: 1.5rem; }
         .an-section-kicker {
           font-family: var(--font-sans);
-          font-size: 12px; font-weight: 700;
+          font-size: 24px; font-weight: 700;
           letter-spacing: 0.1em; text-transform: uppercase;
           color: var(--an-gold);
         }
@@ -411,6 +411,8 @@ export default function Landing2() {
           font-size: clamp(2rem, 4vw, 2.5rem);
           font-weight: 600; line-height: 1.2;
           color: var(--an-text);
+
+          
         }
         .an-body-lg {
           margin: 0; font-size: 1.05rem; line-height: 1.75;
@@ -458,7 +460,7 @@ export default function Landing2() {
           display: flex; align-items: center; justify-content: center;
           padding: 0.75rem;
         }
-        .an-card-image { width: 100%; height: 100%; object-fit: contain; }
+        .an-card-image { width: 90%; height: 90%; object-fit: contain; }
         .an-card-badge-icon { filter: drop-shadow(0 2px 8px rgba(242,202,80,0.30)); }
         .an-card-title {
           margin: 0;
@@ -788,17 +790,21 @@ export default function Landing2() {
             <div className="an-container">
               <div className="an-grid-2">
                 <div className="an-content-block">
-                  <span className="an-section-kicker">{t("signature_harvest")}</span>
-                  <h2 className="an-headline-lg">{t("a_symphony_of")}<br />{t("texture_and_taste")}</h2>
+                  {/* <span className="an-section-kicker">{t("signature_harvest")}</span> */}
+                  <span className="an-headline-lg">{t("signature_harvest")}</span>
+                  {/* <h2 className="an-headline-lg">{t("a_symphony_of")}<br />{t("texture_and_taste")}</h2> */}
+                  <h2 className="an-headline-lg">{t("a_symphony_of")}<br />
+                  </h2>
                   <p className="an-body-lg">
                     {t("signature_body")}
                   </p>
-                  <div className="an-chips">
+                  <span className="an-section-kicker">{t("signature_harvest_2")}</span>
+                  {/* <div className="an-chips">
                     <span className="an-chip">{t("natural_100")}</span>
                     <span className="an-chip">{t("hand_selected")}</span>
                     <span className="an-chip">{t("est_1984_2")}</span>
-                  </div>
-                  <div className="an-features">
+                  </div> */}
+                  {/* <div className="an-features">
                     <div className="an-feature-item">
                       <span className="an-feature-num">01</span>
                       <div>
@@ -813,7 +819,7 @@ export default function Landing2() {
                         <p className="an-feature-desc">{t("each_date_undergoes_rigorous_inspection_")}</p>
                       </div>
                     </div>
-                  </div>
+                  </div> */}
                 </div>
 
                 <div style={{ display: "flex", justifyContent: "center" }}>

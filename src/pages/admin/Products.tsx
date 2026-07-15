@@ -8,6 +8,7 @@ import {
   deleteProduct,
   bulkImportProducts,
   listOrders,
+  translateText,
 } from "../../lib/api/admin";
 import type { Product as ApiProduct, Category as ApiCategory } from "../../lib/api/catalog";
 import { handleApiError, OperationType } from "../../lib/api/errors";
@@ -21,6 +22,8 @@ import {
   Image as ImageIcon,
   BarChart2,
   Link as LinkIcon,
+  Languages,
+  Loader2,
 } from "lucide-react";
 import { toast } from "sonner";
 import * as XLSX from "xlsx";
@@ -32,6 +35,7 @@ import { useAmountFormatter } from "../../hooks/usePricing";
 type Product = ApiProduct & {
   pricingType?: "per_kg" | "fixed";
   description: string;
+  descriptionAr: string;
   image: string;
 };
 type Category = Pick<ApiCategory, "id" | "name">;
@@ -53,10 +57,12 @@ export default function Products() {
     categoryId: "",
     image: "",
     description: "",
+    descriptionAr: "",
     isAvailable: true,
     stockCount: 0,
   });
   const [loading, setLoading] = useState(false);
+  const [translating, setTranslating] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [imageInputMode, setImageInputMode] = useState<"upload" | "url">("upload");
 
@@ -161,6 +167,30 @@ export default function Products() {
     }
   };
 
+  const handleAutoTranslate = async () => {
+    const en = form.description.trim();
+    const ar = form.descriptionAr.trim();
+    const missingAr = en && !ar;
+    const missingEn = ar && !en;
+    if (!missingAr && !missingEn) return;
+
+    setTranslating(true);
+    try {
+      if (missingAr) {
+        const { translatedText } = await translateText(en, "en", "ar");
+        setForm((prev) => ({ ...prev, descriptionAr: translatedText }));
+      } else {
+        const { translatedText } = await translateText(ar, "ar", "en");
+        setForm((prev) => ({ ...prev, description: translatedText }));
+      }
+    } catch (error) {
+      handleApiError(error, OperationType.GET, "translate");
+      toast.error(t("translate_failed"));
+    } finally {
+      setTranslating(false);
+    }
+  };
+
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -237,6 +267,7 @@ export default function Products() {
             categoryId: row.categoryId,
             image: row.image || "",
             description: row.description || "",
+            descriptionAr: row.descriptionAr || "",
             isAvailable:
               row.isAvailable !== undefined ? Boolean(row.isAvailable) : true,
             stockCount:
@@ -279,7 +310,8 @@ export default function Products() {
       pricingType: prod.pricingType ?? "fixed",
       categoryId: prod.categoryId,
       image: prod.image,
-      description: prod.description,
+      description: prod.description || "",
+      descriptionAr: prod.descriptionAr || "",
       isAvailable: prod.isAvailable,
       stockCount: prod.stockCount || 0,
     });
@@ -297,6 +329,7 @@ export default function Products() {
       categoryId: categories.length > 0 ? categories[0].id : "",
       image: "",
       description: "",
+      descriptionAr: "",
       isAvailable: true,
       stockCount: 0,
     });
@@ -625,17 +658,61 @@ export default function Products() {
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-stone-700 mb-1">
-                  {t("description")}
-                </label>
-                <textarea
-                  rows={3}
-                  value={form.description}
-                  onChange={(e) =>
-                    setForm({ ...form, description: e.target.value })
+                <div className="flex gap-4">
+                  <div className="flex-1">
+                    <label className="block text-sm font-medium text-stone-700 mb-1">
+                      {t("description")} (EN)
+                    </label>
+                    <textarea
+                      rows={3}
+                      value={form.description}
+                      onChange={(e) =>
+                        setForm({ ...form, description: e.target.value })
+                      }
+                      className="w-full px-4 py-2 border border-stone-300 rounded-xl focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent outline-none"
+                    ></textarea>
+                  </div>
+                  <div className="flex-1">
+                    <label className="block text-sm font-medium text-stone-700 mb-1">
+                      {t("description")} (AR)
+                    </label>
+                    <textarea
+                      rows={3}
+                      dir="rtl"
+                      value={form.descriptionAr}
+                      onChange={(e) =>
+                        setForm({ ...form, descriptionAr: e.target.value })
+                      }
+                      className="w-full px-4 py-2 border border-stone-300 rounded-xl focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent outline-none"
+                    ></textarea>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleAutoTranslate}
+                  disabled={
+                    translating ||
+                    !(
+                      (form.description.trim() && !form.descriptionAr.trim()) ||
+                      (form.descriptionAr.trim() && !form.description.trim())
+                    )
                   }
-                  className="w-full px-4 py-2 border border-stone-300 rounded-xl focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent outline-none"
-                ></textarea>
+                  title={
+                    form.description.trim() && form.descriptionAr.trim()
+                      ? "Both descriptions are already filled"
+                      : !form.description.trim() && !form.descriptionAr.trim()
+                        ? "Fill in one language first"
+                        : undefined
+                  }
+                  className="mt-2 flex items-center gap-2 px-3 py-1.5 text-sm border border-stone-300 rounded-xl text-stone-600 hover:bg-stone-50 hover:border-[var(--color-accent)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent"
+                >
+                  {translating ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Languages className="w-4 h-4" />
+                  )}
+                  {translating ? t("translating") : t("auto_translate")}
+                </button>
               </div>
               <div className="flex gap-4">
                 <div className="flex-1">

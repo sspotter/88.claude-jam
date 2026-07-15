@@ -59,16 +59,17 @@ export default function Products() {
       pricesByProduct,
       rateMap,
     );
+    const displayName = i18n.language === "ar" ? product.nameAr || product.name : product.name;
     addItem(
       buildCartItem(
         product.id,
-        product.name,
+        displayName,
         product.image,
         resolved,
         getListCartOptions(product),
       ),
     );
-    toast.success(`${product.name} ${t("added_to_cart")}`, { duration: 2000 });
+    toast.success(`${displayName} ${t("added_to_cart")}`, { duration: 2000 });
   };
 
   useEffect(() => {

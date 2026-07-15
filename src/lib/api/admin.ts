@@ -64,6 +64,12 @@ export const updateProductStock = (id: string, stockCount: number) =>
     body: JSON.stringify({ stockCount }),
   });
 
+export const translateText = (text: string, source: "en" | "ar", target: "en" | "ar") =>
+  adminFetch<{ translatedText: string }>("/api/admin/translate", {
+    method: "POST",
+    body: JSON.stringify({ text, source, target }),
+  });
+
 // Categories
 export const listCategories = () => adminFetch<Category[]>("/api/categories");
 export const createCategory = (data: Partial<Category>) =>

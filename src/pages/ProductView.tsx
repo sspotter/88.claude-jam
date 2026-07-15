@@ -515,7 +515,8 @@ export default function ProductView() {
               </div>
 
               <p className="anp-description">
-                {product.description || "No description provided."}
+                {(isRtl && product.descriptionAr ? product.descriptionAr : product.description) ||
+                  "No description provided."}
               </p>
 
               <div className="anp-rule" />

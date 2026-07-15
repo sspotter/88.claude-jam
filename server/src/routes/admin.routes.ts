@@ -35,7 +35,7 @@ const ALLOWED_STATUSES = ["pending", "shipped", "paid", "failed"] as const;
 
 router.post("/products", async (req: Request, res: Response) => {
   try {
-    const { name, nameAr, price, categoryId, isAvailable, stockCount, image, pricingType, description } = req.body;
+    const { name, nameAr, price, categoryId, isAvailable, stockCount, image, pricingType, description, descriptionAr } = req.body;
     if (!name || price == null || !categoryId) {
       return res.status(400).json({ error: "name, price and categoryId are required." });
     }
@@ -50,6 +50,7 @@ router.post("/products", async (req: Request, res: Response) => {
         image: image ?? null,
         pricingType: pricingType ?? null,
         description: description ?? null,
+        descriptionAr: descriptionAr ?? null,
       },
     });
     await recordAudit({ ...auditActor(req), action: "create", entity: "product", entityId: product.id, before: null, after: serializeProduct(product) });
@@ -61,7 +62,7 @@ router.post("/products", async (req: Request, res: Response) => {
 
 router.put("/products/:id", async (req: Request, res: Response) => {
   try {
-    const { name, nameAr, price, categoryId, isAvailable, stockCount, image, pricingType, description } = req.body;
+    const { name, nameAr, price, categoryId, isAvailable, stockCount, image, pricingType, description, descriptionAr } = req.body;
     const prev = await prisma.product.findUnique({ where: { id: req.params.id } });
     const product = await prisma.product.update({
       where: { id: req.params.id },
@@ -75,6 +76,7 @@ router.put("/products/:id", async (req: Request, res: Response) => {
         ...(image !== undefined && { image }),
         ...(pricingType !== undefined && { pricingType }),
         ...(description !== undefined && { description }),
+        ...(descriptionAr !== undefined && { descriptionAr }),
       },
     });
     await recordAudit({ ...auditActor(req), action: "update", entity: "product", entityId: req.params.id, before: prev ? serializeProduct(prev) : null, after: serializeProduct(product) });
@@ -113,6 +115,7 @@ router.post("/products/bulk", async (req: Request, res: Response) => {
             stockCount: p.stockCount != null ? Math.floor(Number(p.stockCount)) : 0,
             image: p.image ?? null,
             description: p.description ?? null,
+            descriptionAr: p.descriptionAr ?? null,
           },
         })
       )
@@ -137,6 +140,45 @@ router.patch("/products/:id/stock", async (req: Request, res: Response) => {
     return res.json(serializeProduct(product));
   } catch (error: any) {
     return res.status(500).json({ error: error.message || "Failed to update stock." });
+  }
+});
+
+/* ----------------------------- Translate ----------------------------- */
+
+// LibreTranslate instance to proxy through. Defaults to a keyless public
+// mirror since libretranslate.com rejects a blank api_key; point this at
+// the official endpoint (with LIBRETRANSLATE_API_KEY set) or a self-hosted
+// instance any time by changing the env var, no code change needed.
+const LIBRETRANSLATE_URL = process.env.LIBRETRANSLATE_URL || "https://translate.fedilab.app/translate";
+const LIBRETRANSLATE_API_KEY = process.env.LIBRETRANSLATE_API_KEY || "";
+
+router.post("/translate", async (req: Request, res: Response) => {
+  try {
+    const { text, source, target } = req.body as { text?: string; source?: string; target?: string };
+    if (!text || !source || !target) {
+      return res.status(400).json({ error: "text, source and target are required." });
+    }
+    const response = await fetch(LIBRETRANSLATE_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        q: text,
+        source,
+        target,
+        format: "text",
+        ...(LIBRETRANSLATE_API_KEY && { api_key: LIBRETRANSLATE_API_KEY }),
+      }),
+    });
+    if (!response.ok) {
+      throw new Error(`LibreTranslate request failed (${response.status}): ${await response.text()}`);
+    }
+    const data = (await response.json()) as { translatedText?: string };
+    if (!data.translatedText) {
+      throw new Error("LibreTranslate response missing translatedText.");
+    }
+    return res.json({ translatedText: data.translatedText });
+  } catch (error: any) {
+    return res.status(502).json({ error: error.message || "Translation failed." });
   }
 });
 
