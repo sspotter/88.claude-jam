@@ -728,7 +728,7 @@ export default function Landing2() {
         <header className="an-nav" ref={headerRef} dir="ltr">
           <a className="an-nav-brand" href="/landing2">
             <img
-              src={i18n.language === "ar" ? "/nav-logo-ar.png" : "/nav-logo-eng.png"}
+              src={i18n.language === "ar" ? "/nav-logo-eng.png" : "/nav-logo-eng.png"}
               className="an-nav-brand-logo"
               alt={t("jamhawi")}
             />

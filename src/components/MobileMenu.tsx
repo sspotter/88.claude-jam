@@ -88,7 +88,7 @@ export default function MobileMenu({
           <img
             src={
               isArabic
-                ? (isDark ? '/nav-logo-ar.png' : '/nav-logo-ar-light.png')
+                ? (isDark ? '/nav-logo-eng.png' : '/nav-logo-eng-light.png')
                 : (isDark ? '/nav-logo-eng.png' : '/nav-logo-eng-light.png')
             }
             alt={t('jamhawi')}
