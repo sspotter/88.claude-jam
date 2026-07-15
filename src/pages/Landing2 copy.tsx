@@ -204,7 +204,6 @@ export default function Landing2() {
         .an-hero-video {
           position: absolute; inset: 0; width: 100%; height: 100%;
           object-fit: cover; object-position: center;
-          filter: brightness(0.45) contrast(1.1);
         }
         .an-hero-vignette {
           position: absolute; inset: 0; pointer-events: none;

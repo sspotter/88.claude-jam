@@ -707,9 +707,7 @@ export default function Landing2() {
           align-items: center; gap: 2rem;
         }
         .an-footer-brand {
-          font-family: var(--font-serif);
-          font-size: 2rem; font-weight: 700;
-          letter-spacing: 0.3em; color: var(--an-gold);
+          height: 44px; width: auto; object-fit: contain;
         }
         .an-footer-links { display: flex; gap: 2.5rem; }
         .an-footer-links a {
@@ -724,10 +722,10 @@ export default function Landing2() {
         }
       `}</style>
 
-      <div className="an-root">
+      <div className="an-root" dir={i18n.language === "ar" ? "rtl" : "ltr"}>
 
         {/* ── Navigation ───────────────────────────────────────────── */}
-        <header className="an-nav" ref={headerRef}>
+        <header className="an-nav" ref={headerRef} dir="ltr">
           <a className="an-nav-brand" href="/landing2">
             <img
               src={i18n.language === "ar" ? "/nav-logo-ar.png" : "/nav-logo-eng.png"}
@@ -759,7 +757,9 @@ export default function Landing2() {
             />
             <div className="an-hero-vignette" ref={heroVignetteRef} />
 
-            <div className="an-hero-content" ref={heroContentRef}>
+
+{/* ── Hero content ───────────────────────────────────────────── */}
+            {/* <div className="an-hero-content" ref={heroContentRef}>
               <span className="an-label-caps">{t("the_art_of_details")}</span>
               <h1 className="an-hero-title">
                 {t("immersive")}<br /><em>{t("purity")}</em>
@@ -780,7 +780,7 @@ export default function Landing2() {
                 <span>{t("scroll")}</span>
                 <div className="an-scroll-line" />
               </div>
-            </div>
+            </div> */}
           </section>
 
           {/* ── Signature Section ────────────────────────────────────── */}
@@ -929,7 +929,7 @@ export default function Landing2() {
               </div>
 
               <footer className="an-site-footer">
-                <div className="an-footer-brand">{t("jamhawi")}</div>
+                <img src="/nav-logo-eng.png" className="an-footer-brand" alt={t("jamhawi")} />
                 <nav className="an-footer-links" aria-label="Footer navigation">
                   <a href="#">{t("privacy_policy")}</a>
                   <a href="#">{t("terms_of_service")}</a>
