@@ -226,7 +226,7 @@ export default function Categories() {
 
         /* badge stamp */
         .cats-card__badge {
-          position: absolute; bottom: 0.9rem; right: 0.9rem; z-index: 2;
+          position: absolute; bottom: 0.9rem; inset-inline-end: 0.9rem; z-index: 2;
           width: 2.4rem; height: 2.4rem; border-radius: 50%;
           background: var(--an-surface);
           border: 1px solid var(--an-outline);

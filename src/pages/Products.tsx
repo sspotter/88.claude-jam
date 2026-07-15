@@ -190,7 +190,7 @@ export default function Products() {
         }
         .anp2-search-icon {
           position: absolute;
-          left: 1rem;
+          inset-inline-start: 1rem;
           top: 50%;
           transform: translateY(-50%);
           pointer-events: none;
@@ -200,7 +200,8 @@ export default function Products() {
         }
         .anp2-search {
           width: 100%;
-          padding: 0.7rem 1rem 0.7rem 2.75rem;
+          padding: 0.7rem 1rem;
+          padding-inline-start: 2.75rem;
           background: var(--an-surface);
           border: 1px solid var(--an-outline);
           border-radius: var(--an-radius-full);
@@ -261,7 +262,8 @@ export default function Products() {
           align-items: center;
         }
         .anp2-select {
-          padding: 0.55rem 2rem 0.55rem 1rem;
+          padding: 0.55rem 1rem;
+          padding-inline-end: 2rem;
           background: var(--an-surface);
           border: 1px solid var(--an-outline);
           border-radius: var(--an-radius-full);
@@ -278,11 +280,12 @@ export default function Products() {
           background-repeat: no-repeat;
           background-position: right 0.75rem center;
         }
+        [dir="rtl"] .anp2-select { background-position: left 0.75rem center; }
         .anp2-select:focus { border-color: var(--an-gold); }
         .anp2-select option { background: var(--an-surface); color: var(--an-text); }
 
         .anp2-results-count {
-          margin-left: auto;
+          margin-inline-start: auto;
           font-size: 0.75rem;
           color: var(--an-muted);
           font-weight: 500;

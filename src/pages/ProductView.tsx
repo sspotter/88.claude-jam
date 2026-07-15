@@ -344,7 +344,7 @@ export default function ProductView() {
           background: transparent; border: none; cursor: pointer;
           font-family: var(--font-serif);
           font-size: 1rem; font-weight: 600;
-          color: var(--an-text); text-align: left;
+          color: var(--an-text); text-align: start;
           transition: color 200ms ease;
         }
         .anp-accordion-trigger:hover { color: var(--an-gold); }
@@ -587,7 +587,7 @@ export default function ProductView() {
               <div className="anp-rule" />
 
               {/* Accordion */}
-              <div className="anp-accordion">
+              {/* <div className="anp-accordion">
                 {[
                   {
                     key: "nutrition",
@@ -644,7 +644,7 @@ export default function ProductView() {
                     </div>
                   );
                 })}
-              </div>
+              </div> */}
 
             </div>
           </div>

@@ -82,7 +82,6 @@ export default function Landing2() {
     if (video) {
       video.muted = true;
       video.playsInline = true;
-      video.loop = true;
       video.play().catch(() => {});
     }
 
@@ -455,10 +454,11 @@ export default function Landing2() {
           pointer-events: none;
         }
         .an-card-inner {
-          display: flex; flex-direction: column;
-          align-items: center; justify-content: center;
-          gap: 0.75rem; text-align: center; padding: 2rem;
+          width: 100%; height: 100%;
+          display: flex; align-items: center; justify-content: center;
+          padding: 0.75rem;
         }
+        .an-card-image { width: 100%; height: 100%; object-fit: contain; }
         .an-card-badge-icon { filter: drop-shadow(0 2px 8px rgba(242,202,80,0.30)); }
         .an-card-title {
           margin: 0;
@@ -753,7 +753,7 @@ export default function Landing2() {
               ref={videoRef}
               className="an-hero-video"
               src="/video3.mp4"
-              muted autoPlay loop playsInline preload="auto"
+              muted autoPlay playsInline preload="auto"
             />
             <div className="an-hero-vignette" ref={heroVignetteRef} />
 
@@ -820,15 +820,7 @@ export default function Landing2() {
                   <div className="an-card-luxury">
                     <div className="an-card-frame" />
                     <div className="an-card-inner">
-                      <svg viewBox="0 0 48 48" fill="none" width="44" height="44" className="an-card-badge-icon">
-                        <ellipse cx="18" cy="26" rx="9" ry="12" stroke="#f2ca50" strokeWidth="1.4"/>
-                        <ellipse cx="30" cy="26" rx="9" ry="12" stroke="#f2ca50" strokeWidth="1.4"/>
-                        <path d="M18 14 Q24 8 30 14" stroke="#f2ca50" strokeWidth="1.4" fill="none"/>
-                      </svg>
-                      <h4 className="an-card-title">{t("jamhawi_gold")}</h4>
-                      <div className="an-card-rule" />
-                      <p className="an-card-sub">{t("limited_edition_harvest_2")}</p>
-                      <span className="an-card-year">{t("est_1984")}</span>
+                      <img src="/card-landing-page.png" alt={t("jamhawi_gold")} className="an-card-image" />
                     </div>
                   </div>
                 </div>
@@ -929,7 +921,7 @@ export default function Landing2() {
               </div>
 
               <footer className="an-site-footer">
-                <img src="/nav-logo-eng.png" className="an-footer-brand" alt={t("jamhawi")} />
+                <img src="/footer-logo.png" className="an-footer-brand" alt={t("jamhawi")} />
                 <nav className="an-footer-links" aria-label="Footer navigation">
                   <a href="#">{t("privacy_policy")}</a>
                   <a href="#">{t("terms_of_service")}</a>

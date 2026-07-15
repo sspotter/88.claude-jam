@@ -71,9 +71,8 @@ export default function Layout() {
   }, [isDark]);
 
   useEffect(() => {
-    // Keep lang attribute in sync for accessibility/SEO but never flip layout direction
     document.documentElement.lang = i18n.language;
-    document.documentElement.dir = "ltr";
+    document.documentElement.dir = i18n.language === "ar" ? "rtl" : "ltr";
   }, [i18n.language]);
 
   const toggleMobileMenu = () => {
@@ -91,6 +90,7 @@ export default function Layout() {
     <div className="min-h-screen flex flex-col" style={{ background: "var(--th-bg)" }}>
       {/* ── Navbar ── */}
       <header
+        dir="ltr"
         style={{
           position: "sticky", top: 0, zIndex: 50,
           background: "var(--th-nav-bg)",
@@ -196,9 +196,11 @@ export default function Layout() {
         }}
       >
         <div className="max-w-7xl mx-auto px-4">
-          <p style={{ fontFamily: "var(--font-serif)", fontSize: "1.5rem", letterSpacing: "0.25em", color: "var(--th-gold)", marginBottom: "0.75rem" }}>
-            {t("app_name")}
-          </p>
+          <img
+            src="/footer-logo.png"
+            alt={t("app_name")}
+            style={{ height: "44px", width: "auto", objectFit: "contain", margin: "0 auto 0.75rem" }}
+          />
           <p style={{ fontSize: "0.78rem", color: "var(--th-muted)", letterSpacing: "0.04em", marginBottom: "0.75rem" }}>
             <Link
               to="/shop/contact"
