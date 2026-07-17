@@ -101,10 +101,10 @@ export default function ProductView() {
     return (
       <>
         <style>{`
-          .anp-root { background:#131313; color:#e5e2e1; margin:-1.5rem -1rem -2.5rem; padding:3rem clamp(1rem,4vw,3rem) 5rem; min-height:80vh; }
+          .anp-root { background:var(--th-bg,#131313); color:var(--th-text,#e5e2e1); margin:-1.5rem -1rem -2.5rem; padding:3rem clamp(1rem,4vw,3rem) 5rem; min-height:80vh; }
           @media(min-width:640px){ .anp-root{margin:-1.5rem -1.5rem -2.5rem;} }
           @keyframes anpPulse{0%,100%{opacity:.35}50%{opacity:.6}}
-          .anp-skel{background:#2a2a2a;border-radius:8px;animation:anpPulse 1.6s ease infinite;}
+          .anp-skel{background:var(--th-skel-bg,#2a2a2a);border-radius:8px;animation:anpPulse 1.6s ease infinite;}
         `}</style>
         <div className="anp-root">
           <div style={{ display:"flex", flexDirection:"column", gap:"2rem", maxWidth:"1280px", margin:"0 auto" }}>
@@ -131,16 +131,17 @@ export default function ProductView() {
       <style>{`
         /* ── Artisanal Noir — Product View ──────────────────────────── */
         .anp-root {
-          --an-bg:          #131313;
-          --an-surface:     #1a1a1a;
-          --an-surface-hi:  #2a2a2a;
-          --an-text:        #e5e2e1;
-          --an-muted:       #a0a0a0;
-          --an-variant:     #d0c5af;
-          --an-gold:        #f2ca50;
-          --an-gold-dim:    #e9c349;
-          --an-gold-deep:   #d4af37;
-          --an-outline:     rgba(212,175,55,0.20);
+          /* Bridge to the global theme tokens set by Layout.tsx */
+          --an-bg:          var(--th-bg,          #131313);
+          --an-surface:     var(--th-surface,      #1a1a1a);
+          --an-surface-hi:  var(--th-surface-hi,   #2a2a2a);
+          --an-text:        var(--th-text,          #e5e2e1);
+          --an-muted:       var(--th-muted,         #a0a0a0);
+          --an-variant:     var(--th-text-variant,  #d0c5af);
+          --an-gold:        var(--th-gold,          #f2ca50);
+          --an-gold-dim:    var(--th-gold-dim,      #e9c349);
+          --an-gold-deep:   var(--th-gold-deep,     #d4af37);
+          --an-outline:     var(--th-outline,       rgba(212,175,55,0.20));
           --an-radius:      0.25rem;
           --an-radius-lg:   0.5rem;
           --an-radius-full: 9999px;
@@ -166,7 +167,7 @@ export default function ProductView() {
           transition: color 200ms ease;
         }
         .anp-breadcrumb a:hover { color: var(--an-gold); }
-        .anp-breadcrumb .sep { color: #4d4635; }
+        .anp-breadcrumb .sep { color: var(--an-muted); }
         .anp-breadcrumb .current { color: var(--an-variant); font-weight: 600; }
 
         /* two-col layout */
@@ -181,7 +182,7 @@ export default function ProductView() {
         .anp-img-wrap {
           position: relative;
           aspect-ratio: 1;
-          background: #1a1a1a;
+          background: var(--th-card-img-bg, #1a1a1a);
           border-radius: 16px;
           overflow: hidden;
           border: 1px solid var(--an-outline);
@@ -214,7 +215,7 @@ export default function ProductView() {
           border: 1px solid var(--an-outline);
           padding: 0.5rem 1.25rem;
           border-radius: var(--an-radius-full);
-          background: rgba(19,19,19,0.85);
+          background: var(--an-surface);
         }
 
         /* info column */
@@ -415,7 +416,7 @@ export default function ProductView() {
         @media(min-width:768px) { .anp-similar-grid { grid-template-columns: repeat(3, 1fr); } }
 
         .anp-sim-card {
-          background: linear-gradient(160deg, #1c1b1b 0%, #0e0e0e 100%);
+          background: var(--th-card-bg, linear-gradient(160deg, #1c1b1b 0%, #0e0e0e 100%));
           border: 1px solid var(--an-outline);
           border-radius: 14px; overflow: hidden;
           text-decoration: none;
@@ -435,7 +436,7 @@ export default function ProductView() {
           box-shadow: 0 20px 40px rgba(0,0,0,0.5);
         }
         .anp-sim-card__img {
-          aspect-ratio: 1; background: #201f1f; overflow: hidden;
+          aspect-ratio: 1; background: var(--th-card-img-bg, #201f1f); overflow: hidden;
         }
         .anp-sim-card__img img {
           width: 100%; height: 100%; object-fit: cover;
@@ -454,7 +455,7 @@ export default function ProductView() {
         .anp-sim-card__price { font-size: 0.82rem; font-weight: 700; color: var(--an-gold-dim); }
 
         @keyframes anpPulse { 0%,100%{opacity:.35} 50%{opacity:.6} }
-        .anp-skel { background: #2a2a2a; border-radius: 8px; animation: anpPulse 1.6s ease infinite; }
+        .anp-skel { background: var(--th-skel-bg, #2a2a2a); border-radius: 8px; animation: anpPulse 1.6s ease infinite; }
       `}</style>
 
       <div className="anp-root">
@@ -483,7 +484,7 @@ export default function ProductView() {
               {product.image ? (
                 <img src={product.image} alt={productName} />
               ) : (
-                <div style={{ width:"100%", height:"100%", display:"flex", alignItems:"center", justifyContent:"center", color:"#4d4635" }}>
+                <div style={{ width:"100%", height:"100%", display:"flex", alignItems:"center", justifyContent:"center", color:"var(--an-muted)" }}>
                   No image
                 </div>
               )}
@@ -678,7 +679,7 @@ export default function ProductView() {
                         {sim.image ? (
                           <img src={sim.image} alt={isRtl && sim.nameAr ? sim.nameAr : sim.name} />
                         ) : (
-                          <div style={{ width:"100%", height:"100%", display:"flex", alignItems:"center", justifyContent:"center", color:"#4d4635", fontSize:"0.75rem" }}>
+                          <div style={{ width:"100%", height:"100%", display:"flex", alignItems:"center", justifyContent:"center", color:"var(--an-muted)", fontSize:"0.75rem" }}>
                             No image
                           </div>
                         )}

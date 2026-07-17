@@ -354,6 +354,11 @@ export default function Landing2() {
           .an-hero {
             display: block;
             height: auto;
+            /* .an-hero-content is currently commented out of the JSX, so there's
+               no in-flow child left to size this section — without an explicit
+               height the absolutely-positioned video collapses to 0 height and
+               floats on top of whatever section comes next. */
+            min-height: calc(var(--an-nav-h) + 16px + 45vh + 2rem);
             overflow: visible;
           }
           /* Video + vignette: a fixed-height block pinned just below the navbar.
