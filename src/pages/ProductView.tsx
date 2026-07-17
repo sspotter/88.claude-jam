@@ -463,13 +463,13 @@ export default function ProductView() {
 
           {/* Breadcrumb */}
           <nav className="anp-breadcrumb" aria-label="Breadcrumb">
-            <Link to="/">Home</Link>
+            <Link to="/">{t("home")}</Link>
             <span className="sep"><ChevronRight size={12} /></span>
-            <span>Products</span>
+            <Link to="/shop/products">{t("products")}</Link>
             {categoryName && (
               <>
                 <span className="sep"><ChevronRight size={12} /></span>
-                <Link to={`/category/${product.categoryId}`}>{categoryName}</Link>
+                <Link to={`/shop/category/${product.categoryId}`}>{categoryName}</Link>
               </>
             )}
             <span className="sep"><ChevronRight size={12} /></span>

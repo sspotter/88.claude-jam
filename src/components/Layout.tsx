@@ -195,22 +195,45 @@ export default function Layout() {
           padding: "3rem 0", textAlign: "center", marginTop: "auto",
         }}
       >
+        <style>{`
+          .th-footer-link { color: var(--th-muted); text-decoration: none; transition: color 150ms ease; }
+          .th-footer-link:hover { color: var(--th-gold); }
+        `}</style>
         <div className="max-w-7xl mx-auto px-4">
           <img
             src="/footer-logo.png"
             alt={t("app_name")}
             style={{ height: "44px", width: "auto", objectFit: "contain", margin: "0 auto 0.75rem" }}
           />
-          <p style={{ fontSize: "0.78rem", color: "var(--th-muted)", letterSpacing: "0.04em", marginBottom: "0.75rem" }}>
-            <Link
-              to="/shop/contact"
-              style={{ color: "var(--th-muted)", textDecoration: "none", transition: "color 150ms" }}
-              onMouseEnter={e => ((e.currentTarget as HTMLElement).style.color = "var(--th-gold)")}
-              onMouseLeave={e => ((e.currentTarget as HTMLElement).style.color = "var(--th-muted)")}
+          <nav
+            aria-label={i18n.language === "ar" ? "روابط الفوتر" : "Footer"}
+            style={{
+              display: "flex", flexDirection: "column", alignItems: "center",
+              gap: "0.45rem", marginBottom: "1rem",
+            }}
+          >
+            <span
+              style={{
+                fontSize: "0.68rem", fontWeight: 700, letterSpacing: "0.12em",
+                textTransform: "uppercase", color: "var(--th-text-variant)",
+                marginBottom: "0.1rem",
+              }}
             >
+              {t("shop")}
+            </span>
+            <Link to="/shop/categories" className="th-footer-link" style={{ fontSize: "0.78rem", letterSpacing: "0.04em" }}>
+              {t("categories")}
+            </Link>
+            <Link to="/shop/products" className="th-footer-link" style={{ fontSize: "0.78rem", letterSpacing: "0.04em" }}>
+              {t("products")}
+            </Link>
+            <Link to="/shop/cart" className="th-footer-link" style={{ fontSize: "0.78rem", letterSpacing: "0.04em" }}>
+              {t("cart")}
+            </Link>
+            <Link to="/shop/contact" className="th-footer-link" style={{ fontSize: "0.78rem", letterSpacing: "0.04em" }}>
               {i18n.language === "ar" ? "تواصل معنا" : "Contact Us"}
             </Link>
-          </p>
+          </nav>
           <p style={{ fontSize: "0.78rem", color: "var(--th-muted)", letterSpacing: "0.04em" }}>
             &copy; {new Date().getFullYear()} {t("app_name")}. All rights reserved.
           </p>
