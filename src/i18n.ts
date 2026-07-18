@@ -457,7 +457,8 @@ export const resources = {
       cat_sub_sweets: "حلويات حرفية",
       cat_sub_premium: "تشكيلة حصرية",
       cat_sub_fallback: "تشكيلة فاخرة",
-      story_body: "في جمحاوي، لا نقدّم تمرًا عاديًا؛ بل ثمرةً طازجة عضوية فاخرة، تصل إليك كما لو قُطفت للتو من النخلة. نختار كل تمرة بعناية، ونحفظ نضارتها وجودتها لتمنحك مذاقًا طبيعيًا استثنائيًا. جرّب جمحاوي… لأن المذاق هو الفارق.",
+      story_body: "في جمحاوي، لا نقدّم تمرًا عاديًا؛ بل ثمرةً طازجة عضوية فاخرة، تصل إليك كما لو قُطفت للتو من النخلة. نختار كل تمرة بعناية، ونحفظ نضارتها وجودتها لتمنحك مذاقًا طبيعيًا استثنائيًا. جرّب جمحاوي…",
+      story_body_tagline: "لأن المذاق هو الفارق.",
       your_email_address: "بريدك الإلكتروني",
       footer_copyright: "© {{year}} جمحاوي. جميع الحقوق محفوظة.",
 
@@ -1094,7 +1095,8 @@ export const resources = {
       cat_sub_sweets: "Artisanal Treats",
       cat_sub_premium: "Exclusive Selection",
       cat_sub_fallback: "Premium Selection",
-      story_body: "At Jamhawi, we don’t offer ordinary dates; we provide a premium, fresh, organic fruit that reaches you as if just picked from the palm tree. We carefully select every date, preserving its freshness and quality to deliver an exceptional, natural taste. Try Jamhawi… because taste makes the difference.",
+      story_body: "At Jamhawi, we don’t offer ordinary dates; we provide a premium, fresh, organic fruit that reaches you as if just picked from the palm tree. We carefully select every date, preserving its freshness and quality to deliver an exceptional, natural taste. Try Jamhawi…",
+      story_body_tagline: "because taste makes the difference.",
       your_email_address: "Your Email Address",
       footer_copyright: "© {{year}} Jamhawi. All rights reserved.",
 

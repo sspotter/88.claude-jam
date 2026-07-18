@@ -906,10 +906,11 @@ export default function Landing2() {
             <div className="an-container">
               <div className="an-story-grid">
                 <div className="an-story-content">
-                  <span className="an-section-kicker">{t("our_heritage")}</span>
+                  {/* <span className="an-section-kicker">{t("our_heritage")}</span> */}
                   <h2 className="an-story-title">{t("a_legacy_of_pure_taste")}</h2>
                   <p className="an-story-text">
-                    {t("story_body")}
+                    {t("story_body")}{" "}
+                    <span style={{ fontWeight: 700, color: "#c9a84c" }}>{t("story_body_tagline")}</span>
                   </p>
                   <Link to="/shop/products" className="an-btn-primary">
                     {t("browse_the_store")}
